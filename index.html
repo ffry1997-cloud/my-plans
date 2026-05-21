@@ -2022,10 +2022,23 @@
                 
                 buttons.innerHTML = 
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Иконка (эмодзи)</label>' +
-                    '<input type="text" id="folderIconInput" value="' + Utils.escapeHtml(f.icon || '📁') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:8px;" placeholder="📁">' +
-                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Цвет фона (hex)</label>' +
-                    '<input type="text" id="folderColorInput" value="' + (f.color || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:8px;" placeholder="#7eb8c9">' +
-                    '<button class="action-panel-btn" id="btnSaveFolderIcon" style="margin-top:8px;">✅ Сохранить</button>' +
+                    '<input type="text" id="folderIconInput" value="' + Utils.escapeHtml(f.icon || '📁') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="📁">' +
+                    
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Цвет фона</label>' +
+                    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
+                    '<input type="color" id="folderColorInput" value="' + (f.color || '#6b4c3b') + '" style="width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;padding:0;overflow:hidden;background:transparent;-webkit-appearance:none;">' +
+                    '<span id="folderColorLabel" style="font-size:14px;color:var(--text);">Выбрать свой цвет</span>' +
+                    '</div>' +
+                    
+                    '<div class="settings-divider"></div>' +
+                    
+                    '<button class="action-panel-btn" id="btnPickFolderPhoto" style="margin-bottom:8px;">🖼️ Выбрать фото для фона</button>' +
+                    
+                    (f.customImage || f.color ? '<button class="action-panel-btn delete" id="btnClearFolderBg" style="margin-bottom:8px;">✕ Убрать фон</button>' : '') +
+                    
+                    '<div class="settings-divider"></div>' +
+                    
+                    '<button class="action-panel-btn" id="btnSaveFolderAppearance" style="margin-top:8px;">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                 
                 panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
@@ -2033,18 +2046,71 @@
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
                 
+                // Выбор фото
+                document.getElementById('btnPickFolderPhoto').onclick = function(e) {
+                    e.stopPropagation();
+                    const inp = document.createElement('input');
+                    inp.type = 'file';
+                    inp.accept = 'image/*';
+                    inp.onchange = function(ev) {
+                        const file = ev.target.files[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            f.customImage = event.target.result;
+                            f.color = '';
+                            // Обновим цвет в пикере
+                            const colorInput = document.getElementById('folderColorInput');
+                            if (colorInput) colorInput.value = '#6b4c3b';
+                            const label = document.getElementById('folderColorLabel');
+                            if (label) label.textContent = 'Выбрать свой цвет';
+                            UI.showToast('🖼️ Фото выбрано');
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    inp.click();
+                };
+                
+                // Убрать фон
+                const btnClear = document.getElementById('btnClearFolderBg');
+                if (btnClear) {
+                    btnClear.onclick = function(e) {
+                        e.stopPropagation();
+                        f.customImage = '';
+                        f.color = '';
+                        const colorInput = document.getElementById('folderColorInput');
+                        if (colorInput) colorInput.value = '#6b4c3b';
+                        const label = document.getElementById('folderColorLabel');
+                        if (label) label.textContent = 'Выбрать свой цвет';
+                        UI.showToast('🗑️ Фон убран');
+                    };
+                }
+                
+                // Обновление цвета через пикер
+                const colorPicker = document.getElementById('folderColorInput');
+                const colorLabel = document.getElementById('folderColorLabel');
+                if (colorPicker && colorLabel) {
+                    colorPicker.oninput = function() {
+                        colorLabel.textContent = this.value;
+                    };
+                }
+                
                 setTimeout(() => {
                     document.getElementById('folderIconInput').focus();
                 }, 100);
                 
-                document.getElementById('btnSaveFolderIcon').onclick = function() {
+                // Сохранить
+                document.getElementById('btnSaveFolderAppearance').onclick = function() {
                     const icon = document.getElementById('folderIconInput').value.trim();
-                    const color = document.getElementById('folderColorInput').value.trim();
+                    const color = document.getElementById('folderColorInput').value;
                     
                     if (icon) f.icon = icon;
-                    if (color && color.startsWith('#')) {
+                    
+                    // Если фото уже выбрано — цвет не применяем
+                    if (!f.customImage && color && color !== '#6b4c3b') {
                         f.color = color;
-                        f.customImage = '';
+                    } else if (!f.customImage) {
+                        f.color = '';
                     }
                     
                     State.save();
