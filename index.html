@@ -2135,22 +2135,29 @@
                 const savedPreset = localStorage.getItem('theme_preset') || '';
                 
                 buttons.innerHTML =
-                    '<div style="padding:4px 0 12px;text-align:center;font-size:15px;font-weight:600;color:#ffffff;">Тема</div>' +
+                    '<div style="padding:4px 0 12px;text-align:center;font-size:15px;font-weight:600;color:var(--text);">Тема</div>' +
                     '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">' +
-                    '<button onclick="event.stopPropagation();App._applyPreset(\'basic\')" style="width:70px;padding:8px;border-radius:12px;border:2px solid ' + (savedPreset === 'basic' ? 'var(--accent)' : 'rgba(255,255,255,0.5)') + ';background:transparent;cursor:pointer;font-size:12px;position:relative;z-index:10;color:#ffffff;">Basic</button>' +
-                    '<button onclick="event.stopPropagation();App._applyPreset(\'forest\')" style="width:70px;padding:8px;border-radius:12px;border:2px solid ' + (savedPreset === 'forest' ? 'var(--accent)' : 'rgba(255,255,255,0.5)') + ';background:transparent;cursor:pointer;font-size:12px;position:relative;z-index:10;color:#ffffff;">Forest</button>' +
-                    '<button onclick="event.stopPropagation();App._applyPreset(\'sunset\')" style="width:70px;padding:8px;border-radius:12px;border:2px solid ' + (savedPreset === 'sunset' ? 'var(--accent)' : 'rgba(255,255,255,0.5)') + ';background:transparent;cursor:pointer;font-size:12px;position:relative;z-index:10;color:#ffffff;">Sunset</button>' +
-                    '<button onclick="event.stopPropagation();App._applyPreset(\'ocean\')" style="width:70px;padding:8px;border-radius:12px;border:2px solid ' + (savedPreset === 'ocean' ? 'var(--accent)' : 'rgba(255,255,255,0.5)') + ';background:transparent;cursor:pointer;font-size:12px;position:relative;z-index:10;color:#ffffff;">Ocean</button>' +
+                    '<button onclick="event.stopPropagation();App._applyPreset(\'basic\')" style="width:70px;padding:10px 8px;border-radius:12px;border:2px solid ' + (savedPreset === 'basic' ? 'var(--accent)' : 'var(--border)') + ';background:transparent;cursor:pointer;font-size:12px;color:var(--text);">Basic</button>' +
+                    '<button onclick="event.stopPropagation();App._applyPreset(\'forest\')" style="width:70px;padding:10px 8px;border-radius:12px;border:2px solid ' + (savedPreset === 'forest' ? 'var(--accent)' : 'var(--border)') + ';background:transparent;cursor:pointer;font-size:12px;color:var(--text);">Forest</button>' +
+                    '<button onclick="event.stopPropagation();App._applyPreset(\'sunset\')" style="width:70px;padding:10px 8px;border-radius:12px;border:2px solid ' + (savedPreset === 'sunset' ? 'var(--accent)' : 'var(--border)') + ';background:transparent;cursor:pointer;font-size:12px;color:var(--text);">Sunset</button>' +
+                    '<button onclick="event.stopPropagation();App._applyPreset(\'ocean\')" style="width:70px;padding:10px 8px;border-radius:12px;border:2px solid ' + (savedPreset === 'ocean' ? 'var(--accent)' : 'var(--border)') + ';background:transparent;cursor:pointer;font-size:12px;color:var(--text);">Ocean</button>' +
                     '</div>' +
-                    '<div style="padding:4px 0 8px;font-size:13px;color:#ffffff;">Своя тема</div>' +
+                    
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Своя тема</label>' +
                     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
-                    '<input type="color" id="customColorInput" value="' + (localStorage.getItem('custom_theme') || '#6b4c3b') + '" style="width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;padding:0;overflow:hidden;background:transparent;-webkit-appearance:none;" onchange="App._applyCustomColor(this.value)">' +
-                    '<span id="customColorLabel" style="font-size:14px;color:var(--text);font-weight:400;">Выбрать свою тему</span>' +
+                    '<input type="color" id="customColorInput" value="' + (localStorage.getItem('custom_theme') || '#6b4c3b') + '" style="width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;padding:0;overflow:hidden;background:transparent;-webkit-appearance:none;flex-shrink:0;" onchange="App._applyCustomColor(this.value)">' +
+                    '<span id="customColorLabel" style="font-size:14px;color:var(--text);">Выбрать свой цвет</span>' +
                     '</div>' +
-                    '<div class="settings-divider"></div>' +
-                    '<button class="action-panel-btn" onclick="App._pickPhoto()">Выбрать фото для фона</button>' +
-                    '<div class="settings-divider"></div>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Закрыть</button>';
+                    
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    
+                    '<button class="action-panel-btn" onclick="App._pickPhoto()" style="margin-bottom:8px;">🖼️ Выбрать фото для фона</button>' +
+                    
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Закрыть</button>';
                 
                 panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;pointer-events:auto;';
                 
@@ -2459,16 +2466,17 @@
 
                 if (isTrash) {
                     buttons.innerHTML =
-                        '<button class="action-panel-btn" onclick="App.doAction(\'restore-task\',\'' + taskId + '\')">↩️ Восстановить</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'restore-task\',\'' + taskId + '\')" style="margin-bottom:2px;">↩️ Восстановить</button>' +
                         '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-forever\',\'' + taskId + '\')">💥 Удалить навсегда</button>';
                 } else {
                     buttons.innerHTML =
-                        '<button class="action-panel-btn" onclick="App.doAction(\'edit-task\',\'' + taskId + '\')">✏️ Изменить</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'duplicate-task\',\'' + taskId + '\')">📋 Копия</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'add-subtask\',\'' + taskId + '\')">➕ Подзадача</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'move-to-tomorrow\',\'' + taskId + '\')">📅 На завтра</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'toggle-keep-subtasks\',\'' + taskId + '\')">' + 
+                        '<button class="action-panel-btn" onclick="App.doAction(\'edit-task\',\'' + taskId + '\')" style="margin-bottom:2px;">✏️ Изменить</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'duplicate-task\',\'' + taskId + '\')" style="margin-bottom:2px;">📋 Копия</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'add-subtask\',\'' + taskId + '\')" style="margin-bottom:2px;">➕ Подзадача</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'move-to-tomorrow\',\'' + taskId + '\')" style="margin-bottom:2px;">📅 На завтра</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'toggle-keep-subtasks\',\'' + taskId + '\')" style="margin-bottom:2px;">' + 
                         (keepSubtasks ? '🔓 Открепить подзадачи' : '🔒 Закрепить подзадачи') + '</button>' +
+                        '<div class="settings-divider" style="margin:4px 0;"></div>' +
                         '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-task\',\'' + taskId + '\')">✕ Удалить</button>';
                 }
         
@@ -2512,10 +2520,12 @@
                 title.textContent = folderName;
         
                 buttons.innerHTML =
-                    '<div style="padding:8px 14px;font-size:12px;color:var(--text-secondary);text-align:center;">' +
+                    '<div style="padding:8px 14px;font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:4px;">' +
                     '📋 Активных: ' + active + ' / ✅ Завершено: ' + completed + '</div>' +
-                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'rename\',\'' + folderId + '\')">✏️ Переименовать</button>' +
-                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'icon\',\'' + folderId + '\')">🎨 Сменить иконку/цвет</button>' +
+                    '<div class="settings-divider" style="margin:4px 0 8px;"></div>' +
+                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'rename\',\'' + folderId + '\')" style="margin-bottom:2px;">✏️ Переименовать</button>' +
+                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'icon\',\'' + folderId + '\')" style="margin-bottom:2px;">🎨 Сменить иконку/цвет</button>' +
+                    '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doFolderAction(\'delete\',\'' + folderId + '\')">🗑️ Удалить папку</button>';
         
                 const card = e.target.closest('.folder-card');
@@ -2556,8 +2566,9 @@
                 title.textContent = clientName;
         
                 buttons.innerHTML =
-                    '<button class="action-panel-btn" onclick="App.doClientAction(\'edit\',\'' + clientId + '\')">✏️ Редактировать</button>' +
-                    '<button class="action-panel-btn" onclick="App.doClientAction(\'email\',\'' + clientId + '\')">📧 Отправить</button>' +
+                    '<button class="action-panel-btn" onclick="App.doClientAction(\'edit\',\'' + clientId + '\')" style="margin-bottom:2px;">✏️ Редактировать</button>' +
+                    '<button class="action-panel-btn" onclick="App.doClientAction(\'email\',\'' + clientId + '\')" style="margin-bottom:2px;">📧 Отправить</button>' +
+                    '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doClientAction(\'delete\',\'' + clientId + '\')">✕ Удалить</button>';
         
                 const card = e.target.closest('.client-card');
@@ -2599,7 +2610,8 @@
                 title.textContent = 'Подзадача';
                 
                 buttons.innerHTML =
-                    '<button class="action-panel-btn" onclick="App.doSubtaskAction(\'edit\',\'' + taskId + '\',\'' + subtaskId + '\')">✏️ Изменить</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubtaskAction(\'edit\',\'' + taskId + '\',\'' + subtaskId + '\')" style="margin-bottom:2px;">✏️ Изменить</button>' +
+                    '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doSubtaskAction(\'delete\',\'' + taskId + '\',\'' + subtaskId + '\')">✕ Удалить</button>';
                 
                 const rect = e.currentTarget.getBoundingClientRect();
@@ -2636,17 +2648,24 @@
                 const s = App._settings;
                 
                 buttons.innerHTML =
-                    '<div style="padding:4px 0;"><span style="font-size:13px;color:var(--text);">✏️ Название приложения</span>' +
-                    '<input type="text" id="settingsAppName" value="' + Utils.escapeHtml(s.appName || 'День за днём') + '" onchange="App._updateSetting(\'appName\', this.value)" style="width:100%;padding:12px 16px;border-radius:24px;border:1.5px solid var(--border);font-size:15px;font-family:var(--font);background:rgba(46,44,41,0.9);color:var(--text);outline:none;margin:4px 0 8px;box-sizing:border-box;"></div>' +
-                    '<div class="settings-divider"></div>' +
-                    '<div class="settings-row"><span>📅 Календарь</span><button class="settings-toggle' + (s.showCalendar !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showCalendar\', this)"></button></div>' +
-                    '<div class="settings-row"><span>📊 Статистика</span><button class="settings-toggle' + (s.showStats !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showStats\', this)"></button></div>' +
-                    '<div class="settings-row"><span>🧠 ИИ</span><button class="settings-toggle' + (s.showAI !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showAI\', this)"></button></div>' +
-                    '<div class="settings-row"><span>👥 Дни рождения</span><button class="settings-toggle' + (s.showClients !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showClients\', this)"></button></div>' +
-                    '<div class="settings-row"><span>💡 Идеи</span><button class="settings-toggle' + (s.showIdeas !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showIdeas\', this)"></button></div>' +
-                    '<div class="settings-divider"></div>' +
-                    '<div class="settings-row"><span>📅 Обзор недели</span><button class="settings-toggle' + (s.showWeekOverview !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showWeekOverview\', this)"></button></div>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Закрыть</button>';
+                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">✏️ Название приложения</label>' +
+                    '<input type="text" id="settingsAppName" value="' + Utils.escapeHtml(s.appName || 'День за днём') + '" onchange="App._updateSetting(\'appName\', this.value)" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);font-size:15px;font-family:var(--font);background:rgba(46,44,41,0.9);color:var(--text);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    
+                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">📅 Календарь</span><button class="settings-toggle' + (s.showCalendar !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showCalendar\', this)"></button></div>' +
+                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">📊 Статистика</span><button class="settings-toggle' + (s.showStats !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showStats\', this)"></button></div>' +
+                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">🧠 ИИ</span><button class="settings-toggle' + (s.showAI !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showAI\', this)"></button></div>' +
+                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">👥 Дни рождения</span><button class="settings-toggle' + (s.showClients !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showClients\', this)"></button></div>' +
+                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">💡 Идеи</span><button class="settings-toggle' + (s.showIdeas !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showIdeas\', this)"></button></div>' +
+                    
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    
+                    '<div class="settings-row" style="margin-bottom:8px;"><span style="font-size:14px;">📅 Обзор недели</span><button class="settings-toggle' + (s.showWeekOverview !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showWeekOverview\', this)"></button></div>' +
+                    
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Закрыть</button>';
                 
                 panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
                 
@@ -2866,9 +2885,14 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML =
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Прозрачность карточек</label>' +
                     '<div id="opacityValue" style="text-align:center;font-size:24px;margin:8px 0;color:var(--text);">' + Math.round(currentOpacity * 100) + '%</div>' +
-                    '<input type="range" id="opacitySlider" min="10" max="100" value="' + Math.round(currentOpacity * 100) + '" style="width:100%;margin:8px 0;" oninput="App._updateOpacity(this.value)">' +
-                    '<button class="settings-close" onclick="App._closePanel()">Закрыть</button>';
+                    '<input type="range" id="opacitySlider" min="10" max="100" value="' + Math.round(currentOpacity * 100) + '" style="width:100%;margin-bottom:12px;" oninput="App._updateOpacity(this.value)">' +
+                    
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Закрыть</button>';
+
                 
                 panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
                 
