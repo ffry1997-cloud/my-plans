@@ -1759,14 +1759,15 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Текст задачи</label>' +
-                    '<textarea id="editTaskText" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:8px;">' + Utils.escapeHtml(task.text) + '</textarea>' +
-                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Дата</label>' +
-                    '<input type="date" id="editTaskDate" value="' + (task.date || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:8px;">' +
-                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Время</label>' +
-                    '<input type="time" id="editTaskTime" value="' + (task.time || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:8px;">' +
-                    '<button class="action-panel-btn" id="btnSaveTask" style="margin-top:8px;">✅ Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Текст задачи</label>' +
+                    '<textarea id="editTaskText" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;">' + Utils.escapeHtml(task.text) + '</textarea>' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дата</label>' +
+                    '<input type="date" id="editTaskDate" value="' + (task.date || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время</label>' +
+                    '<input type="time" id="editTaskTime" value="' + (task.time || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    '<button class="action-panel-btn" id="btnSaveTask">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
                 
@@ -1877,9 +1878,10 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<textarea id="subtaskInput" style="width:100%;min-height:80px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;" placeholder="Текст подзадачи..."></textarea>' +
-                    '<button class="action-panel-btn" id="btnSaveSubtask" style="margin-top:8px;">✅ Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<textarea id="subtaskInput" style="width:100%;min-height:80px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Текст подзадачи..."></textarea>' +
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    '<button class="action-panel-btn" id="btnSaveSubtask">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
                 
@@ -1929,9 +1931,10 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<textarea id="subtaskInput" style="width:100%;min-height:80px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;">' + Utils.escapeHtml(st.text) + '</textarea>' +
-                    '<button class="action-panel-btn" id="btnSaveSubtask" style="margin-top:8px;">✅ Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<textarea id="subtaskInput" style="width:100%;min-height:80px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;">' + Utils.escapeHtml(st.text) + '</textarea>' +
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    '<button class="action-panel-btn" id="btnSaveSubtask">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
                 
@@ -1983,9 +1986,10 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(f.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:8px;" placeholder="Название папки">' +
-                    '<button class="action-panel-btn" id="btnSaveFolderName" style="margin-top:8px;">✅ Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(f.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название папки">' +
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    '<button class="action-panel-btn" id="btnSaveFolderName">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
                 
@@ -2021,25 +2025,25 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Иконка (эмодзи)</label>' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Иконка (эмодзи)</label>' +
                     '<input type="text" id="folderIconInput" value="' + Utils.escapeHtml(f.icon || '📁') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="📁">' +
                     
-                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Цвет фона</label>' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Цвет фона</label>' +
                     '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
-                    '<input type="color" id="folderColorInput" value="' + (f.color || '#6b4c3b') + '" style="width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;padding:0;overflow:hidden;background:transparent;-webkit-appearance:none;">' +
+                    '<input type="color" id="folderColorInput" value="' + (f.color || '#6b4c3b') + '" style="width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;padding:0;overflow:hidden;background:transparent;-webkit-appearance:none;flex-shrink:0;">' +
                     '<span id="folderColorLabel" style="font-size:14px;color:var(--text);">Выбрать свой цвет</span>' +
                     '</div>' +
                     
-                    '<div class="settings-divider"></div>' +
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
                     '<button class="action-panel-btn" id="btnPickFolderPhoto" style="margin-bottom:8px;">🖼️ Выбрать фото для фона</button>' +
                     
                     (f.customImage || f.color ? '<button class="action-panel-btn delete" id="btnClearFolderBg" style="margin-bottom:8px;">✕ Убрать фон</button>' : '') +
                     
-                    '<div class="settings-divider"></div>' +
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<button class="action-panel-btn" id="btnSaveFolderAppearance" style="margin-top:8px;">✅ Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<button class="action-panel-btn" id="btnSaveFolderAppearance">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
                 
