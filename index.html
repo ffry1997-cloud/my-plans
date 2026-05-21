@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -40,8 +39,6 @@
             justify-content: center;
             padding: 12px;
             -webkit-font-smoothing: antialiased;
-            user-select: none;
-            -webkit-user-select: none;
             letter-spacing: 0.3px;
         }
         .app-container {
@@ -284,8 +281,6 @@
             font-size: 15px; margin: 4px 0; border: 1px solid var(--border);
             flex-wrap: wrap; transition: opacity 0.2s, transform 0.2s;
             -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
         }
         .task-item.completed { opacity: 0.45; background: var(--bg); }
         .task-item.completed { background: var(--success-light) !important; transition: all 0.3s; }
@@ -319,10 +314,7 @@
         @keyframes popCheck {
             0% { transform: scale(1); } 40% { transform: scale(1.3); } 100% { transform: scale(1); }
         }
-        .task-text { word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; line-height: 1.4;
-        -webkit-user-select: none;
-        user-select: none;
-        }
+        .task-text { word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; line-height: 1.4; }
         .task-filter { display: flex; margin-bottom: 10px; background: var(--bg); border-radius: 24px; padding: 4px; }
         .task-filter-btn {
             flex: 1; padding: 10px 14px; border: none; border-radius: 22px; font-size: 13px;
@@ -339,8 +331,6 @@
             font-size: 13px; 
             padding: 3px 0; 
             color: var(--text-secondary); 
-            -webkit-user-select: none; 
-            user-select: none; 
         }
         .subtask-item.completed .subtask-text { text-decoration: line-through; opacity: 0.5; }
         .subtask-checkbox {
@@ -453,7 +443,6 @@
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         .scroll-top-btn.visible { opacity: 1; pointer-events: auto; }
-        .menu-wrapper { position: relative; }
         .menu-dropdown {
             position: absolute; top: 50px; right: 0;
             background: rgba(35, 34, 32, 0.95);
@@ -500,6 +489,16 @@
             border-radius: 18px; padding: 10px; z-index: 999;
             box-shadow: 0 8px 28px rgba(0,0,0,0.4); animation: fadeIn 0.2s ease;
             min-width: 200px; border: 1px solid var(--border);
+        }
+        .action-panel.centered {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 360px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         .action-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 998;
@@ -615,6 +614,28 @@
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
         input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
         .app-container { -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+
+        /* ========================================
+           ИНЛАЙН-СТИЛИ, ВЫНЕСЕННЫЕ ИЗ HTML
+           ======================================== */
+        #bgLayer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            pointer-events: none;
+        }
+        .menu-wrapper {
+            position: fixed;
+            top: 16px;
+            right: max(16px, calc((100vw - 680px) / 2 + 4px));
+            z-index: 150;
+        }
     </style>
     <link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22%D0%9C%D0%BE%D0%B8%20%D0%BF%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22short_name%22%3A%22%D0%9F%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Ctext%20y%3D'.9em'%20font-size%3D'90'%3E%F0%9F%93%85%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22any%22%5D%7D%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23232220%22%2C%22theme_color%22%3A%22%236b4c3b%22%7D">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
@@ -625,30 +646,38 @@
     </script>
 </head>
 <body>
-    <div id="bgLayer" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background-size:cover;background-position:center;background-repeat:no-repeat;pointer-events:none;"></div>
-        <!-- Кнопка-бургер -->
-        <div class="menu-wrapper" style="position:fixed;top:16px;right:max(16px, calc((100vw - 680px) / 2 + 4px));z-index:150;">
-            <button class="icon-btn" id="btnMenu" aria-label="Меню">☰</button>
-            <div class="menu-dropdown" id="menuDropdown">
-                <button class="menu-item" id="btnSearchMenu"><span class="menu-icon">🔍</span> Поиск</button>
-                <div style="height:1px;background:var(--border);margin:4px 0;"></div>
-                <button class="menu-item" id="btnNewFolderMenu"><span class="menu-icon">📁</span> Новая папка</button>
-                <button class="menu-item" id="btnNewNoteMenu"><span class="menu-icon">💡</span> Новая заметка</button>
-                <div style="height:1px;background:var(--border);margin:4px 0;"></div>
-                <button class="menu-item" id="btnNotifyMenu"><span class="menu-icon">🔔</span> Уведомления</button>
-                <button class="menu-item" id="btnSettingsMenu"><span class="menu-icon">⚙️</span> Настройки интерфейса</button>
-                <button class="menu-item" id="btnAppearanceMenu"><span class="menu-icon">🖌️</span> Внешний вид <span style="margin-left:auto;font-size:12px;">▼</span></button>
-                <div id="appearanceSubmenu" style="display:none;">
-                    <button class="menu-item" id="btnThemeCustom" style="padding-left:34px;"><span class="menu-icon">🎨</span> Оформление</button>
-                    <button class="menu-item" id="btnOpacityMenu" style="padding-left:34px;"><span class="menu-icon">🔲</span> Прозрачность</button>
-                </div>
-                <div style="height:1px;background:var(--border);margin:4px 0;"></div>
-                <button class="menu-item" id="btnExportMenu"><span class="menu-icon">📤</span> Экспорт</button>
-                <button class="menu-item" id="btnImportMenu"><span class="menu-icon">📥</span> Импорт</button>
-            </div>
+    <noscript>
+        <div style="text-align:center;padding:40px;color:#e8e4dd;font-family:sans-serif;background:#232220;min-height:100vh;">
+            <h2>JavaScript отключён</h2>
+            <p>Для работы приложения «Мои планы» необходимо включить JavaScript в настройках браузера.</p>
         </div>
-    
-        <div class="app-container" id="appContainer">
+    </noscript>
+
+    <div id="bgLayer"></div>
+
+    <!-- Кнопка-бургер -->
+    <div class="menu-wrapper">
+        <button class="icon-btn" id="btnMenu" aria-label="Меню">☰</button>
+        <div class="menu-dropdown" id="menuDropdown">
+            <button class="menu-item" id="btnSearchMenu"><span class="menu-icon">🔍</span> Поиск</button>
+            <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+            <button class="menu-item" id="btnNewFolderMenu"><span class="menu-icon">📁</span> Новая папка</button>
+            <button class="menu-item" id="btnNewNoteMenu"><span class="menu-icon">💡</span> Новая заметка</button>
+            <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+            <button class="menu-item" id="btnNotifyMenu"><span class="menu-icon">🔔</span> Уведомления</button>
+            <button class="menu-item" id="btnSettingsMenu"><span class="menu-icon">⚙️</span> Настройки интерфейса</button>
+            <button class="menu-item" id="btnAppearanceMenu"><span class="menu-icon">🖌️</span> Внешний вид <span style="margin-left:auto;font-size:12px;">▼</span></button>
+            <div id="appearanceSubmenu" style="display:none;">
+                <button class="menu-item" id="btnThemeCustom" style="padding-left:34px;"><span class="menu-icon">🎨</span> Оформление</button>
+                <button class="menu-item" id="btnOpacityMenu" style="padding-left:34px;"><span class="menu-icon">🔲</span> Прозрачность</button>
+            </div>
+            <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+            <button class="menu-item" id="btnExportMenu"><span class="menu-icon">📤</span> Экспорт</button>
+            <button class="menu-item" id="btnImportMenu"><span class="menu-icon">📥</span> Импорт</button>
+        </div>
+    </div>
+
+    <div class="app-container" id="appContainer">
         <h1 class="app-title">День за днём</h1>
         <div class="bg-quote" id="bgQuote"></div>
         <div class="custom-quotes">
@@ -675,7 +704,8 @@
                 <button class="btn-sm btn-add" id="btnAddFolder">+ Новая папка</button>
                 <div style="position:relative;">
                     <button class="btn-sm" id="btnToggleView" style="background:rgba(107, 76, 59, 0.15);color:var(--accent);font-size:14px;padding:6px 10px;border-radius:50%;width:36px;height:36px;min-width:36px;">⋮</button>
-                    <div id="viewDropdown" style="position:absolute;bottom:40px;right:0;background:rgba(35,34,32,0.95);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:50;min-width:120px;display:none;border:1px solid var(--border);padding:4px;">                        <button class="menu-item" data-view="list" style="font-size:13px;padding:8px 12px;">Список</button>
+                    <div id="viewDropdown" style="position:absolute;bottom:40px;right:0;background:rgba(35,34,32,0.95);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:50;min-width:120px;display:none;border:1px solid var(--border);padding:4px;">
+                        <button class="menu-item" data-view="list" style="font-size:13px;padding:8px 12px;">Список</button>
                         <button class="menu-item" data-view="grid" style="font-size:13px;padding:8px 12px;">Сетка</button>
                     </div>
                 </div>
@@ -690,7 +720,7 @@
                     <button class="task-filter-btn active" data-filter="active">📋 Активные <span class="count" id="activeCount">0</span></button>
                     <button class="task-filter-btn" data-filter="completed">✅ Завершенные <span class="count" id="completedCount">0</span></button>
                 </div>
-                <div class="input-row" style="display:flex;gap:6px;flex-wrap:wrap;">
+                <form class="input-row" style="display:flex;gap:6px;flex-wrap:wrap;" onsubmit="return false;">
                     <input type="text" class="input" id="taskInput" placeholder="Новая задача..." autocomplete="off">
                     <input type="date" class="input-time" id="taskDate" style="max-width:120px;">
                     <input type="time" class="input-time" id="taskTime" style="max-width:90px;" value="09:00">
@@ -703,8 +733,8 @@
                         <option value="custom">Свой</option>
                     </select>
                     <input type="number" class="input-time" id="taskRepeatDays" placeholder="Дней" style="max-width:60px;display:none;" min="1" max="365">
-                    <button class="btn-sm btn-add" id="btnAddTask">+</button>
-                </div>
+                    <button type="submit" class="btn-sm btn-add" id="btnAddTask">+</button>
+                </form>
                 <div id="taskList"></div>
                 <button class="btn-sm" id="btnBackToFolders" style="background:var(--accent-light);color:var(--accent);">← Назад к папкам</button>
             </div>
@@ -736,12 +766,12 @@
         <div class="section" id="section-clients">
             <div class="card">
                 <h3>👥 Дни рождения</h3>
-                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <form style="display:flex;gap:6px;flex-wrap:wrap;" onsubmit="return false;">
                     <input type="text" class="input" id="clientName" placeholder="ФИО" style="flex:2;">
                     <input type="tel" class="input" id="clientPhone" placeholder="Телефон" style="flex:1;">
                     <input type="date" class="input-time" id="clientDate" style="max-width:130px;">
-                    <button class="btn-sm btn-add" id="btnAddClient">+</button>
-                </div>
+                    <button type="submit" class="btn-sm btn-add" id="btnAddClient">+</button>
+                </form>
                 <div id="clientList"></div>
                 <small id="clientStats" style="color:var(--text-secondary);"></small>
             </div>
@@ -909,13 +939,10 @@
 
             function load() {
                 try {
-                    // Пробуем загрузить из новой версии хранилища
                     let saved = localStorage.getItem(STORAGE_KEY);
-                    // Если данных нет, пробуем старую версию
                     if (!saved) {
                         saved = localStorage.getItem('my_plans_v18');
                         if (saved) {
-                            // Переносим данные в новое хранилище
                             localStorage.setItem(STORAGE_KEY, saved);
                         }
                     }
@@ -1062,7 +1089,6 @@
                             const nextISO = Utils.formatDateISO(next);
                             if (f.tasks.some(x => x && x.text === task.text && x.date === nextISO && !x.completed)) return;
 
-                            // Сохранять ли выполненные подзадачи
                             const keepSubtasksDone = task.keepSubtasksDone === true;
                             f.tasks.push({
                                 id: Utils.generateId(), text: task.text, date: nextISO, time: task.time,
@@ -1075,7 +1101,7 @@
                                 repeat: task.repeat, 
                                 repeatDays: task.repeatDays, 
                                 priority: task.priority || 0,
-                                keepSubtasksDone: keepSubtasksDone  // передаём настройку дальше
+                                keepSubtasksDone: keepSubtasksDone
                             });
 
                             const original = f.tasks.find(x => x.id === task.id);
@@ -1218,14 +1244,12 @@
                     Utils.getValidTasksArray(f.tasks).forEach(t => {
                         if (!t || t.completed || !t.date) return;
                         
-                        // Задачи с временем — уведомление за час
                         if (t.time) {
                             const dt = new Date(t.date + 'T' + t.time);
                             if (!isNaN(dt.getTime()) && dt > now && dt <= oneHourLater) {
                                 result.push({ ...t, folderName: f.name });
                             }
                         } 
-                        // Задачи без времени, но на сегодня — уведомление в 9:00
                         else if (t.date === todayISO) {
                             const nineAM = new Date();
                             nineAM.setHours(9, 0, 0, 0);
@@ -1776,7 +1800,7 @@
                     '<button class="action-panel-btn" id="btnSaveTask">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
@@ -1875,7 +1899,6 @@
                 const found = Utils.findTaskById(tid);
                 if (!found) return;
                 
-                // Открываем кастомное окно ввода
                 const overlay = getEl('actionOverlay');
                 const panel = getEl('actionPanel');
                 const title = getEl('actionPanelTitle');
@@ -1890,18 +1913,16 @@
                     '<button class="action-panel-btn" id="btnSaveSubtask">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
                 
-                // Фокус на поле ввода
                 setTimeout(() => {
                     const inp = document.getElementById('subtaskInput');
                     if (inp) inp.focus();
                 }, 100);
                 
-                // Сохранение по кнопке
                 document.getElementById('btnSaveSubtask').onclick = function() {
                     const text = document.getElementById('subtaskInput').value.trim();
                     if (!text) return;
@@ -1943,7 +1964,7 @@
                     '<button class="action-panel-btn" id="btnSaveSubtask">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
@@ -1998,7 +2019,7 @@
                     '<button class="action-panel-btn" id="btnSaveFolderName">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
@@ -2052,12 +2073,11 @@
                     '<button class="action-panel-btn" id="btnSaveFolderAppearance">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
                 
-                // Выбор фото
                 document.getElementById('btnPickFolderPhoto').onclick = function(e) {
                     e.stopPropagation();
                     const inp = document.createElement('input');
@@ -2070,7 +2090,6 @@
                         reader.onload = function(event) {
                             f.customImage = event.target.result;
                             f.color = '';
-                            // Обновим цвет в пикере
                             const colorInput = document.getElementById('folderColorInput');
                             if (colorInput) colorInput.value = '#6b4c3b';
                             const label = document.getElementById('folderColorLabel');
@@ -2082,7 +2101,6 @@
                     inp.click();
                 };
                 
-                // Убрать фон
                 const btnClear = document.getElementById('btnClearFolderBg');
                 if (btnClear) {
                     btnClear.onclick = function(e) {
@@ -2097,7 +2115,6 @@
                     };
                 }
                 
-                // Обновление цвета через пикер
                 const colorPicker = document.getElementById('folderColorInput');
                 const colorLabel = document.getElementById('folderColorLabel');
                 if (colorPicker && colorLabel) {
@@ -2110,14 +2127,12 @@
                     document.getElementById('folderIconInput').focus();
                 }, 100);
                 
-                // Сохранить
                 document.getElementById('btnSaveFolderAppearance').onclick = function() {
                     const icon = document.getElementById('folderIconInput').value.trim();
                     const color = document.getElementById('folderColorInput').value;
                     
                     if (icon) f.icon = icon;
                     
-                    // Если фото уже выбрано — цвет не применяем
                     if (!f.customImage && color && color !== '#6b4c3b') {
                         f.color = color;
                     } else if (!f.customImage) {
@@ -2166,7 +2181,7 @@
                     
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Закрыть</button>';
                 
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;pointer-events:auto;';
+                panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
@@ -2449,7 +2464,9 @@
             },
         
             _closePanel: function() {
-                getEl('actionPanel').style.display = 'none';
+                const panel = getEl('actionPanel');
+                panel.style.display = 'none';
+                panel.className = 'action-panel';
                 getEl('actionOverlay').style.display = 'none';
             },
         
@@ -2467,7 +2484,6 @@
         
                 title.textContent = taskText;
 
-                // Найти задачу и проверить состояние (до условий!)
                 const found = Utils.findTaskById(taskId);
                 const keepSubtasks = found?.task.keepSubtasksDone || false;
 
@@ -2487,15 +2503,7 @@
                         '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-task\',\'' + taskId + '\')">✕ Удалить</button>';
                 }
         
-                const rect = e.currentTarget.getBoundingClientRect();
-                let topPosition = rect.bottom + 4;
-                const leftPosition = Math.min(rect.left, window.innerWidth - 200);
-        
-                if (topPosition + 220 > window.innerHeight) {
-                    topPosition = rect.top - 220;
-                }
-        
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
         
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
@@ -2535,16 +2543,7 @@
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doFolderAction(\'delete\',\'' + folderId + '\')">🗑️ Удалить папку</button>';
         
-                const card = e.target.closest('.folder-card');
-                const rect = card ? card.getBoundingClientRect() : { top: 100, left: 100, bottom: 150 };
-                let topPosition = rect.bottom + 4;
-                const leftPosition = Math.min(rect.left, window.innerWidth - 200);
-        
-                if (topPosition + 200 > window.innerHeight) {
-                    topPosition = rect.top - 200;
-                }
-        
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
         
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
@@ -2578,17 +2577,7 @@
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doClientAction(\'delete\',\'' + clientId + '\')">✕ Удалить</button>';
         
-                const card = e.target.closest('.client-card');
-                const rect = card ? card.getBoundingClientRect() : { top: 100, left: 100, bottom: 150 };
-                
-                let topPosition = rect.bottom + 4;
-                let leftPosition = Math.min(rect.left, window.innerWidth - 220);
-        
-                if (topPosition + 180 > window.innerHeight) {
-                    topPosition = rect.top - 180;
-                }
-        
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
         
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
@@ -2621,12 +2610,7 @@
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doSubtaskAction(\'delete\',\'' + taskId + '\',\'' + subtaskId + '\')">✕ Удалить</button>';
                 
-                const rect = e.currentTarget.getBoundingClientRect();
-                let topPosition = rect.top - 110;
-                if (topPosition < 10) topPosition = rect.bottom + 4;
-                const leftPosition = Math.min(rect.left, window.innerWidth - 180);
-                
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
@@ -2674,7 +2658,7 @@
                     
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Закрыть</button>';
                 
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
@@ -2703,7 +2687,6 @@
                 if (!color || !color.startsWith('#')) return;
                 const root = document.documentElement;
                 
-                // Берём за основу basic и меняем акцент
                 const base = THEME_PRESETS['basic'];
                 Object.keys(base).forEach(key => {
                     if (key === '--accent') {
@@ -2830,7 +2813,6 @@
                 dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
             });
             
-            // Закрытие дропдауна по клику вне
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('#btnToggleView') && !e.target.closest('#viewDropdown')) {
                     const dd = getEl('viewDropdown');
@@ -2838,7 +2820,6 @@
                 }
             });
             
-            // Выбор вида из дропдауна
             getEl('viewDropdown').addEventListener('click', function(e) {
                 const btn = e.target.closest('button');
                 if (!btn) return;
@@ -2901,7 +2882,7 @@
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Закрыть</button>';
 
                 
-                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
@@ -3101,7 +3082,6 @@
                     document.documentElement.style.setProperty('--opacity-btn', savedOpacity);
                 }
 
-                // Чистим старый ключ темы
                 localStorage.removeItem('theme');
 
                 State.load();
@@ -3121,7 +3101,6 @@
             } catch (e) { console.error('Init error:', e); }
 
             function fixIOSBackground() {
-            // фон теперь в #bgLayer с position:fixed, корректировка не нужна
             }
             
             window.addEventListener('resize', fixIOSBackground);
@@ -3145,7 +3124,6 @@
             }, 1000);
         }
 
-        // Запуск
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize);
         else initialize();
     })();
