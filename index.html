@@ -1971,49 +1971,87 @@
                 UI.showToast('📁 Создана');
             },
             editFolder() {
-                const cid = State.getCurrentFolderId();
-                if (Utils.isSmartFolder(cid)) { UI.showToast('❌ Нельзя'); return; }
-                const f = State.getFolderById(cid);
-                if (!f) return;
-                const name = prompt('Название:', f.name);
-                if (!name) return;
-                f.name = name.trim();
-                State.save();
-                UI.renderAll();
-                UI.showToast('✅ Обновлена');
+                const f = fid ? State.getFolderById(fid) : State.getFolderById(State.getCurrentFolderId());
+                if (!f || Utils.isSmartFolder(f.id)) { UI.showToast('❌ Нельзя'); return; }
+                
+                const overlay = getEl('actionOverlay');
+                const panel = getEl('actionPanel');
+                const title = getEl('actionPanelTitle');
+                const buttons = getEl('actionPanelButtons');
+                
+                title.textContent = '✏️ Переименовать папку';
+                title.style.display = 'block';
+                
+                buttons.innerHTML = 
+                    '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(f.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:8px;" placeholder="Название папки">' +
+                    '<button class="action-panel-btn" id="btnSaveFolderName" style="margin-top:8px;">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                
+                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                
+                overlay.style.display = 'block';
+                panel.style.display = 'block';
+                
+                setTimeout(() => {
+                    const inp = document.getElementById('folderNameInput');
+                    if (inp) { inp.focus(); inp.select(); }
+                }, 100);
+                
+                document.getElementById('btnSaveFolderName').onclick = function() {
+                    const name = document.getElementById('folderNameInput').value.trim();
+                    if (!name) return;
+                    
+                    f.name = name;
+                    State.save();
+                    UI.renderAll();
+                    App._closePanel();
+                    UI.showToast('✅ Папка переименована');
+                };
             },
             changeFolderIcon(fid) {
-                if (Utils.isSmartFolder(fid)) { UI.showToast('❌ Нельзя'); return; }
                 const f = State.getFolderById(fid);
-                if (!f) return;
-
-                const choice = prompt('Выберите:\n1. Цвет фона (hex, например #7eb8c9)\n2. Иконка (эмодзи)\n3. Фото на фон (напишите "фото")\n\nТекущий цвет: ' + (f.color || 'нет') + '\nТекущая иконка: ' + (f.icon || '📁'), '');
-                if (!choice) return;
-
-                if (choice === 'фото' || choice === 'foto' || choice === 'photo') {
-                    const inp = document.createElement('input');
-                    inp.type = 'file'; inp.accept = 'image/*';
-                    inp.onchange = function(e) {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        const reader = new FileReader();
-                        reader.onload = function(ev) {
-                            f.customImage = ev.target.result; f.color = '';
-                            State.save(); UI.renderAll(); UI.showToast('🖼️ Фото загружено на фон');
-                        };
-                        reader.readAsDataURL(file);
-                    };
-                    inp.click();
-                } else if (!isNaN(parseFloat(choice)) && parseFloat(choice) >= 0 && parseFloat(choice) <= 1) {
-                    f.opacity = choice; f.color = ''; f.customImage = '';
-                    State.save(); UI.renderAll(); UI.showToast('🔍 Прозрачность: ' + choice);
-                } else if (choice.startsWith('#')) {
-                    f.color = choice; f.customImage = '';
-                    State.save(); UI.renderAll(); UI.showToast('🎨 Цвет фона обновлён');
-                } else {
-                    f.icon = choice;
-                    State.save(); UI.renderAll(); UI.showToast('✅ Иконка обновлена');
-                }
+                if (!f || Utils.isSmartFolder(fid)) { UI.showToast('❌ Нельзя'); return; }
+                
+                const overlay = getEl('actionOverlay');
+                const panel = getEl('actionPanel');
+                const title = getEl('actionPanelTitle');
+                const buttons = getEl('actionPanelButtons');
+                
+                title.textContent = '🎨 Оформление папки';
+                title.style.display = 'block';
+                
+                buttons.innerHTML = 
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Иконка (эмодзи)</label>' +
+                    '<input type="text" id="folderIconInput" value="' + Utils.escapeHtml(f.icon || '📁') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:8px;" placeholder="📁">' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Цвет фона (hex)</label>' +
+                    '<input type="text" id="folderColorInput" value="' + (f.color || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:8px;" placeholder="#7eb8c9">' +
+                    '<button class="action-panel-btn" id="btnSaveFolderIcon" style="margin-top:8px;">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                
+                panel.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:360px;width:90%;max-height:80vh;overflow-y:auto;';
+                
+                overlay.style.display = 'block';
+                panel.style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('folderIconInput').focus();
+                }, 100);
+                
+                document.getElementById('btnSaveFolderIcon').onclick = function() {
+                    const icon = document.getElementById('folderIconInput').value.trim();
+                    const color = document.getElementById('folderColorInput').value.trim();
+                    
+                    if (icon) f.icon = icon;
+                    if (color && color.startsWith('#')) {
+                        f.color = color;
+                        f.customImage = '';
+                    }
+                    
+                    State.save();
+                    UI.renderAll();
+                    App._closePanel();
+                    UI.showToast('✅ Оформление обновлено');
+                };
             },
             changeTheme() {
                 const overlay = getEl('actionOverlay');
