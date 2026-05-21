@@ -1970,7 +1970,7 @@
                 UI.renderAll();
                 UI.showToast('📁 Создана');
             },
-            editFolder() {
+            editFolder(fid) {
                 const f = fid ? State.getFolderById(fid) : State.getFolderById(State.getCurrentFolderId());
                 if (!f || Utils.isSmartFolder(f.id)) { UI.showToast('❌ Нельзя'); return; }
                 
