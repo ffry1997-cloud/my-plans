@@ -714,7 +714,14 @@
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                     <button class="btn-sm" id="btnBackToFoldersTop" style="background:var(--accent-light);color:var(--accent);">←</button>
                     <span id="currentFolderName" style="font-weight:700;"></span>
-                    <span style="width:36px;"></span>
+                    <div style="position:relative;">
+                        <button class="btn-sm" id="btnTodaySort" style="background:rgba(107, 76, 59, 0.15);color:var(--accent);font-size:14px;padding:6px 10px;border-radius:50%;width:36px;height:36px;min-width:36px;display:none;">⋮</button>
+                        <div id="sortDropdown" style="position:absolute;bottom:40px;right:0;background:rgba(35,34,32,0.95);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:50;min-width:140px;display:none;border:1px solid var(--border);padding:4px;">
+                            <button class="menu-item" data-sort="default" style="font-size:13px;padding:8px 12px;">Без сортировки</button>
+                            <button class="menu-item" data-sort="folder" style="font-size:13px;padding:8px 12px;">По папкам</button>
+                            <button class="menu-item" data-sort="time" style="font-size:13px;padding:8px 12px;">По времени</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="task-filter" id="taskFilter">
                     <button class="task-filter-btn active" data-filter="active">📋 Активные <span class="count" id="activeCount">0</span></button>
@@ -934,7 +941,7 @@
             let data = {
                 folders: [], notes: [], clients: [], currentFolderId: null,
                 customQuotes: { left: '', center: '', right: '' },
-                currentTaskFilter: FILTERS.ACTIVE, folderViewMode: 'list'
+                currentTaskFilter: FILTERS.ACTIVE, folderViewMode: 'list', todaySortMode: 'default'
             };
 
             function load() {
@@ -992,6 +999,8 @@
                 setCurrentFolderId: (id) => { data.currentFolderId = id; },
                 setCurrentTaskFilter: (f) => { if (f === FILTERS.ACTIVE || f === FILTERS.COMPLETED) data.currentTaskFilter = f; },
                 setFolderViewMode: (m) => { data.folderViewMode = m; },
+                getTodaySortMode: () => data.todaySortMode,
+                setTodaySortMode: (m) => { if (['default', 'folder', 'time'].includes(m)) data.todaySortMode = m; },
                 setCustomQuote: (s, t) => { if (['left', 'center', 'right'].includes(s)) data.customQuotes[s] = t; },
                 getFolderById: (id) => data.folders.find(f => f.id === id),
                 addFolder: (f) => { data.folders.push(f); },
@@ -1036,7 +1045,19 @@
                     }
                 });
 
-                result.sort((a, b) => (b.priority || 0) - (a.priority || 0) || (a.time && b.time ? a.time.localeCompare(b.time) : a.time ? -1 : 1));
+                const sortMode = State.getTodaySortMode();
+                if (sortMode === 'folder') {
+                    result.sort((a, b) => (a.folderName || '').localeCompare(b.folderName || ''));
+                } else if (sortMode === 'time') {
+                    result.sort((a, b) => {
+                        if (a.time && b.time) return a.time.localeCompare(b.time);
+                        if (a.time) return -1;
+                        if (b.time) return 1;
+                        return (a.folderName || '').localeCompare(b.folderName || '');
+                    });
+                } else {
+                    result.sort((a, b) => (b.priority || 0) - (a.priority || 0) || (a.time && b.time ? a.time.localeCompare(b.time) : a.time ? -1 : 1));
+                }
                 return result;
             }
 
@@ -1457,6 +1478,7 @@
                     else fe.textContent = '🗑️ Корзина';
                 }
                 getEl('taskFilter').style.display = 'none';
+                getEl('btnTodaySort').style.display = (fid === SMART_FOLDERS.TODAY || fid === SMART_FOLDERS.OVERDUE) ? '' : 'none';
                 document.querySelector('.input-row').style.display = 'none';
 
                 const tasks = fid === SMART_FOLDERS.TRASH
@@ -1480,7 +1502,7 @@
             }
 
             function renderRegularFolderTasks(tc, fl, fid) {
-                getEl('taskFilter').style.display = 'flex';
+                getEl('btnTodaySort').style.display = 'none';
                 document.querySelector('.input-row').style.display = 'flex';
 
                 const f = State.getFolderById(fid);
@@ -2814,9 +2836,11 @@
             });
             
             document.addEventListener('click', function(e) {
-                if (!e.target.closest('#btnToggleView') && !e.target.closest('#viewDropdown')) {
+                if (!e.target.closest('#btnToggleView') && !e.target.closest('#viewDropdown') && !e.target.closest('#btnTodaySort') && !e.target.closest('#sortDropdown')) {
                     const dd = getEl('viewDropdown');
                     if (dd) dd.style.display = 'none';
+                    const sd = getEl('sortDropdown');
+                    if (sd) sd.style.display = 'none';
                 }
             });
             
@@ -2886,6 +2910,24 @@
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
+            });
+
+            getEl('btnTodaySort').addEventListener('click', function(e) {
+                e.stopPropagation();
+                const dd = getEl('sortDropdown');
+                dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            getEl('sortDropdown').addEventListener('click', function(e) {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const mode = btn.dataset.sort;
+                State.setTodaySortMode(mode);
+                State.save();
+                UI.renderAll();
+                this.style.display = 'none';
+                const labels = { default: 'Без сортировки', folder: 'По папкам', time: 'По времени' };
+                UI.showToast(labels[mode]);
             });
             
             getEl('btnSettingsMenu').addEventListener('click', function() {
