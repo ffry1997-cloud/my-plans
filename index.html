@@ -1430,7 +1430,9 @@
                     ' data-folder-stats="' + stats.active + '/' + stats.completed + '"' +
                     ' ondragover="App.handleDragOver(event)" ondragleave="App.handleDragLeave(event)"' +
                     ' ondrop="App.handleDrop(event, \'' + f.id + '\')"' +
-                    'onclick="App.handleFolderTap(event, \'' + f.id + '\', \'' + Utils.escapeHtml(f.name).replace(/'/g, "\\'") + '\', \'' + stats.active + '\', \'' + stats.completed + '\')"' +
+                    'oncontextmenu="App.showFolderPanel(event, \'' + f.id + '\', \'' + Utils.escapeHtml(f.name).replace(/'/g, "\\'") + '\', \'' + stats.active + '\', \'' + stats.completed + '\'); return false;"' +
+                    'ontouchstart="App.folderTouchStart(event, \'' + f.id + '\', \'' + Utils.escapeHtml(f.name).replace(/'/g, "\\'") + '\', \'' + stats.active + '\', \'' + stats.completed + '\')"' +
+                    'ontouchend="App.folderTouchEnd(event)"' +
                     '>' +
                     '<div class="folder-icon-circle">' + iconHTML + '</div>' +
                     '<div class="folder-info"><div class="folder-name">' + Utils.escapeHtml(f.name) + '</div></div>' +
@@ -2536,32 +2538,13 @@
                 UI.renderAll();
             },
             
-            _folderTapTimer: null,
-            _folderLastTap: 0,
-            _folderLastId: null,
-            
-            handleFolderTap: function(e, folderId, folderName, active, completed) {
-                e.preventDefault();
-                const now = Date.now();
-                
-                if (this._folderLastId === folderId && now - this._folderLastTap < 400) {
-                    // Двойной тап — меню
-                    clearTimeout(this._folderTapTimer);
-                    this._folderLastId = null;
+            folderTouchStart: function(e, folderId, folderName, active, completed) {
+                this._folderTouchTimer = setTimeout(() => {
                     this.showFolderPanel(e, folderId, folderName, active, completed);
-                    return;
-                }
-                
-                // Первый тап — ждём 300 мс
-                this._folderLastId = folderId;
-                this._folderLastTap = now;
-                
-                clearTimeout(this._folderTapTimer);
-                const self = this;
-                this._folderTapTimer = setTimeout(function() {
-                    self._folderLastId = null;
-                    Actions.openFolder(folderId);
-                }, 400);
+                }, 500);
+            },
+            folderTouchEnd: function(e) {
+                clearTimeout(this._folderTouchTimer);
             },
             
             showFolderPanel: function(e, folderId, folderName, active, completed) {
