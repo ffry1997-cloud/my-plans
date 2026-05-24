@@ -1847,7 +1847,11 @@
                 
                 setTimeout(() => {
                     const inp = document.getElementById('editTaskText');
-                    if (inp) inp.focus();
+                    if (inp) {
+                        inp.focus();
+                        inp.addEventListener('input', function() { autoResizeTextarea(this); });
+                        autoResizeTextarea(inp);
+                    }
                 }, 100);
                 
                 // Показать/скрыть поле дней
@@ -1971,7 +1975,11 @@
                 
                 setTimeout(() => {
                     const inp = document.getElementById('subtaskInput');
-                    if (inp) inp.focus();
+                    if (inp) {
+                        inp.focus();
+                        inp.addEventListener('input', function() { autoResizeTextarea(this); });
+                        autoResizeTextarea(inp);
+                    }
                 }, 100);
                 
                 document.getElementById('btnSaveSubtask').onclick = function() {
@@ -2025,7 +2033,11 @@
                 
                 setTimeout(() => {
                     const inp = document.getElementById('subtaskInput');
-                    if (inp) inp.focus();
+                    if (inp) {
+                        inp.focus();
+                        inp.addEventListener('input', function() { autoResizeTextarea(this); });
+                        autoResizeTextarea(inp);
+                    }
                 }, 100);
                 
                 document.getElementById('btnSaveSubtask').onclick = function() {
@@ -2451,6 +2463,12 @@
                 container.style.display = 'block';
             }
         };
+
+        function autoResizeTextarea(el) {
+                if (!el) return;
+                el.style.height = 'auto';
+                el.style.height = el.scrollHeight + 'px';
+            }
 
         function getEl(id) { return document.getElementById(id); }
 
