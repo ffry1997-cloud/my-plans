@@ -1571,7 +1571,7 @@
                     h += '<li class="subtask-item ' + (st.completed ? 'completed' : '') + '" ondblclick="event.stopPropagation();App.showSubtaskPanel(event,\'' + task.id + '\',\'' + st.id + '\')" oncontextmenu="event.stopPropagation();event.preventDefault();App.showSubtaskPanel(event,\'' + task.id + '\',\'' + st.id + '\');return false;">' +
                         '<div class="subtask-checkbox" data-action="' + A.TOGGLE_SUBTASK +
                         '" data-task-id="' + task.id + '" data-subtask-id="' + st.id + '">' + (st.completed ? '✓' : '') + '</div>' +
-                        '<span class="subtask-text">' + Utils.escapeHtml(st.text) + '</span>' +
+                        '<span class="subtask-text">' + Utils.escapeHtml(st.text) + (st.time ? ' <span style="font-size:11px;opacity:0.7;">🕐 ' + st.time + '</span>' : '') + '</span>' +
                     '</li>';
                 });
         
@@ -1814,10 +1814,28 @@
                 buttons.innerHTML = 
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Текст задачи</label>' +
                     '<textarea id="editTaskText" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;">' + Utils.escapeHtml(task.text) + '</textarea>' +
+                    
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дата</label>' +
                     '<input type="date" id="editTaskDate" value="' + (task.date || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время</label>' +
                     '<input type="time" id="editTaskTime" value="' + (task.time || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Повтор</label>' +
+                    '<select id="editTaskRepeat" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<option value=""' + (!task.repeat ? ' selected' : '') + '>Без повтора</option>' +
+                    '<option value="daily"' + (task.repeat === 'daily' ? ' selected' : '') + '>Ежедневно</option>' +
+                    '<option value="weekly"' + (task.repeat === 'weekly' ? ' selected' : '') + '>Еженедельно</option>' +
+                    '<option value="monthly"' + (task.repeat === 'monthly' ? ' selected' : '') + '>Ежемесячно</option>' +
+                    '<option value="yearly"' + (task.repeat === 'yearly' ? ' selected' : '') + '>Ежегодно</option>' +
+                    '<option value="custom"' + (task.repeat === 'custom' ? ' selected' : '') + '>Свой период</option>' +
+                    '</select>' +
+                    
+                    '<div id="editRepeatDaysRow" style="display:' + (task.repeat === 'custom' ? 'block' : 'none') + ';margin-bottom:12px;">' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дней</label>' +
+                    '<input type="number" id="editTaskRepeatDays" value="' + (task.repeatDays || '7') + '" min="1" max="365" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;">' +
+                    '</div>' +
+                    
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveTask">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
@@ -1832,16 +1850,25 @@
                     if (inp) inp.focus();
                 }, 100);
                 
+                // Показать/скрыть поле дней
+                document.getElementById('editTaskRepeat').onchange = function() {
+                    document.getElementById('editRepeatDaysRow').style.display = this.value === 'custom' ? 'block' : 'none';
+                };
+                
                 document.getElementById('btnSaveTask').onclick = function() {
                     const text = document.getElementById('editTaskText').value.trim();
                     const date = document.getElementById('editTaskDate').value;
                     const time = document.getElementById('editTaskTime').value;
+                    const repeat = document.getElementById('editTaskRepeat').value;
+                    const repeatDays = repeat === 'custom' ? parseInt(document.getElementById('editTaskRepeatDays').value) || 1 : 0;
                     
                     if (!text) return;
                     
                     task.text = text;
                     task.date = date;
                     task.time = time;
+                    task.repeat = repeat || undefined;
+                    task.repeatDays = repeatDays || undefined;
                     
                     State.save();
                     UI.renderAll();
@@ -1930,7 +1957,9 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<textarea id="subtaskInput" style="width:100%;min-height:80px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Текст подзадачи..."></textarea>' +
+                    '<textarea id="subtaskInput" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Текст подзадачи..."></textarea>' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время (необязательно)</label>' +
+                    '<input type="time" id="subtaskTime" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveSubtask">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
@@ -1948,9 +1977,10 @@
                 document.getElementById('btnSaveSubtask').onclick = function() {
                     const text = document.getElementById('subtaskInput').value.trim();
                     if (!text) return;
+                    const time = document.getElementById('subtaskTime').value;
                     
                     if (!Array.isArray(found.task.subtasks)) found.task.subtasks = [];
-                    found.task.subtasks.push({ id: Utils.generateId(), text: text, completed: false });
+                    found.task.subtasks.push({ id: Utils.generateId(), text: text, time: time || undefined, completed: false });
                     State.save();
                     UI.renderAll();
                     App._closePanel();
@@ -1981,7 +2011,9 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<textarea id="subtaskInput" style="width:100%;min-height:80px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;">' + Utils.escapeHtml(st.text) + '</textarea>' +
+                    '<textarea id="subtaskInput" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;">' + Utils.escapeHtml(st.text) + '</textarea>' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время</label>' +
+                    '<input type="time" id="subtaskTime" value="' + (st.time || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveSubtask">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
@@ -1999,8 +2031,10 @@
                 document.getElementById('btnSaveSubtask').onclick = function() {
                     const text = document.getElementById('subtaskInput').value.trim();
                     if (!text) return;
+                    const time = document.getElementById('subtaskTime').value;
                     
                     st.text = text;
+                    st.time = time || undefined;
                     State.save();
                     UI.renderAll();
                     App._closePanel();
