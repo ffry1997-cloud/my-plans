@@ -1715,7 +1715,6 @@
                     getEl('statsDetails').innerHTML = '<strong>По папкам:</strong><br>' +
                         s.folderStats.map(fs => fs.icon + ' ' + Utils.escapeHtml(fs.name) + ': ' + fs.completed + '/' + fs.total).join('<br>');
                 }
-                State.save();
             }
 
             function renderAll(calendarState = null) {
