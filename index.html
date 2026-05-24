@@ -2066,12 +2066,39 @@
                 });
             },
             addFolder() {
-                const name = prompt('Название:');
-                if (!name) return;
-                State.addFolder({ id: Utils.generateId(), name: name.trim(), icon: DEFAULT_FOLDER_ICON, tasks: [] });
-                State.save();
-                UI.renderAll();
-                UI.showToast('📁 Создана');
+                const overlay = getEl('actionOverlay');
+                const panel = getEl('actionPanel');
+                const title = getEl('actionPanelTitle');
+                const buttons = getEl('actionPanelButtons');
+                
+                title.textContent = '📁 Новая папка';
+                title.style.display = 'block';
+                
+                buttons.innerHTML = 
+                    '<input type="text" id="newFolderName" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название папки">' +
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    '<button class="action-panel-btn" id="btnSaveNewFolder">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                
+                panel.className = 'action-panel centered';
+                overlay.style.display = 'block';
+                panel.style.display = 'block';
+                
+                setTimeout(() => {
+                    const inp = document.getElementById('newFolderName');
+                    if (inp) inp.focus();
+                }, 100);
+                
+                document.getElementById('btnSaveNewFolder').onclick = function() {
+                    const name = document.getElementById('newFolderName').value.trim();
+                    if (!name) return;
+                    
+                    State.addFolder({ id: Utils.generateId(), name: name, icon: DEFAULT_FOLDER_ICON, tasks: [] });
+                    State.save();
+                    UI.renderAll();
+                    App._closePanel();
+                    UI.showToast('📁 Создана');
+                };
             },
             editFolder(fid) {
                 const f = fid ? State.getFolderById(fid) : State.getFolderById(State.getCurrentFolderId());
@@ -2271,26 +2298,64 @@
             editClient(cid) {
                 const c = State.getClientById(cid);
                 if (!c) return;
-                const name = prompt('ФИО:', c.name);
-                if (!name) return;
-                let phone = prompt('Телефон:', c.phone || '');
-                if (phone === null) return;
-                phone = phone.trim();
-                if (phone) {
-                    let digits = phone.replace(/\D/g, '');
-                    if (digits.length === 11 && digits.startsWith('8')) digits = '7' + digits.slice(1);
-                    if (digits.length >= 1) {
-                        phone = '+7';
-                        if (digits.length > 1) phone += ' (' + digits.slice(1, 4);
-                        if (digits.length >= 4) phone += ') ' + digits.slice(4, 7);
-                        if (digits.length >= 7) phone += '-' + digits.slice(7, 9);
-                        if (digits.length >= 9) phone += '-' + digits.slice(9, 11);
+                
+                const overlay = getEl('actionOverlay');
+                const panel = getEl('actionPanel');
+                const title = getEl('actionPanelTitle');
+                const buttons = getEl('actionPanelButtons');
+                
+                title.textContent = '✏️ Редактировать клиента';
+                title.style.display = 'block';
+                
+                buttons.innerHTML = 
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">ФИО</label>' +
+                    '<input type="text" id="editClientName" value="' + Utils.escapeHtml(c.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="ФИО">' +
+                    
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Телефон</label>' +
+                    '<input type="tel" id="editClientPhone" value="' + Utils.escapeHtml(c.phone || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Телефон">' +
+                    
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дата рождения</label>' +
+                    '<input type="date" id="editClientDate" value="' + (c.date || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    '<button class="action-panel-btn" id="btnSaveClient">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                
+                panel.className = 'action-panel centered';
+                overlay.style.display = 'block';
+                panel.style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('editClientName').focus();
+                }, 100);
+                
+                document.getElementById('btnSaveClient').onclick = function() {
+                    const name = document.getElementById('editClientName').value.trim();
+                    if (!name) return;
+                    
+                    let phone = document.getElementById('editClientPhone').value.trim();
+                    if (phone) {
+                        let digits = phone.replace(/\D/g, '');
+                        if (digits.length === 11 && digits.startsWith('8')) digits = '7' + digits.slice(1);
+                        if (digits.length >= 1) {
+                            phone = '+7';
+                            if (digits.length > 1) phone += ' (' + digits.slice(1, 4);
+                            if (digits.length >= 4) phone += ') ' + digits.slice(4, 7);
+                            if (digits.length >= 7) phone += '-' + digits.slice(7, 9);
+                            if (digits.length >= 9) phone += '-' + digits.slice(9, 11);
+                        }
                     }
-                }
-                const date = prompt('Дата:', c.date);
-                if (!date) return;
-                c.name = name.trim(); c.phone = phone; c.date = date;
-                State.save(); UI.renderClients(); UI.showToast('✅ Обновлено');
+                    const date = document.getElementById('editClientDate').value;
+                    if (!date) return;
+                    
+                    c.name = name;
+                    c.phone = phone;
+                    c.date = date;
+                    State.save();
+                    UI.renderClients();
+                    App._closePanel();
+                    UI.showToast('✅ Обновлено');
+                };
             },
             deleteClient(cid) {
                 App.showConfirm('Удалить клиента?', () => {
@@ -3239,12 +3304,6 @@
                 UI.renderAll({ year: AppState.calendarYear, month: AppState.calendarMonth, selectedDate: AppState.selectedDate });
                 State.save();
             } catch (e) { console.error('Init error:', e); }
-
-            function fixIOSBackground() {
-            }
-            
-            window.addEventListener('resize', fixIOSBackground);
-            window.addEventListener('orientationchange', fixIOSBackground);
 
             setTimeout(() => {
                 const quoteEl = getEl('bgQuote');
