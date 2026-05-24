@@ -333,6 +333,7 @@
             color: var(--text-secondary); 
         }
         .subtask-item.completed .subtask-text { text-decoration: line-through; opacity: 0.5; }
+        .subtask-item.overdue .subtask-text { color: var(--danger); }
         .subtask-checkbox {
             width: 24px; height: 24px; border-radius: 50%; border: 2px solid #5a5550;
             flex-shrink: 0; cursor: pointer; font-size: 12px; display: flex; align-items: center;
@@ -1568,7 +1569,8 @@
                 let h = '<ul class="subtask-list">';
                 task.subtasks.forEach(st => {
                     if (!st) return;
-                    h += '<li class="subtask-item ' + (st.completed ? 'completed' : '') + '" ondblclick="event.stopPropagation();App.showSubtaskPanel(event,\'' + task.id + '\',\'' + st.id + '\')" oncontextmenu="event.stopPropagation();event.preventDefault();App.showSubtaskPanel(event,\'' + task.id + '\',\'' + st.id + '\');return false;">' +
+                    const isSubtaskOverdue = !st.completed && st.time && task.date && task.date === Utils.getTodayISO() && st.time < new Date().toTimeString().slice(0, 5);
+                    h += '<li class="subtask-item ' + (st.completed ? 'completed' : '') + (isSubtaskOverdue ? ' overdue' : '') + '" ondblclick="event.stopPropagation();App.showSubtaskPanel(event,\'' + task.id + '\',\'' + st.id + '\')" oncontextmenu="event.stopPropagation();event.preventDefault();App.showSubtaskPanel(event,\'' + task.id + '\',\'' + st.id + '\');return false;">' +
                         '<div class="subtask-checkbox" data-action="' + A.TOGGLE_SUBTASK +
                         '" data-task-id="' + task.id + '" data-subtask-id="' + st.id + '">' + (st.completed ? '✓' : '') + '</div>' +
                         '<span class="subtask-text">' + Utils.escapeHtml(st.text) + (st.time ? ' <span style="font-size:11px;opacity:0.7;">🕐 ' + st.time + '</span>' : '') + '</span>' +
