@@ -1885,27 +1885,29 @@
                 const found = Utils.findTaskById(tid);
                 if (!found) return;
                 if (found.folder.id === SMART_FOLDERS.TRASH) { UI.showToast('❌ Задача уже в корзине'); return; }
-                if (!confirm('Переместить задачу в корзину?')) return;
-
-                found.folder.tasks = found.folder.tasks.filter(t => t.id !== tid);
-                let trash = State.getFolders().find(f => f.id === SMART_FOLDERS.TRASH);
-                if (!trash) {
-                    trash = { id: SMART_FOLDERS.TRASH, name: '🗑️ Корзина', icon: '🗑️', tasks: [] };
-                    State.getFolders().push(trash);
-                }
-                trash.tasks.push(found.task);
-                State.save();
-                UI.renderAll();
-                UI.showToast('🗑️ В корзине');
+                
+                App.showConfirm('Переместить задачу в корзину?', () => {
+                    found.folder.tasks = found.folder.tasks.filter(t => t.id !== tid);
+                    let trash = State.getFolders().find(f => f.id === SMART_FOLDERS.TRASH);
+                    if (!trash) {
+                        trash = { id: SMART_FOLDERS.TRASH, name: '🗑️ Корзина', icon: '🗑️', tasks: [] };
+                        State.getFolders().push(trash);
+                    }
+                    trash.tasks.push(found.task);
+                    State.save();
+                    UI.renderAll();
+                    UI.showToast('🗑️ В корзине');
+                });
             },
             deleteForever(tid) {
-                if (!confirm('Удалить безвозвратно?')) return;
-                const found = Utils.findTaskById(tid);
-                if (!found) return;
-                found.folder.tasks = found.folder.tasks.filter(t => t.id !== tid);
-                State.save();
-                UI.renderAll();
-                UI.showToast('💥 Удалена навсегда');
+                App.showConfirm('Удалить безвозвратно?', () => {
+                    const found = Utils.findTaskById(tid);
+                    if (!found) return;
+                    found.folder.tasks = found.folder.tasks.filter(t => t.id !== tid);
+                    State.save();
+                    UI.renderAll();
+                    UI.showToast('💥 Удалена навсегда');
+                });
             },
             restoreTask(tid) {
                 const trash = State.getFolders().find(f => f.id === SMART_FOLDERS.TRASH);
@@ -2055,12 +2057,13 @@
                 };
             },
             deleteSubtask(tid, sid) {
-                if (!confirm('Удалить?')) return;
-                const found = Utils.findTaskById(tid);
-                if (!found) return;
-                found.task.subtasks = found.task.subtasks.filter(s => s.id !== sid);
-                State.save();
-                UI.renderAll();
+                App.showConfirm('Удалить подзадачу?', () => {
+                    const found = Utils.findTaskById(tid);
+                    if (!found) return;
+                    found.task.subtasks = found.task.subtasks.filter(s => s.id !== sid);
+                    State.save();
+                    UI.renderAll();
+                });
             },
             addFolder() {
                 const name = prompt('Название:');
@@ -2290,9 +2293,12 @@
                 State.save(); UI.renderClients(); UI.showToast('✅ Обновлено');
             },
             deleteClient(cid) {
-                if (!confirm('Удалить?')) return;
-                State.removeClient(cid);
-                State.save(); UI.renderClients(); UI.showToast('🗑️ Удален');
+                App.showConfirm('Удалить клиента?', () => {
+                    State.removeClient(cid);
+                    State.save();
+                    UI.renderClients();
+                    UI.showToast('🗑️ Удален');
+                });
             },
             emailClient(cid) {
                 const c = State.getClientById(cid);
@@ -2320,15 +2326,21 @@
                 State.save(); UI.renderAll(); UI.showToast('💡 Добавлена');
             },
             deleteNote(nid) {
-                if (!confirm('Удалить?')) return;
-                State.removeNote(nid);
-                State.save(); UI.renderNotes(); UI.showToast('🗑️ Удалена');
+                App.showConfirm('Удалить заметку?', () => {
+                    State.removeNote(nid);
+                    State.save();
+                    UI.renderNotes();
+                    UI.showToast('🗑️ Удалена');
+                });
             },
             deleteFolder(fid) {
-                if (!confirm('Удалить папку и все задачи?')) return;
-                State.removeFolder(fid);
-                if (State.getCurrentFolderId() === fid) State.setCurrentFolderId(null);
-                State.save(); UI.renderAll(); UI.showToast('🗑️ Удалена');
+                App.showConfirm('Удалить папку и все задачи?', () => {
+                    State.removeFolder(fid);
+                    if (State.getCurrentFolderId() === fid) State.setCurrentFolderId(null);
+                    State.save();
+                    UI.renderAll();
+                    UI.showToast('🗑️ Удалена');
+                });
             },
             editCustomQuote(side) {
                 const text = prompt('Цитата:', State.getCustomQuotes()[side] || '');
@@ -2536,6 +2548,37 @@
                     }
                 }
                 UI.showToast('📁 Папка не найдена: ' + folderName);
+            },
+
+            _confirmCallback: null,
+            
+            showConfirm: function(msg, callback) {
+                this._confirmCallback = callback;
+                
+                const panel = getEl('actionPanel');
+                const title = getEl('actionPanelTitle');
+                const buttons = getEl('actionPanelButtons');
+                const overlay = getEl('actionOverlay');
+                
+                title.textContent = msg;
+                title.style.display = 'block';
+                
+                buttons.innerHTML = 
+                    '<button class="action-panel-btn" id="btnConfirmYes" style="justify-content:center;">✅ Да</button>' +
+                    '<button class="settings-close" id="btnConfirmNo" style="margin-top:4px;">Отмена</button>';
+                
+                panel.className = 'action-panel centered';
+                overlay.style.display = 'block';
+                panel.style.display = 'block';
+                
+                document.getElementById('btnConfirmYes').onclick = function() {
+                    App._closePanel();
+                    if (App._confirmCallback) App._confirmCallback();
+                };
+                
+                document.getElementById('btnConfirmNo').onclick = function() {
+                    App._closePanel();
+                };
             },
         
             _closePanel: function() {
