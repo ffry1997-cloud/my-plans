@@ -1787,7 +1787,7 @@
                 const repeatDays = repeat === 'custom' ? parseInt(trd.value) || 1 : 0;
 
                 f.tasks.push({
-                    id: Utils.generateId(), text, date: td.value, time: tt.value,
+                    id: Utils.generateId(), text, date: td.value, time: tt.value || undefined,
                     completed: false, subtasks: [], repeat: repeat || undefined,
                     repeatDays: repeatDays || undefined, priority: 0,
                     keepSubtasksDone: false
@@ -1871,7 +1871,7 @@
                     
                     task.text = text;
                     task.date = date;
-                    task.time = time;
+                    task.time = time || undefined;
                     task.repeat = repeat || undefined;
                     task.repeatDays = repeatDays || undefined;
                     
