@@ -1504,6 +1504,7 @@
 
             function renderRegularFolderTasks(tc, fl, fid) {
                 getEl('btnTodaySort').style.display = 'none';
+                getEl('taskFilter').style.display = 'flex';
                 document.querySelector('.input-row').style.display = 'flex';
 
                 const f = State.getFolderById(fid);
