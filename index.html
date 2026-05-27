@@ -3193,10 +3193,42 @@
             stb.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
             if ('Notification' in window && Notification.permission === 'granted') {
+                // Флаг, чтобы утреннее уведомление отправлялось только один раз
+                let morningSent = false;
+                
                 setInterval(function() {
+                    const now = new Date();
+                    const hours = now.getHours();
+                    const mins = now.getMinutes();
+                    
+                    // Сброс флага в полночь
+                    if (hours === 0 && mins < 5) {
+                        morningSent = false;
+                    }
+                    
+                    // Утреннее уведомление со всеми задачами в 9:00
+                    if (hours === 9 && mins >= 0 && mins <= 10 && !morningSent) {
+                        morningSent = true;
+                        const todayTasks = Services.getTodayTasks();
+                        if (todayTasks.length > 0) {
+                            let body = '';
+                            todayTasks.forEach((t, i) => {
+                                const timeStr = t.time ? ' 🕐 ' + t.time : '';
+                                body += (t.completed ? '✅ ' : '☐ ') + t.text + timeStr + '\n';
+                            });
+                            new Notification('📅 Задачи на сегодня (' + todayTasks.length + ')', { 
+                                body: body, 
+                                tag: 'daily-tasks' 
+                            });
+                        }
+                    }
+                    
+                    // Задачи с временем — за час
                     Services.getTasksForNotification().forEach(function(t) {
-                        const min = Math.ceil((new Date(t.date + 'T' + t.time) - new Date()) / 60000);
-                        new Notification('⏰ Напоминание', { body: '«' + t.text + '» через ' + min + ' мин.', tag: t.id });
+                        if (t.time) {
+                            const min = Math.ceil((new Date(t.date + 'T' + t.time) - new Date()) / 60000);
+                            new Notification('⏰ Напоминание', { body: '«' + t.text + '» через ' + min + ' мин.', tag: t.id });
+                        }
                     });
                 }, 300000);
             }
