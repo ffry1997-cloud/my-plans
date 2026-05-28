@@ -1585,7 +1585,8 @@
                 }
                 getEl('taskFilter').style.display = 'none';
                 getEl('btnTodaySort').style.display = (fid === SMART_FOLDERS.TODAY || fid === SMART_FOLDERS.OVERDUE) ? '' : 'none';
-                document.querySelector('.input-row').style.display = 'none';
+                const inputRow = document.querySelector('.input-row');
+                if (inputRow) inputRow.style.display = 'none';
 
                 const tasks = fid === SMART_FOLDERS.TRASH
                     ? (State.findFolderById(fid)?.tasks || [])
@@ -1610,7 +1611,8 @@
             function renderRegularFolderTasks(tc, fl, fid) {
                 getEl('btnTodaySort').style.display = 'none';
                 getEl('taskFilter').style.display = 'flex';
-                document.querySelector('.input-row').style.display = 'none';
+                const inputRow = document.querySelector('.input-row');
+                if (inputRow) inputRow.style.display = 'none';
 
                 const f = State.findFolderById(fid);
                 if (!f) { tc.style.display = 'none'; fl.style.display = 'block'; return; }
@@ -1635,7 +1637,8 @@
                     '</div>';
                 
                 // Показываем форму задачи (скрываем старую)
-                document.querySelector('.input-row').style.display = 'none';
+                const inputRow = document.querySelector('.input-row');
+                if (inputRow) inputRow.style.display = 'none';
                 // Кнопка "+ Задача" будет в HTML, добавим её
                 
                 updateTaskFilterUI(Utils.getFolderStats(f));
