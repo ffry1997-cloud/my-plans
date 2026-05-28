@@ -2009,7 +2009,7 @@
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дней</label>' +
                     '<input type="number" id="editTaskRepeatDays" value="' + (task.repeatDays || '7') + '" min="1" max="365" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;">' +
                     '</div>' +
-                    
+                    '<button class="action-panel-btn" onclick="App._closePanel();App.showMovePanel(\'' + task.id + '\')" style="margin-bottom:2px;">📂 Переместить</button>' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveTask">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
@@ -2928,6 +2928,7 @@
                         '<button class="action-panel-btn" onclick="App.doAction(\'duplicate-task\',\'' + taskId + '\')" style="margin-bottom:2px;">📋 Копия</button>' +
                         '<button class="action-panel-btn" onclick="App.doAction(\'add-subtask\',\'' + taskId + '\')" style="margin-bottom:2px;">➕ Подзадача</button>' +
                         '<button class="action-panel-btn" onclick="App.doAction(\'move-to-tomorrow\',\'' + taskId + '\')" style="margin-bottom:2px;">📅 На завтра</button>' +
+                        '<button class="action-panel-btn" onclick="App.showMovePanel(\'' + taskId + '\')" style="margin-bottom:2px;">📂 Переместить</button>' +
                         '<button class="action-panel-btn" onclick="App.doAction(\'toggle-keep-subtasks\',\'' + taskId + '\')" style="margin-bottom:2px;">' + 
                         (keepSubtasks ? '🔓 Открепить подзадачи' : '🔒 Закрепить подзадачи') + '</button>' +
                         '<div class="settings-divider" style="margin:4px 0;"></div>' +
@@ -2938,6 +2939,65 @@
         
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
+            },
+            showMovePanel: function(taskId) {
+                getEl('actionPanel').style.display = 'none';
+                getEl('actionOverlay').style.display = 'none';
+                
+                setTimeout(() => {
+                    const found = Utils.findTaskById(taskId);
+                    if (!found) return;
+                    
+                    const panel = getEl('actionPanel');
+                    const title = getEl('actionPanelTitle');
+                    const buttons = getEl('actionPanelButtons');
+                    const overlay = getEl('actionOverlay');
+                    
+                    title.textContent = '📂 Переместить в...';
+                    
+                    let html = '';
+                    const allFolders = State.getFolders().filter(f => f.id !== SMART_FOLDERS.TRASH);
+                    
+                    allFolders.forEach(f => {
+                        const stats = Utils.getFolderStats(f);
+                        const isCurrent = f.id === found.folder.id;
+                        html += '<button class="action-panel-btn" onclick="App.moveTaskTo(\'' + taskId + '\',\'' + f.id + '\')" style="margin-bottom:2px;' + (isCurrent ? 'opacity:0.4;' : '') + '">' + (f.icon || '📁') + ' ' + Utils.escapeHtml(f.name) + ' <span style="font-size:11px;opacity:0.6;">(' + stats.total + ')</span></button>';
+                        
+                        if (Array.isArray(f.subfolders)) {
+                            f.subfolders.forEach(sub => {
+                                const subStats = Utils.getFolderStats(sub);
+                                const isSubCurrent = sub.id === found.folder.id;
+                                html += '<button class="action-panel-btn" onclick="App.moveTaskTo(\'' + taskId + '\',\'' + sub.id + '\')" style="padding-left:28px;margin-bottom:2px;' + (isSubCurrent ? 'opacity:0.4;' : '') + '">↳ ' + (sub.icon || '📁') + ' ' + Utils.escapeHtml(sub.name) + ' <span style="font-size:11px;opacity:0.6;">(' + subStats.total + ')</span></button>';
+                            });
+                        }
+                    });
+                    
+                    buttons.innerHTML = html + 
+                        '<div class="settings-divider" style="margin:4px 0;"></div>' +
+                        '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    
+                    panel.className = 'action-panel centered';
+                    overlay.style.display = 'block';
+                    panel.style.display = 'block';
+                }, 50);
+            },
+            
+            moveTaskTo: function(taskId, toFolderId) {
+                const found = Utils.findTaskById(taskId);
+                if (!found) { App._closePanel(); return; }
+                if (found.folder.id === toFolderId) { App._closePanel(); return; }
+                
+                const toFolder = State.findFolderById(toFolderId);
+                if (!toFolder || Utils.isSmartFolder(toFolderId)) { App._closePanel(); return; }
+                
+                found.folder.tasks = found.folder.tasks.filter(t => t.id !== taskId);
+                if (!Array.isArray(toFolder.tasks)) toFolder.tasks = [];
+                toFolder.tasks.push(found.task);
+                
+                State.save();
+                App._closePanel();
+                UI.renderAll();
+                UI.showToast('📂 Перемещена');
             },
         
             doAction: function(action, taskId) {
