@@ -930,28 +930,69 @@
                 return 'лет';
             },
             getFolderStats(f) {
-                if (!f || !Array.isArray(f.tasks)) return { active: 0, completed: 0, total: 0 };
-                const active = f.tasks.filter(t => t && !t.completed).length;
-                const completed = f.tasks.filter(t => t && t.completed).length;
-                return { active, completed, total: f.tasks.length };
+                if (!f) return { active: 0, completed: 0, total: 0 };
+                
+                function countTasks(folder) {
+                    let active = 0, completed = 0;
+                    if (Array.isArray(folder.tasks)) {
+                        active += folder.tasks.filter(t => t && !t.completed).length;
+                        completed += folder.tasks.filter(t => t && t.completed).length;
+                    }
+                    if (Array.isArray(folder.subfolders)) {
+                        folder.subfolders.forEach(sub => {
+                            const subStats = countTasks(sub);
+                            active += subStats.active;
+                            completed += subStats.completed;
+                        });
+                    }
+                    return { active, completed };
+                }
+                
+                const stats = countTasks(f);
+                return { active: stats.active, completed: stats.completed, total: stats.active + stats.completed };
             },
             getAllTasksWithFolders() {
                 const result = [];
-                State.getFolders().forEach(f => {
-                    if (Array.isArray(f.tasks)) {
-                        f.tasks.forEach(t => {
-                            if (t) result.push({ ...t, folderId: f.id, folderName: f.name, folderIcon: f.icon || DEFAULT_FOLDER_ICON });
+                
+                function collectFromFolder(folder) {
+                    if (Array.isArray(folder.tasks)) {
+                        folder.tasks.forEach(t => {
+                            if (t) result.push({
+                                ...t,
+                                folderId: folder.id,
+                                folderName: folder.name,
+                                folderIcon: folder.icon || DEFAULT_FOLDER_ICON,
+                                parentFolderId: folder._parentId || null
+                            });
                         });
                     }
-                });
+                    // Обходим подпапки
+                    if (Array.isArray(folder.subfolders)) {
+                        folder.subfolders.forEach(sub => collectFromFolder(sub));
+                    }
+                }
+                
+                State.getFolders().forEach(f => collectFromFolder(f));
                 return result;
             },
             findTaskById(id) {
-                for (const f of State.getFolders()) {
-                    if (Array.isArray(f.tasks)) {
-                        const t = f.tasks.find(t => t && t.id === id);
-                        if (t) return { task: t, folder: f };
+                function searchInFolder(folder) {
+                    if (Array.isArray(folder.tasks)) {
+                        const t = folder.tasks.find(t => t && t.id === id);
+                        if (t) return { task: t, folder: folder };
                     }
+                    if (Array.isArray(folder.subfolders)) {
+                        for (const sub of folder.subfolders) {
+                            const result = searchInFolder(sub);
+                            if (result) return result;
+                        }
+                    }
+                    return null;
+                }
+                
+                for (const f of State.getFolders()) {
+                    const result = searchInFolder(f);
+                    if (result) return result;
                 }
                 return null;
             },
@@ -1036,6 +1077,40 @@
                 addNote: (n) => { data.notes.unshift(n); },
                 removeNote: (id) => { data.notes = data.notes.filter(n => n.id !== id); },
                 getNoteById: (id) => data.notes.find(n => n.id === id)
+                // Новые методы для подпапок
+                findFolderById: (id) => {
+                    // Ищет папку или подпапку по id во всей структуре
+                    for (const f of data.folders) {
+                        if (f.id === id) return f;
+                        if (Array.isArray(f.subfolders)) {
+                            const sub = f.subfolders.find(s => s.id === id);
+                            if (sub) return sub;
+                        }
+                    }
+                    return null;
+                },
+                getParentFolderId: (id) => {
+                    // Находит id родительской папки для подпапки
+                    for (const f of data.folders) {
+                        if (Array.isArray(f.subfolders)) {
+                            if (f.subfolders.some(s => s.id === id)) return f.id;
+                        }
+                    }
+                    return null;
+                },
+                addSubFolder: (parentId, subFolder) => {
+                    const parent = data.folders.find(f => f.id === parentId);
+                    if (parent) {
+                        if (!Array.isArray(parent.subfolders)) parent.subfolders = [];
+                        parent.subfolders.push(subFolder);
+                    }
+                },
+                removeSubFolder: (parentId, subFolderId) => {
+                    const parent = data.folders.find(f => f.id === parentId);
+                    if (parent && Array.isArray(parent.subfolders)) {
+                        parent.subfolders = parent.subfolders.filter(s => s.id !== subFolderId);
+                    }
+                }
             };
         })();
 
