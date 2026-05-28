@@ -3148,6 +3148,8 @@
                             '</div>' +
                             
                             '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                            sub.color ? '<button class="action-panel-btn delete" id="btnClearSubFolderBg" style="margin-bottom:8px;">✕ Убрать фон</button>' : '') +
+                            '<div class="settings-divider" style="margin:8px 0;"></div>' +
                             '<button class="action-panel-btn" id="btnSaveSubFolderAppearance">✅ Сохранить</button>' +
                             '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                         
@@ -3162,7 +3164,18 @@
                                 colorLabel.textContent = this.value;
                             };
                         }
-                        
+                        const btnClearSub = document.getElementById('btnClearSubFolderBg');
+                        if (btnClearSub) {
+                            btnClearSub.onclick = function(e) {
+                                e.stopPropagation();
+                                sub.color = '';
+                                const colorInput = document.getElementById('folderColorInput');
+                                if (colorInput) colorInput.value = '#6b4c3b';
+                                const label = document.getElementById('folderColorLabel');
+                                if (label) label.textContent = 'Выбрать свой цвет';
+                                UI.showToast('🗑️ Фон убран');
+                            };
+                        }
                         setTimeout(() => document.getElementById('folderIconInput').focus(), 100);
                         
                         document.getElementById('btnSaveSubFolderAppearance').onclick = function() {
