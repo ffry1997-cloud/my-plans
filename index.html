@@ -1941,36 +1941,6 @@
                     }
                 }
             },
-            addTask() {
-                const cid = State.getCurrentFolderId();
-                if (Utils.isSmartFolder(cid)) { UI.showToast('❌ Нельзя создавать задачи в этой папке'); return; }
-
-                const ti = getEl('taskInput'), td = getEl('taskDate'), tt = getEl('taskTime'),
-                    tr = getEl('taskRepeat'), trd = getEl('taskRepeatDays');
-                if (!ti || !td || !tt || !tr) return;
-
-                const text = ti.value.trim();
-                if (!text) { UI.showToast('❌ Введите текст'); return; }
-
-                const f = State.findFolderById(cid);
-                if (!f) return;
-
-                const repeat = tr.value;
-                const repeatDays = repeat === 'custom' ? parseInt(trd.value) || 1 : 0;
-
-                f.tasks.push({
-                    id: Utils.generateId(), text, date: td.value, time: tt.value || undefined,
-                    completed: false, subtasks: [], repeat: repeat || undefined,
-                    repeatDays: repeatDays || undefined, priority: 0,
-                    keepSubtasksDone: false
-                });
-
-                ti.value = ''; tr.value = ''; trd.style.display = 'none';
-                State.setCurrentTaskFilter(FILTERS.ACTIVE);
-                State.save();
-                UI.renderAll();
-                UI.showToast('✅ Задача добавлена!');
-            },
             editTask(tid) {
                 const found = Utils.findTaskById(tid);
                 if (!found) return;
