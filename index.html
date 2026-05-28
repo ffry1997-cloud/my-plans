@@ -2671,11 +2671,23 @@
                 UI.renderFolderList(results);
             },
             goBackToFolders() {
-                State.setCurrentFolderId(null);
+                const cid = State.getCurrentFolderId();
+                const parentId = State.getParentFolderId(cid);
+                
+                if (parentId) {
+                    // Мы в подпапке — возвращаемся в родительскую папку
+                    State.setCurrentFolderId(parentId);
+                    State.setCurrentTaskFilter(FILTERS.ACTIVE);
+                } else {
+                    // Мы в обычной папке — возвращаемся к списку папок
+                    State.setCurrentFolderId(null);
+                }
+                
                 getEl('searchContainer').style.display = 'none';
                 const folderActions = getEl('folderActions');
                 if (folderActions) folderActions.style.display = 'flex';
-                State.save(); UI.renderAll();
+                State.save(); 
+                UI.renderAll();
             },
             exportData() {
                 try {
@@ -2816,8 +2828,8 @@
                     const { taskId, fromFolderId } = d;
                     if (fromFolderId === toFid || Utils.isSmartFolder(toFid)) return;
         
-                    const ff = State.getFolderById(fromFolderId);
-                    const tf = State.getFolderById(toFid);
+                    const ff = State.findFolderById(fromFolderId);
+                    const tf = State.findFolderById(toFid);
                     if (!ff || !tf) return;
         
                     const idx = ff.tasks.findIndex(t => t && t.id === taskId);
