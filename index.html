@@ -849,7 +849,9 @@
             DELETE_CLIENT: 'delete-client', SELECT_DATE: 'select-date', EDIT_CUSTOM_QUOTE: 'edit-custom-quote',
             DELETE_NOTE: 'delete-note', DELETE_FOLDER: 'delete-folder',
             DELETE_FOREVER: 'delete-forever', RESTORE_TASK: 'restore-task',
-            DUPLICATE_TASK: 'duplicate-task', MOVE_TO_TOMORROW: 'move-to-tomorrow'
+            DUPLICATE_TASK: 'duplicate-task', MOVE_TO_TOMORROW: 'move-to-tomorrow',
+            ADD_SUBFOLDER: 'add-subfolder',
+            DELETE_SUBFOLDER: 'delete-subfolder'
         });
         const A = ACTIONS_OBJ;
         const REPEAT_LABELS = Object.freeze({'':'Без повтора','daily':'Ежедневно','weekly':'Еженедельно','monthly':'Ежемесячно','yearly':'Ежегодно','custom':'Свой период'});
@@ -2205,6 +2207,66 @@
                     UI.showToast('📁 Создана');
                 };
             },
+            addSubFolder(parentId) {
+                const parent = State.getFolderById(parentId) || State.findFolderById(parentId);
+                if (!parent || Utils.isSmartFolder(parentId)) { UI.showToast('❌ Нельзя'); return; }
+                
+                const overlay = getEl('actionOverlay');
+                const panel = getEl('actionPanel');
+                const title = getEl('actionPanelTitle');
+                const buttons = getEl('actionPanelButtons');
+                
+                title.textContent = '📁 Новая подпапка в «' + parent.name + '»';
+                title.style.display = 'block';
+                
+                buttons.innerHTML = 
+                    '<input type="text" id="newSubFolderName" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название подпапки">' +
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    '<button class="action-panel-btn" id="btnSaveNewSubFolder">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                
+                panel.className = 'action-panel centered';
+                overlay.style.display = 'block';
+                panel.style.display = 'block';
+                
+                setTimeout(() => {
+                    const inp = document.getElementById('newSubFolderName');
+                    if (inp) inp.focus();
+                }, 100);
+                
+                document.getElementById('btnSaveNewSubFolder').onclick = function() {
+                    const name = document.getElementById('newSubFolderName').value.trim();
+                    if (!name) return;
+                    
+                    const subFolder = { 
+                        id: Utils.generateId(), 
+                        name: name, 
+                        icon: DEFAULT_FOLDER_ICON, 
+                        tasks: [],
+                        subfolders: [] 
+                    };
+                    
+                    State.addSubFolder(parentId, subFolder);
+                    State.save();
+                    UI.renderAll();
+                    App._closePanel();
+                    UI.showToast('📁 Подпапка создана');
+                };
+            },
+            deleteSubFolder(parentId, subFolderId) {
+                const sub = State.findFolderById(subFolderId);
+                const name = sub ? sub.name : 'эту подпапку';
+                
+                App.showConfirm('Удалить подпапку «' + name + '» и все задачи в ней?', () => {
+                    State.removeSubFolder(parentId, subFolderId);
+                    if (State.getCurrentFolderId() === subFolderId) {
+                        State.setCurrentFolderId(parentId);
+                    }
+                    State.save();
+                    UI.renderAll();
+                    UI.showToast('🗑️ Подпапка удалена');
+                });
+            },
             editFolder(fid) {
                 const f = fid ? State.getFolderById(fid) : State.getFolderById(State.getCurrentFolderId());
                 if (!f || Utils.isSmartFolder(f.id)) { UI.showToast('❌ Нельзя'); return; }
@@ -3380,6 +3442,8 @@
                 case A.EDIT_CUSTOM_QUOTE: Actions.editCustomQuote(ds.side); break;
                 case A.DELETE_NOTE: Actions.deleteNote(ds.noteId); break;
                 case A.DELETE_FOLDER: Actions.deleteFolder(ds.folderId); break;
+                case A.ADD_SUBFOLDER: Actions.addSubFolder(ds.folderId); break;
+                case A.DELETE_SUBFOLDER: Actions.deleteSubFolder(ds.parentFolderId, ds.subFolderId); break;
             }
         }
 
