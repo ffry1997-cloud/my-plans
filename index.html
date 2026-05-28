@@ -1615,7 +1615,7 @@
                 document.querySelector('.input-row').style.display = 'none';
 
                 const tasks = fid === SMART_FOLDERS.TRASH
-                    ? (State.getFolderById(fid)?.tasks || [])
+                    ? (State.findFolderById(fid)?.tasks || [])
                     : Services.getTasksForSmartFolder(fid);
 
                 const tl = getEl('taskList');
@@ -1969,7 +1969,7 @@
                 const text = ti.value.trim();
                 if (!text) { UI.showToast('❌ Введите текст'); return; }
 
-                const f = State.getFolderById(cid);
+                const f = State.findFolderById(cid);
                 if (!f) return;
 
                 const repeat = tr.value;
