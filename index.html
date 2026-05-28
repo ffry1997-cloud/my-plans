@@ -1662,27 +1662,45 @@
                 if (Array.isArray(f.subfolders) && f.subfolders.length > 0) {
                     subfoldersHTML += '<div style="margin-bottom:12px;">';
                     subfoldersHTML += '<div class="section-header" style="margin-bottom:8px;">📁 Подпапки</div>';
-                    subfoldersHTML += '<div style="display:flex;flex-direction:column;gap:6px;">';
+                    
+                    // Вид: список или сетка
+                    const subViewMode = f._subViewMode || 'list';
+                    if (subViewMode === 'grid') {
+                        subfoldersHTML += '<div style="display:flex;flex-wrap:wrap;gap:10px;">';
+                    } else {
+                        subfoldersHTML += '<div style="display:flex;flex-direction:column;gap:6px;">';
+                    }
                     
                     f.subfolders.forEach(sub => {
                         const stats = Utils.getFolderStats(sub);
-                        subfoldersHTML += '<div class="folder-card" data-action="' + A.OPEN_FOLDER + '" data-folder-id="' + sub.id + '" style="background:rgba(46,44,41,0.5);" ondragover="App.handleDragOver(event)" ondragleave="App.handleDragLeave(event)" ondrop="App.handleDrop(event, \'' + sub.id + '\')">';
-                        subfoldersHTML += '<div class="folder-icon-circle" style="width:36px;height:36px;font-size:18px;background:var(--accent-light);">';
-                        subfoldersHTML += '<span class="emoji-icon" style="font-size:16px;">' + (sub.icon || '📁') + '</span>';
-                        subfoldersHTML += '</div>';
-                        subfoldersHTML += '<div class="folder-info">';
-                        subfoldersHTML += '<div class="folder-name" style="font-size:14px;">' + Utils.escapeHtml(sub.name) + '</div>';
-                        subfoldersHTML += '<div class="folder-stats" style="font-size:11px;">📋 ' + stats.active + ' активных</div>';
-                        subfoldersHTML += '</div>';
-                        subfoldersHTML += '</div>';
+                        if (subViewMode === 'grid') {
+                            // Сетка — компактные квадраты
+                            subfoldersHTML += '<div class="folder-card" data-action="' + A.OPEN_FOLDER + '" data-folder-id="' + sub.id + '" style="width:100px;height:100px;flex-direction:column;justify-content:center;align-items:center;gap:6px;background:rgba(46,44,41,0.5);border-radius:16px;text-align:center;" ondragover="App.handleDragOver(event)" ondragleave="App.handleDragLeave(event)" ondrop="App.handleDrop(event, \'' + sub.id + '\')" oncontextmenu="App.showSubFolderPanel(event, \'' + sub.id + '\', \'' + Utils.escapeHtml(sub.name).replace(/'/g, "\\'") + '\', \'' + Utils.getFolderStats(sub).active + '\', \'' + Utils.getFolderStats(sub).completed + '\'); return false;" ontouchstart="App.subFolderTouchStart(event, \'' + sub.id + '\', \'' + Utils.escapeHtml(sub.name).replace(/'/g, "\\'") + '\', \'' + Utils.getFolderStats(sub).active + '\', \'' + Utils.getFolderStats(sub).completed + '\')" ontouchend="App.subFolderTouchEnd(event)">';
+                            subfoldersHTML += '<span style="font-size:28px;">' + (sub.icon || '📁') + '</span>';
+                            subfoldersHTML += '<div style="font-size:11px;font-weight:600;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + Utils.escapeHtml(sub.name) + '</div>';
+                            subfoldersHTML += '<div style="font-size:10px;opacity:0.6;">' + stats.active + '</div>';
+                            subfoldersHTML += '</div>';
+                        } else {
+                            // Список — как сейчас
+                            subfoldersHTML += '<div class="folder-card" data-action="' + A.OPEN_FOLDER + '" data-folder-id="' + sub.id + '" style="background:rgba(46,44,41,0.5);" ondragover="App.handleDragOver(event)" ondragleave="App.handleDragLeave(event)" ondrop="App.handleDrop(event, \'' + sub.id + '\')" oncontextmenu="App.showSubFolderPanel(event, \'' + sub.id + '\', \'' + Utils.escapeHtml(sub.name).replace(/'/g, "\\'") + '\', \'' + Utils.getFolderStats(sub).active + '\', \'' + Utils.getFolderStats(sub).completed + '\'); return false;" ontouchstart="App.subFolderTouchStart(event, \'' + sub.id + '\', \'' + Utils.escapeHtml(sub.name).replace(/'/g, "\\'") + '\', \'' + Utils.getFolderStats(sub).active + '\', \'' + Utils.getFolderStats(sub).completed + '\')" ontouchend="App.subFolderTouchEnd(event)">';
+                            subfoldersHTML += '<div class="folder-icon-circle" style="width:36px;height:36px;font-size:18px;background:var(--accent-light);">';
+                            subfoldersHTML += '<span class="emoji-icon" style="font-size:16px;">' + (sub.icon || '📁') + '</span>';
+                            subfoldersHTML += '</div>';
+                            subfoldersHTML += '<div class="folder-info">';
+                            subfoldersHTML += '<div class="folder-name" style="font-size:14px;">' + Utils.escapeHtml(sub.name) + '</div>';
+                            subfoldersHTML += '<div class="folder-stats" style="font-size:11px;">📋 ' + stats.active + ' активных</div>';
+                            subfoldersHTML += '</div>';
+                            subfoldersHTML += '</div>';
+                        }
                     });
                     
                     subfoldersHTML += '</div></div>';
                 }
                 
                 // Кнопка добавления подпапки
-                subfoldersHTML += '<div style="margin-bottom:14px;">';
+                ubfoldersHTML += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">';
                 subfoldersHTML += '<button class="btn-sm btn-add" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="font-size:12px;">+ Новая подпапка</button>';
+                subfoldersHTML += '<button class="btn-sm" id="btnToggleSubView" style="background:rgba(107,76,59,0.15);color:var(--accent);font-size:14px;padding:6px 10px;border-radius:50%;width:36px;height:36px;min-width:36px;">⋮</button>';
                 subfoldersHTML += '</div>';
                 // --- КОНЕЦ БЛОКА ПОДПАПОК ---
 
@@ -3041,6 +3059,124 @@
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
             },
+
+            showSubFolderPanel: function(e, folderId, folderName, active, completed) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                const panel = getEl('actionPanel');
+                const title = getEl('actionPanelTitle');
+                const buttons = getEl('actionPanelButtons');
+                const overlay = getEl('actionOverlay');
+                
+                title.textContent = folderName;
+                
+                buttons.innerHTML =
+                    '<div style="padding:8px 14px;font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:4px;">' +
+                    '📋 Активных: ' + active + ' / ✅ Завершено: ' + completed + '</div>' +
+                    '<div class="settings-divider" style="margin:4px 0 8px;"></div>' +
+                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'rename\',\'' + folderId + '\')" style="margin-bottom:2px;">✏️ Переименовать</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'icon\',\'' + folderId + '\')" style="margin-bottom:2px;">🎨 Сменить иконку/цвет</button>' +
+                    '<div class="settings-divider" style="margin:4px 0;"></div>' +
+                    '<button class="action-panel-btn delete" onclick="App.doSubFolderAction(\'delete\',\'' + folderId + '\')">🗑️ Удалить подпапку</button>';
+                
+                panel.className = 'action-panel centered';
+                overlay.style.display = 'block';
+                panel.style.display = 'block';
+            },
+            
+            doSubFolderAction: function(action, folderId) {
+                getEl('actionPanel').style.display = 'none';
+                getEl('actionOverlay').style.display = 'none';
+                
+                const sub = State.findFolderById(folderId);
+                const parentId = State.getParentFolderId(folderId);
+                
+                if (action === 'rename') {
+                    if (sub && !Utils.isSmartFolder(folderId)) {
+                        // Открываем окно переименования (используем editFolder с findFolderById)
+                        const overlay = getEl('actionOverlay');
+                        const panel = getEl('actionPanel');
+                        const title = getEl('actionPanelTitle');
+                        const buttons = getEl('actionPanelButtons');
+                        
+                        title.textContent = '✏️ Переименовать подпапку';
+                        title.style.display = 'block';
+                        
+                        buttons.innerHTML = 
+                            '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(sub.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название подпапки">' +
+                            '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                            '<button class="action-panel-btn" id="btnSaveSubFolderName">✅ Сохранить</button>' +
+                            '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                        
+                        panel.className = 'action-panel centered';
+                        overlay.style.display = 'block';
+                        panel.style.display = 'block';
+                        
+                        setTimeout(() => {
+                            const inp = document.getElementById('folderNameInput');
+                            if (inp) { inp.focus(); inp.select(); }
+                        }, 100);
+                        
+                        document.getElementById('btnSaveSubFolderName').onclick = function() {
+                            const name = document.getElementById('folderNameInput').value.trim();
+                            if (!name) return;
+                            sub.name = name;
+                            State.save();
+                            UI.renderAll();
+                            App._closePanel();
+                            UI.showToast('✅ Подпапка переименована');
+                        };
+                    }
+                } else if (action === 'icon') {
+                    if (sub && !Utils.isSmartFolder(folderId)) {
+                        // Используем changeFolderIcon, но с findFolderById
+                        const overlay = getEl('actionOverlay');
+                        const panel = getEl('actionPanel');
+                        const title = getEl('actionPanelTitle');
+                        const buttons = getEl('actionPanelButtons');
+                        
+                        title.textContent = '🎨 Оформление подпапки';
+                        title.style.display = 'block';
+                        
+                        buttons.innerHTML = 
+                            '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Иконка (эмодзи)</label>' +
+                            '<input type="text" id="folderIconInput" value="' + Utils.escapeHtml(sub.icon || '📁') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="📁">' +
+                            '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                            '<button class="action-panel-btn" id="btnSaveSubFolderIcon">✅ Сохранить</button>' +
+                            '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                        
+                        panel.className = 'action-panel centered';
+                        overlay.style.display = 'block';
+                        panel.style.display = 'block';
+                        
+                        setTimeout(() => document.getElementById('folderIconInput').focus(), 100);
+                        
+                        document.getElementById('btnSaveSubFolderIcon').onclick = function() {
+                            const icon = document.getElementById('folderIconInput').value.trim();
+                            if (icon) sub.icon = icon;
+                            State.save();
+                            UI.renderAll();
+                            App._closePanel();
+                            UI.showToast('✅ Иконка обновлена');
+                        };
+                    }
+                } else if (action === 'delete') {
+                    if (sub && parentId) {
+                        Actions.deleteSubFolder(parentId, folderId);
+                    }
+                }
+            },
+            
+            subFolderTouchStart: function(e, folderId, folderName, active, completed) {
+                this._subFolderTouchTimer = setTimeout(() => {
+                    this.showSubFolderPanel(e, folderId, folderName, active, completed);
+                }, 500);
+            },
+            
+            subFolderTouchEnd: function(e) {
+                clearTimeout(this._subFolderTouchTimer);
+            },
             doFolderAction: function(action, folderId) {
                 getEl('actionPanel').style.display = 'none';
                 getEl('actionOverlay').style.display = 'none';
@@ -3387,6 +3523,19 @@
                 e.stopPropagation();
                 const dd = getEl('sortDropdown');
                 dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+            });
+
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('#btnToggleSubView');
+                if (!btn) return;
+                
+                const cid = State.getCurrentFolderId();
+                const f = State.findFolderById(cid);
+                if (!f) return;
+                
+                f._subViewMode = f._subViewMode === 'grid' ? 'list' : 'grid';
+                State.save();
+                UI.renderAll();
             });
             
             getEl('sortDropdown').addEventListener('click', function(e) {
