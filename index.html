@@ -594,9 +594,6 @@
         /* ========================================
            ФОНОВОЕ ИЗОБРАЖЕНИЕ
            ======================================== */
-        body.bg-image {
-            /* фон теперь в #bgLayer */
-        }
         body.bg-image::before {
             content: ''; 
             position: fixed; 
@@ -1462,7 +1459,6 @@
         // UI (ОТРИСОВКА)
         // ========================================
         const UI = (() => {
-            const getEl = (id) => document.getElementById(id);
 
             function showToast(msg) {
                 const t = getEl('toast');
@@ -1893,9 +1889,11 @@
                 getEl('statCompleted').textContent = s.completed;
                 getEl('statPercent').textContent = s.percent + '%';
                 getEl('progressFill').style.width = s.percent + '%';
-                if (s.folderStats.length) {
+                if (s.folderStats && s.folderStats.length) {
                     getEl('statsDetails').innerHTML = '<strong>По папкам:</strong><br>' +
                         s.folderStats.map(fs => fs.icon + ' ' + Utils.escapeHtml(fs.name) + ': ' + fs.completed + '/' + fs.total).join('<br>');
+                } else {
+                    getEl('statsDetails').innerHTML = '<p style="color:var(--text-secondary);text-align:center;">Нет папок для статистики</p>';
                 }
             }
 
@@ -3740,7 +3738,7 @@
                 case A.DELETE_SUBTASK: Actions.deleteSubtask(ds.taskId, ds.subtaskId); break;
                 case A.TOGGLE_SUBTASK: Actions.toggleSubtask(ds.taskId, ds.subtaskId); break;
                 case A.SET_PRIORITY: Actions.setPriority(ds.taskId, parseInt(ds.priority)); break;
-                case 'toggle-keep-subtasks':
+                case 'toggle-keep-subtasks': {
                     const ft = Utils.findTaskById(ds.taskId);
                     if (ft) {
                         ft.task.keepSubtasksDone = !ft.task.keepSubtasksDone;
@@ -3749,6 +3747,7 @@
                         UI.showToast(ft.task.keepSubtasksDone ? '🔒 Подзадачи закреплены' : '🔓 Подзадачи откреплены');
                     }
                     break;  
+                }
                 case A.EDIT_CLIENT: Actions.editClient(ds.clientId); break;
                 case A.EMAIL_CLIENT: Actions.emailClient(ds.clientId); break;
                 case A.DELETE_CLIENT: Actions.deleteClient(ds.clientId); break;
