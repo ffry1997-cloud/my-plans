@@ -3757,7 +3757,7 @@
                 case A.DELETE_SUBTASK: Actions.deleteSubtask(ds.taskId, ds.subtaskId); break;
                 case A.TOGGLE_SUBTASK: Actions.toggleSubtask(ds.taskId, ds.subtaskId); break;
                 case A.SET_PRIORITY: Actions.setPriority(ds.taskId, parseInt(ds.priority)); break;
-                case 'toggle-keep-subtasks':
+                case 'toggle-keep-subtasks': {
                     const ft = Utils.findTaskById(ds.taskId);
                     if (ft) {
                         ft.task.keepSubtasksDone = !ft.task.keepSubtasksDone;
@@ -3765,7 +3765,8 @@
                         UI.renderAll();
                         UI.showToast(ft.task.keepSubtasksDone ? '🔒 Подзадачи закреплены' : '🔓 Подзадачи откреплены');
                     }
-                    break;  
+                    break;
+                } 
                 case A.EDIT_CLIENT: Actions.editClient(ds.clientId); break;
                 case A.EMAIL_CLIENT: Actions.emailClient(ds.clientId); break;
                 case A.DELETE_CLIENT: Actions.deleteClient(ds.clientId); break;
