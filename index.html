@@ -3688,11 +3688,6 @@
                 if (b) Actions.setTaskFilter(b.dataset.filter);
             });
 
-            const tr = getEl('taskRepeat'), trd = getEl('taskRepeatDays');
-            if (tr && trd) tr.addEventListener('change', function() {
-                trd.style.display = this.value === 'custom' ? 'inline' : 'none';
-            });
-
             const phoneInput = getEl('clientPhone');
             if (phoneInput) {
                 phoneInput.addEventListener('input', function() {
