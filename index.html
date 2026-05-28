@@ -3094,7 +3094,6 @@
                 
                 if (action === 'rename') {
                     if (sub && !Utils.isSmartFolder(folderId)) {
-                        // Открываем окно переименования (используем editFolder с findFolderById)
                         const overlay = getEl('actionOverlay');
                         const panel = getEl('actionPanel');
                         const title = getEl('actionPanelTitle');
@@ -3130,7 +3129,6 @@
                     }
                 } else if (action === 'icon') {
                     if (sub && !Utils.isSmartFolder(folderId)) {
-                        // Используем changeFolderIcon, но с findFolderById
                         const overlay = getEl('actionOverlay');
                         const panel = getEl('actionPanel');
                         const title = getEl('actionPanelTitle');
@@ -3142,23 +3140,46 @@
                         buttons.innerHTML = 
                             '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Иконка (эмодзи)</label>' +
                             '<input type="text" id="folderIconInput" value="' + Utils.escapeHtml(sub.icon || '📁') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="📁">' +
+                            
+                            '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Цвет фона</label>' +
+                            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
+                            '<input type="color" id="folderColorInput" value="' + (sub.color || '#6b4c3b') + '" style="width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;padding:0;overflow:hidden;background:transparent;-webkit-appearance:none;flex-shrink:0;">' +
+                            '<span id="folderColorLabel" style="font-size:14px;color:var(--text);">Выбрать свой цвет</span>' +
+                            '</div>' +
+                            
                             '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                            '<button class="action-panel-btn" id="btnSaveSubFolderIcon">✅ Сохранить</button>' +
+                            '<button class="action-panel-btn" id="btnSaveSubFolderAppearance">✅ Сохранить</button>' +
                             '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                         
                         panel.className = 'action-panel centered';
                         overlay.style.display = 'block';
                         panel.style.display = 'block';
                         
+                        const colorPicker = document.getElementById('folderColorInput');
+                        const colorLabel = document.getElementById('folderColorLabel');
+                        if (colorPicker && colorLabel) {
+                            colorPicker.oninput = function() {
+                                colorLabel.textContent = this.value;
+                            };
+                        }
+                        
                         setTimeout(() => document.getElementById('folderIconInput').focus(), 100);
                         
-                        document.getElementById('btnSaveSubFolderIcon').onclick = function() {
+                        document.getElementById('btnSaveSubFolderAppearance').onclick = function() {
                             const icon = document.getElementById('folderIconInput').value.trim();
+                            const color = document.getElementById('folderColorInput').value;
+                            
                             if (icon) sub.icon = icon;
+                            if (color && color !== '#6b4c3b') {
+                                sub.color = color;
+                            } else {
+                                sub.color = '';
+                            }
+                            
                             State.save();
                             UI.renderAll();
                             App._closePanel();
-                            UI.showToast('✅ Иконка обновлена');
+                            UI.showToast('✅ Оформление обновлено');
                         };
                     }
                 } else if (action === 'delete') {
