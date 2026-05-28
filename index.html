@@ -218,24 +218,24 @@
             color: #ccc;
         }
         .days-badge.overdue {
-            background: rgba(212, 148, 154, 0.2);
+            background: rgba(201, 136, 142, 0.2);
             border-color: var(--danger);
             color: #dba3a7;
         }
         .days-badge.today {
-            background: rgba(200, 170, 110, 0.2);
+            background: rgba(201, 169, 110, 0.2);
             border-color: var(--warning);
-            color: #daba7f; 
+            color: #daba7f;
         }
         .days-badge.upcoming {
-            background: rgba(156, 191, 167, 0.2);
+            background: rgba(138, 173, 149, 0.2);
             border-color: var(--success);
             color: #a1c5a9;
         }
         .repeat-badge {
             background: rgba(107, 76, 59, 0.12);
             border-color: rgba(107, 76, 59, 0.25);
-            color: #a0897a;
+            color: #b89580;
         }
         
         .stat-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
@@ -454,7 +454,7 @@
            ======================================== */
         .toast {
             position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
-            background: #4a4a4a; color: #fff; padding: 12px 24px; border-radius: 26px;
+            background: #3d3832; color: #fff; padding: 12px 24px; border-radius: 26px;
             font-size: 13px; z-index: 200; opacity: 0; pointer-events: none;
             transition: opacity .3s; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
         }
@@ -684,10 +684,10 @@
         <button class="icon-btn" id="btnMenu" aria-label="Меню">☰</button>
         <div class="menu-dropdown" id="menuDropdown">
             <button class="menu-item" id="btnSearchMenu"><span class="menu-icon">🔍</span> Поиск</button>
-            <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+            <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0;"></div>
             <button class="menu-item" id="btnNewFolderMenu"><span class="menu-icon">📁</span> Новая папка</button>
             <button class="menu-item" id="btnNewNoteMenu"><span class="menu-icon">💡</span> Новая заметка</button>
-            <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+            <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0;"></div>
             <button class="menu-item" id="btnNotifyMenu"><span class="menu-icon">🔔</span> Уведомления</button>
             <button class="menu-item" id="btnSettingsMenu"><span class="menu-icon">⚙️</span> Настройки интерфейса</button>
             <button class="menu-item" id="btnAppearanceMenu"><span class="menu-icon">🖌️</span> Внешний вид <span style="margin-left:auto;font-size:12px;">▼</span></button>
@@ -695,7 +695,7 @@
                 <button class="menu-item" id="btnThemeCustom" style="padding-left:34px;"><span class="menu-icon">🎨</span> Оформление</button>
                 <button class="menu-item" id="btnOpacityMenu" style="padding-left:34px;"><span class="menu-icon">🔲</span> Прозрачность</button>
             </div>
-            <div style="height:1px;background:var(--border);margin:4px 0;"></div>
+            <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0;"></div>
             <button class="menu-item" id="btnExportMenu"><span class="menu-icon">📤</span> Экспорт</button>
             <button class="menu-item" id="btnImportMenu"><span class="menu-icon">📥</span> Импорт</button>
         </div>
@@ -832,10 +832,10 @@
         // ========================================
         const THEME_PRESETS = {
             
-            basic:{'--bg':'#232220','--card':'#2e2c29','--text':'#e8e4dd','--text-secondary':'#b8a894','--accent':'#6b4c3b','--accent-light':'rgba(107, 76, 59, 0.3)','--danger':'#c9888e','--danger-light':'#3a2f30','--success':'#8aad95','--success-light':'#2d332f','--warning':'#c9b888','--warning-light':'#33302a','--border':'#4a3f35'},
-            forest:{'--bg':'#252825','--card':'#30332e','--text':'#e0e4dd','--text-secondary':'#b8a894','--accent':'#7aaa7a','--accent-light':'rgba(122,170,122,0.2)','--danger':'#c97d7d','--danger-light':'#3a2f2f','--success':'#8aad8a','--success-light':'#2d332d','--warning':'#c9b87a','--warning-light':'#333028','--border':'#4a3f35'},
-            sunset:{'--bg':'#2d2624','--card':'#38322e','--text':'#e8ddd9','--text-secondary':'#b8a894','--accent':'#c97d6b','--accent-light':'rgba(201,125,107,0.2)','--danger':'#c97d8b','--danger-light':'#3a2f32','--success':'#9bba8a','--success-light':'#2d332a','--warning':'#d4b88a','--warning-light':'#333028','--border':'#4a3f35'},
-            ocean:{'--bg':'#242a2d','--card':'#2e3438','--text':'#dde4e8','--text-secondary':'#b8a894','--accent':'#6b8a9e','--accent-light':'rgba(107,138,158,0.2)','--danger':'#c97d7d','--danger-light':'#3a2f2f','--success':'#7aaa9a','--success-light':'#2d3330','--warning':'#c9b87a','--warning-light':'#333028','--border':'#4a3f35'}
+            basic:{'--bg':'#232220','--card':'#2e2c29','--text':'#e8e4dd','--text-secondary':'#c8bcaa','--accent':'#6b4c3b','--accent-light':'rgba(107, 76, 59, 0.3)','--danger':'#c9888e','--danger-light':'#3a2f30','--success':'#8aad95','--success-light':'#2d332f','--warning':'#c9b888','--warning-light':'#33302a','--border':'#4a3f35'},
+            forest:{'--bg':'#252825','--card':'#30332e','--text':'#e0e4dd','--text-secondary':'#c8bcaa','--accent':'#7aaa7a','--accent-light':'rgba(122,170,122,0.2)','--danger':'#c97d7d','--danger-light':'#3a2f2f','--success':'#8aad8a','--success-light':'#2d332d','--warning':'#c9b87a','--warning-light':'#333028','--border':'#4a3f35'},
+            sunset:{'--bg':'#2d2624','--card':'#38322e','--text':'#e8ddd9','--text-secondary':'#c8bcaa','--accent':'#c97d6b','--accent-light':'rgba(201,125,107,0.2)','--danger':'#c97d8b','--danger-light':'#3a2f32','--success':'#9bba8a','--success-light':'#2d332a','--warning':'#d4b88a','--warning-light':'#333028','--border':'#4a3f35'},
+            ocean:{'--bg':'#242a2d','--card':'#2e3438','--text':'#dde4e8','--text-secondary':'#c8bcaa','--accent':'#6b8a9e','--accent-light':'rgba(107,138,158,0.2)','--danger':'#c97d7d','--danger-light':'#3a2f2f','--success':'#7aaa9a','--success-light':'#2d3330','--warning':'#c9b87a','--warning-light':'#333028','--border':'#4a3f35'}
         };
         const STORAGE_KEY = 'my_plans_v19';
         const TOAST_DURATION = 2500;
