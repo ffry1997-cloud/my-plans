@@ -1608,18 +1608,61 @@
                 getEl('taskFilter').style.display = 'flex';
                 document.querySelector('.input-row').style.display = 'flex';
 
-                const f = State.getFolderById(fid);
+                const f = State.findFolderById(fid);
                 if (!f) { tc.style.display = 'none'; fl.style.display = 'block'; return; }
 
                 tc.style.display = 'flex'; fl.style.display = 'none';
                 getEl('currentFolderName').textContent = (f.icon || DEFAULT_FOLDER_ICON) + ' ' + f.name;
+                // Если это подпапка — показываем родителя
+                const parentId = State.getParentFolderId(fid);
+                if (parentId) {
+                    const parent = State.getFolderById(parentId);
+                    if (parent) {
+                        getEl('currentFolderName').textContent = (parent.icon || DEFAULT_FOLDER_ICON) + ' ' + parent.name + ' → ' + (f.icon || '📁') + ' ' + f.name;
+                    }
+                }
                 updateTaskFilterUI(Utils.getFolderStats(f));
 
                 const tl = getEl('taskList');
                 if (!tl) return;
+                const tl = getEl('taskList');
+                if (!tl) return;
+                
+                // --- НОВЫЙ БЛОК: отображение подпапок ---
+                let subfoldersHTML = '';
+                if (Array.isArray(f.subfolders) && f.subfolders.length > 0) {
+                    subfoldersHTML += '<div style="margin-bottom:12px;">';
+                    subfoldersHTML += '<div class="section-header" style="margin-bottom:8px;">📁 Подпапки</div>';
+                    subfoldersHTML += '<div style="display:flex;flex-direction:column;gap:6px;">';
+                    
+                    f.subfolders.forEach(sub => {
+                        const stats = Utils.getFolderStats(sub);
+                        subfoldersHTML += '<div class="folder-card" data-action="' + A.OPEN_FOLDER + '" data-folder-id="' + sub.id + '" style="background:rgba(46,44,41,0.5);">';
+                        subfoldersHTML += '<div class="folder-icon-circle" style="width:36px;height:36px;font-size:18px;background:var(--accent-light);">';
+                        subfoldersHTML += '<span class="emoji-icon" style="font-size:16px;">' + (sub.icon || '📁') + '</span>';
+                        subfoldersHTML += '</div>';
+                        subfoldersHTML += '<div class="folder-info">';
+                        subfoldersHTML += '<div class="folder-name" style="font-size:14px;">' + Utils.escapeHtml(sub.name) + '</div>';
+                        subfoldersHTML += '<div class="folder-stats" style="font-size:11px;">📋 ' + stats.active + ' активных</div>';
+                        subfoldersHTML += '</div>';
+                        subfoldersHTML += '</div>';
+                    });
+                    
+                    subfoldersHTML += '</div></div>';
+                }
+                
+                // Кнопка добавления подпапки (всегда показываем для обычных папок)
+                subfoldersHTML += '<div style="margin-bottom:14px;">';
+                subfoldersHTML += '<button class="btn-sm btn-add" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="font-size:12px;">+ Новая подпапка</button>';
+                subfoldersHTML += '</div>';
+                
                 const tasks = Utils.getValidTasksArray(f.tasks);
                 if (!tasks.length) {
-                    tl.innerHTML = '<div class="no-tasks">📭 Нет задач в этой папке</div>';
+                    // Здесь нужно добавить subfoldersHTML перед сообщением "нет задач"
+                    
+                const tasks = Utils.getValidTasksArray(f.tasks);
+                if (!tasks.length) {
+                    tl.innerHTML = subfoldersHTML + '<div class="no-tasks">📭 Нет задач в этой папке</div>';
                     return;
                 }
 
@@ -1631,10 +1674,9 @@
                 filtered.sort((a, b) => (b.priority || 0) - (a.priority || 0) ||
                     (!a.date && !b.date ? 0 : !a.date ? 1 : !b.date ? -1 : a.date.localeCompare(b.date)));
 
-                tl.innerHTML = filtered.length
+                tl.innerHTML = subfoldersHTML + (filtered.length
                     ? filtered.map(t => buildTaskHTML(t, fid, false)).join('')
-                    : '<div class="no-tasks">' + (filter === FILTERS.ACTIVE ? '🎉 Все задачи выполнены!' : '📭 Нет завершенных задач') + '</div>';
-            }
+                    : '<div class="no-tasks">' + (filter === FILTERS.ACTIVE ? '🎉 Все задачи выполнены!' : '📭 Нет завершенных задач') + '</div>');
 
             function updateTaskFilterUI(stats) {
                 getEl('activeCount').textContent = stats.active;
