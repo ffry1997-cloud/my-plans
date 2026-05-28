@@ -1058,7 +1058,7 @@
             }
             
             data.folders.forEach(f => migrateFolder(f));
-                
+            }
             function save() {
                 try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); updateTitle(); } catch (e) {}
             }
