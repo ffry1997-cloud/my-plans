@@ -1666,7 +1666,7 @@
                     
                     f.subfolders.forEach(sub => {
                         const stats = Utils.getFolderStats(sub);
-                        subfoldersHTML += '<div class="folder-card" data-action="' + A.OPEN_FOLDER + '" data-folder-id="' + sub.id + '" style="background:rgba(46,44,41,0.5);">';
+                        subfoldersHTML += '<div class="folder-card" data-action="' + A.OPEN_FOLDER + '" data-folder-id="' + sub.id + '" style="background:rgba(46,44,41,0.5);" ondragover="App.handleDragOver(event)" ondragleave="App.handleDragLeave(event)" ondrop="App.handleDrop(event, \'' + sub.id + '\')">';
                         subfoldersHTML += '<div class="folder-icon-circle" style="width:36px;height:36px;font-size:18px;background:var(--accent-light);">';
                         subfoldersHTML += '<span class="emoji-icon" style="font-size:16px;">' + (sub.icon || '📁') + '</span>';
                         subfoldersHTML += '</div>';
