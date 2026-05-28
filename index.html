@@ -1656,9 +1656,7 @@
 
                 const tl = getEl('taskList');
                 if (!tl) return;
-                const tl = getEl('taskList');
-                if (!tl) return;
-                
+
                 // --- НОВЫЙ БЛОК: отображение подпапок ---
                 let subfoldersHTML = '';
                 if (Array.isArray(f.subfolders) && f.subfolders.length > 0) {
@@ -1682,15 +1680,12 @@
                     subfoldersHTML += '</div></div>';
                 }
                 
-                // Кнопка добавления подпапки (всегда показываем для обычных папок)
+                // Кнопка добавления подпапки
                 subfoldersHTML += '<div style="margin-bottom:14px;">';
                 subfoldersHTML += '<button class="btn-sm btn-add" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="font-size:12px;">+ Новая подпапка</button>';
                 subfoldersHTML += '</div>';
-                
-                const tasks = Utils.getValidTasksArray(f.tasks);
-                if (!tasks.length) {
-                    // Здесь нужно добавить subfoldersHTML перед сообщением "нет задач"
-                    
+                // --- КОНЕЦ БЛОКА ПОДПАПОК ---
+
                 const tasks = Utils.getValidTasksArray(f.tasks);
                 if (!tasks.length) {
                     tl.innerHTML = subfoldersHTML + '<div class="no-tasks">📭 Нет задач в этой папке</div>';
@@ -1701,6 +1696,14 @@
                 const filtered = filter === FILTERS.ACTIVE
                     ? tasks.filter(t => !t.completed)
                     : tasks.filter(t => t.completed);
+
+                filtered.sort((a, b) => (b.priority || 0) - (a.priority || 0) ||
+                    (!a.date && !b.date ? 0 : !a.date ? 1 : !b.date ? -1 : a.date.localeCompare(b.date)));
+
+                tl.innerHTML = subfoldersHTML + (filtered.length
+                    ? filtered.map(t => buildTaskHTML(t, fid, false)).join('')
+                    : '<div class="no-tasks">' + (filter === FILTERS.ACTIVE ? '🎉 Все задачи выполнены!' : '📭 Нет завершенных задач') + '</div>');
+            }   // ← ЗАКРЫВАЮЩАЯ СКОБКА renderRegularFolderTasks
 
                 filtered.sort((a, b) => (b.priority || 0) - (a.priority || 0) ||
                     (!a.date && !b.date ? 0 : !a.date ? 1 : !b.date ? -1 : a.date.localeCompare(b.date)));
