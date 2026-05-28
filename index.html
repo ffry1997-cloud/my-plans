@@ -1705,13 +1705,6 @@
                     : '<div class="no-tasks">' + (filter === FILTERS.ACTIVE ? '🎉 Все задачи выполнены!' : '📭 Нет завершенных задач') + '</div>');
             }   // ← ЗАКРЫВАЮЩАЯ СКОБКА renderRegularFolderTasks
 
-                filtered.sort((a, b) => (b.priority || 0) - (a.priority || 0) ||
-                    (!a.date && !b.date ? 0 : !a.date ? 1 : !b.date ? -1 : a.date.localeCompare(b.date)));
-
-                tl.innerHTML = subfoldersHTML + (filtered.length
-                    ? filtered.map(t => buildTaskHTML(t, fid, false)).join('')
-                    : '<div class="no-tasks">' + (filter === FILTERS.ACTIVE ? '🎉 Все задачи выполнены!' : '📭 Нет завершенных задач') + '</div>');
-
             function updateTaskFilterUI(stats) {
                 getEl('activeCount').textContent = stats.active;
                 getEl('completedCount').textContent = stats.completed;
