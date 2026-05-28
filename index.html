@@ -754,7 +754,7 @@
                 <form class="input-row" style="display:flex;gap:6px;flex-wrap:wrap;" onsubmit="return false;">
                     <input type="text" class="input" id="taskInput" placeholder="Новая задача..." autocomplete="off">
                     <input type="date" class="input-time" id="taskDate" style="max-width:120px;">
-                    <input type="time" class="input-time" id="taskTime" style="max-width:90px;" value="09:00">
+                    <input type="time" class="input-time" id="taskTime" style="max-width:90px;">
                     <select class="input-time" id="taskRepeat" style="max-width:100px;">
                         <option value="">Без повтора</option>
                         <option value="daily">День</option>
@@ -1845,8 +1845,10 @@
                     '<input type="date" id="editTaskDate" value="' + (task.date || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время</label>' +
-                    '<input type="time" id="editTaskTime" value="' + (task.time || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
-                    
+                    '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">' +
+                    '<input type="time" id="editTaskTime" value="' + (task.time || '') + '" style="flex:1;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;">' +
+                    '<button type="button" onclick="document.getElementById(\'editTaskTime\').value=\'\'" style="padding:12px 14px;border-radius:14px;border:1.5px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:14px;white-space:nowrap;">✕</button>' +
+                    '</div>' +              
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Повтор</label>' +
                     '<select id="editTaskRepeat" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     '<option value=""' + (!task.repeat ? ' selected' : '') + '>Без повтора</option>' +
@@ -2049,7 +2051,10 @@
                 buttons.innerHTML = 
                     '<textarea id="subtaskInput" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;">' + Utils.escapeHtml(st.text) + '</textarea>' +
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время</label>' +
-                    '<input type="time" id="subtaskTime" value="' + (st.time || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">' +
+                    '<input type="time" id="subtaskTime" value="' + (st.time || '') + '" style="flex:1;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;">' +
+                    '<button type="button" onclick="document.getElementById(\'subtaskTime\').value=\'\'" style="padding:12px 14px;border-radius:14px;border:1.5px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:14px;white-space:nowrap;">✕</button>' +
+                    '</div>' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveSubtask">✅ Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
