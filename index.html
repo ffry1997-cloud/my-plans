@@ -1650,13 +1650,15 @@
                 const currentFilter = State.getCurrentTaskFilter();
                 const isActive = currentFilter === FILTERS.ACTIVE;
                 getEl('currentFolderName').innerHTML = 
+                    '<div style="display:flex;align-items:center;justify-content:space-between;width:100%;">' +
                     '<button class="btn-sm btn-add" id="btnAddTaskTop" style="padding:8px 14px;border-radius:22px;font-size:13px;white-space:nowrap;flex-shrink:0;">+ Задача</button>' +
                     '<span style="font-weight:700;font-size:15px;text-align:center;">' + folderDisplayName + '</span>' +
                     '<button id="statFilterBtn" style="display:flex;align-items:center;gap:0;cursor:pointer;background:transparent;border:1.5px solid var(--border);border-radius:22px;padding:0;overflow:hidden;flex-shrink:0;">' +
                     '<span id="statActivePart" style="padding:8px 12px;font-size:13px;font-weight:600;color:' + (isActive ? 'var(--accent)' : 'var(--text-secondary)') + ';background:transparent;border-radius:22px 0 0 22px;">' + stats.active + '</span>' +
                     '<span style="color:var(--border);font-weight:300;padding:8px 0;font-size:13px;">/</span>' +
                     '<span id="statCompletedPart" style="padding:8px 12px;font-size:13px;font-weight:600;color:' + (!isActive ? 'var(--accent)' : 'var(--text-secondary)') + ';background:transparent;border-radius:0 22px 22px 0;">' + stats.completed + '</span>' +
-                    '</button>';
+                    '</button>' +
+                    '</div>';
                 
                 // Вешаем обработчики
                 setTimeout(() => {
@@ -3679,43 +3681,58 @@
                 });
             }
             
-            getEl('btnSettingsMenu').addEventListener('click', function() {
-                App.showSettingsPanel();
-            });
+            const btnSettingsMenu = getEl('btnSettingsMenu');
+            if (btnSettingsMenu) {
+                btnSettingsMenu.addEventListener('click', function() {
+                    App.showSettingsPanel();
+                });
+            }
             
-            getEl('btnAppearanceMenu').addEventListener('click', function(e) {
-                e.stopPropagation();
-                const sub = getEl('appearanceSubmenu');
-                const arrow = this.querySelector('span:last-child');
-                if (sub.style.display === 'none' || sub.style.display === '') {
-                    sub.style.display = 'block';
-                    arrow.textContent = '▲';
-                } else {
-                    sub.style.display = 'none';
-                    arrow.textContent = '▼';
-                }
-            });
+            const btnAppearanceMenu = getEl('btnAppearanceMenu');
+            if (btnAppearanceMenu) {
+                btnAppearanceMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const sub = getEl('appearanceSubmenu');
+                    const arrow = this.querySelector('span:last-child');
+                    if (sub.style.display === 'none' || sub.style.display === '') {
+                        sub.style.display = 'block';
+                        arrow.textContent = '▲';
+                    } else {
+                        sub.style.display = 'none';
+                        arrow.textContent = '▼';
+                    }
+                });
+            }
             
-            getEl('btnMenu').addEventListener('click', function(e) {
-                e.stopPropagation();
-                getEl('menuDropdown').classList.toggle('show');
-            });
+            const btnMenu = getEl('btnMenu');
+            if (btnMenu) {
+                btnMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    getEl('menuDropdown').classList.toggle('show');
+                });
+            }
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.menu-wrapper')) getEl('menuDropdown').classList.remove('show');
             });
 
-            getEl('btnPrevMonth').addEventListener('click', function() {
-                AppState.calendarMonth--;
-                if (AppState.calendarMonth < 0) { AppState.calendarMonth = 11; AppState.calendarYear--; }
-                AppState.selectedDate = null;
-                UI.renderCalendar(AppState.calendarYear, AppState.calendarMonth, null);
-            });
-            getEl('btnNextMonth').addEventListener('click', function() {
-                AppState.calendarMonth++;
-                if (AppState.calendarMonth > 11) { AppState.calendarMonth = 0; AppState.calendarYear++; }
-                AppState.selectedDate = null;
-                UI.renderCalendar(AppState.calendarYear, AppState.calendarMonth, null);
-            });
+            const btnPrevMonth = getEl('btnPrevMonth');
+            if (btnPrevMonth) {
+                btnPrevMonth.addEventListener('click', function() {
+                    AppState.calendarMonth--;
+                    if (AppState.calendarMonth < 0) { AppState.calendarMonth = 11; AppState.calendarYear--; }
+                    AppState.selectedDate = null;
+                    UI.renderCalendar(AppState.calendarYear, AppState.calendarMonth, null);
+                });
+            }
+            const btnNextMonth = getEl('btnNextMonth');
+            if (btnNextMonth) {
+                btnNextMonth.addEventListener('click', function() {
+                    AppState.calendarMonth++;
+                    if (AppState.calendarMonth > 11) { AppState.calendarMonth = 0; AppState.calendarYear++; }
+                    AppState.selectedDate = null;
+                    UI.renderCalendar(AppState.calendarYear, AppState.calendarMonth, null);
+                });
+            }
 
             document.querySelectorAll('#mainTabs .tab').forEach(function(tab) {
                 tab.addEventListener('click', function() {
@@ -3821,9 +3838,12 @@
                 }, 300000);
             }
 
-            getEl('actionPanel').addEventListener('click', function(e) {
-                if (e.target === this) { this.style.display = 'none'; getEl('actionOverlay').style.display = 'none'; }
-            });
+            const actionPanel = getEl('actionPanel');
+            if (actionPanel) {
+                actionPanel.addEventListener('click', function(e) {
+                    if (e.target === this) { this.style.display = 'none'; getEl('actionOverlay').style.display = 'none'; }
+                });
+            }
         }
 
         // ========================================
