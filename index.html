@@ -733,17 +733,9 @@
                 </div>
             </div>
             <div class="card" id="taskContainer" style="display:none;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <button class="btn-sm" id="btnBackToFoldersTop" style="background:var(--accent-light);color:var(--accent);">←</button>
-                    <span id="currentFolderName" style="font-weight:700;"></span>
-                    <div style="position:relative;">
-                        <button class="btn-sm" id="btnTodaySort" style="background:rgba(107, 76, 59, 0.15);color:var(--accent);font-size:14px;padding:6px 10px;border-radius:50%;width:36px;height:36px;min-width:36px;display:none;">⋮</button>
-                        <div id="sortDropdown" style="position:absolute;bottom:40px;right:0;background:rgba(35,34,32,0.95);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:50;min-width:140px;display:none;border:1px solid var(--border);padding:4px;">
-                            <button class="menu-item" data-sort="default" style="font-size:13px;padding:8px 12px;">Без сортировки</button>
-                            <button class="menu-item" data-sort="folder" style="font-size:13px;padding:8px 12px;">По папкам</button>
-                            <button class="menu-item" data-sort="time" style="font-size:13px;padding:8px 12px;">По времени</button>
-                        </div>
-                    </div>
+                <div style="display:flex;align-items:center;width:100%;">
+                    <button class="btn-sm" id="btnBackToFoldersTop" style="background:var(--accent-light);color:var(--accent);flex-shrink:0;">←</button>
+                    <span id="currentFolderName" style="font-weight:700;flex:1;display:flex;justify-content:center;align-items:center;gap:12px;"></span>
                 </div>
                 <div class="task-filter" id="taskFilter">
                     <button class="task-filter-btn active" data-filter="active">📋 Активные <span class="count" id="activeCount">0</span></button>
@@ -1658,15 +1650,13 @@
                 const currentFilter = State.getCurrentTaskFilter();
                 const isActive = currentFilter === FILTERS.ACTIVE;
                 getEl('currentFolderName').innerHTML = 
-                    '<div style="display:flex;align-items:center;justify-content:space-between;width:100%;">' +
-                    '<button class="btn-sm btn-add" id="btnAddTaskTop" style="padding:8px 14px;border-radius:22px;font-size:13px;white-space:nowrap;">+ Задача</button>' +
+                    '<button class="btn-sm btn-add" id="btnAddTaskTop" style="padding:8px 14px;border-radius:22px;font-size:13px;white-space:nowrap;flex-shrink:0;">+ Задача</button>' +
                     '<span style="font-weight:700;font-size:15px;text-align:center;">' + folderDisplayName + '</span>' +
-                    '<button id="statFilterBtn" style="display:flex;align-items:center;gap:0;cursor:pointer;background:transparent;border:1.5px solid var(--border);border-radius:22px;padding:0;overflow:hidden;">' +
+                    '<button id="statFilterBtn" style="display:flex;align-items:center;gap:0;cursor:pointer;background:transparent;border:1.5px solid var(--border);border-radius:22px;padding:0;overflow:hidden;flex-shrink:0;">' +
                     '<span id="statActivePart" style="padding:8px 12px;font-size:13px;font-weight:600;color:' + (isActive ? 'var(--accent)' : 'var(--text-secondary)') + ';background:transparent;border-radius:22px 0 0 22px;">' + stats.active + '</span>' +
                     '<span style="color:var(--border);font-weight:300;padding:8px 0;font-size:13px;">/</span>' +
                     '<span id="statCompletedPart" style="padding:8px 12px;font-size:13px;font-weight:600;color:' + (!isActive ? 'var(--accent)' : 'var(--text-secondary)') + ';background:transparent;border-radius:0 22px 22px 0;">' + stats.completed + '</span>' +
-                    '</button>' +
-                    '</div>';
+                    '</button>';
                 
                 // Вешаем обработчики
                 setTimeout(() => {
