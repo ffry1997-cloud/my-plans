@@ -693,6 +693,12 @@
             right: max(16px, calc((100vw - 680px) / 2 + 4px));
             z-index: 150;
         }
+        
+        @media (hover: none) {
+            #btnAddSubFolder {
+                opacity: 0.4 !important;
+            }
+        }
     </style>
     <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22%D0%9C%D0%BE%D0%B8%20%D0%BF%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22short_name%22%3A%22%D0%9F%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23232220%22%2C%22theme_color%22%3A%22%236b4c3b%22%7D">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
@@ -1726,7 +1732,7 @@
                 // --- НОВЫЙ БЛОК: подпапки в ряд ---
                 if (Array.isArray(f.subfolders) && f.subfolders.length > 0) {
                     subfoldersHTML += '<div style="margin-bottom:12px;">';
-                    subfoldersHTML += '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">';
+                    subfoldersHTML += '<div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">';
                     
                     const subViewMode = f._subViewMode || 'list';
                     
@@ -1750,7 +1756,7 @@
                     
                     // Кнопка + и переключатель в том же ряду
                     if (!parentId) {
-                        subfoldersHTML += '<button class="btn-sm btn-add" id="btnAddSubFolder" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="width:36px;height:36px;border-radius:50%;font-size:18px;padding:0;flex-shrink:0;opacity:0.4;transition:opacity 0.2s;" onmouseenter="this.style.opacity=\'1\'" onmouseleave="this.style.opacity=\'0.4\'">+</button>';
+                        subfoldersHTML += '<button class="btn-sm btn-add" id="btnAddSubFolder" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="width:36px;height:36px;border-radius:50%;font-size:18px;padding:0;flex-shrink:0;opacity:0;transition:opacity 0.2s;" onmouseenter="this.style.opacity=\'1\'" onmouseleave="this.style.opacity=\'0\'">+</button>';
                     }
                     subfoldersHTML += '<button class="btn-sm" id="btnToggleSubView" style="background:rgba(107,76,59,0.15);color:var(--accent);font-size:16px;border-radius:50%;width:36px;height:36px;min-width:36px;padding:0;flex-shrink:0;margin-left:auto;">⋮</button>';
                     
@@ -1759,7 +1765,7 @@
                     // Нет подпапок — кнопка только для главной папки
                     if (!parentId) {
                         subfoldersHTML += '<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;">';
-                        subfoldersHTML += '<button class="btn-sm btn-add" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="border-radius:50%;width:36px;height:36px;font-size:18px;padding:0;opacity:0.4;transition:opacity 0.2s;" onmouseenter="this.style.opacity=\'1\'" onmouseleave="this.style.opacity=\'0.4\'">+</button>';
+                        subfoldersHTML += '<button class="btn-sm btn-add" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="border-radius:50%;width:36px;height:36px;font-size:18px;padding:0;opacity:0;transition:opacity 0.2s;" onmouseenter="this.style.opacity=\'1\'" onmouseleave="this.style.opacity=\'0\'">+</button>';
                         subfoldersHTML += '<span style="font-size:12px;color:var(--text-secondary);">Новая подпапка</span>';
                         subfoldersHTML += '</div>';
                     }
