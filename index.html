@@ -548,8 +548,12 @@
             position: fixed; background: rgba(35, 34, 32, 0.95);
             border-radius: 18px; padding: 10px; z-index: 999;
             box-shadow: 0 8px 28px rgba(0,0,0,0.4);
-            animation: fadeInUp 0.25s ease backwards;
+            animation: panelFadeIn 0.2s ease;
             min-width: 200px; border: 1px solid var(--border);
+        }
+        @keyframes panelFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .action-panel.centered {
             position: fixed;
