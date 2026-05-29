@@ -3664,17 +3664,20 @@
                 UI.renderAll();
             });
             
-            getEl('sortDropdown').addEventListener('click', function(e) {
-                const btn = e.target.closest('button');
-                if (!btn) return;
-                const mode = btn.dataset.sort;
-                State.setTodaySortMode(mode);
-                State.save();
-                UI.renderAll();
-                this.style.display = 'none';
-                const labels = { default: 'Без сортировки', folder: 'По папкам', time: 'По времени' };
-                UI.showToast(labels[mode]);
-            });
+            const sortDropdown = getEl('sortDropdown');
+            if (sortDropdown) {
+                sortDropdown.addEventListener('click', function(e) {
+                    const btn = e.target.closest('button');
+                    if (!btn) return;
+                    const mode = btn.dataset.sort;
+                    State.setTodaySortMode(mode);
+                    State.save();
+                    UI.renderAll();
+                    this.style.display = 'none';
+                    const labels = { default: 'Без сортировки', folder: 'По папкам', time: 'По времени' };
+                    UI.showToast(labels[mode]);
+                });
+            }
             
             getEl('btnSettingsMenu').addEventListener('click', function() {
                 App.showSettingsPanel();
