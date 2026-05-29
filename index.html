@@ -1191,7 +1191,6 @@
 
                 State.getFolders().forEach(f => {
                     if (f.id === SMART_FOLDERS.TRASH) return;
-                    if (State.getParentFolderId(f.id)) return;
                     Utils.getValidTasksArray(f.tasks).forEach(t => {
                         if (!t.completed && t.date === todayISO)
                             result.push({ ...t, folderId: f.id, folderName: f.name, folderIcon: f.icon, type: TASK_TYPES.TASK });
@@ -1234,7 +1233,6 @@
                 const result = [];
                 State.getFolders().forEach(f => {
                     if (f.id === SMART_FOLDERS.TRASH) return;
-                    if (State.getParentFolderId(f.id)) return;
                     Utils.getValidTasksArray(f.tasks).forEach(t => {
                         if (!t.completed && t.date && t.date < todayISO)
                             result.push({ ...t, folderId: f.id, folderName: f.name, folderIcon: f.icon, type: TASK_TYPES.TASK });
