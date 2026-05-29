@@ -1189,12 +1189,18 @@
                 const todayISO = Utils.getTodayISO();
                 const result = [];
 
+                function collectTasks(folder) {
+                    Utils.getValidTasksArray(folder.tasks).forEach(t => {
+                        if (!t.completed && t.date === todayISO)
+                            result.push({ ...t, folderId: folder.id, folderName: folder.name, folderIcon: folder.icon, type: TASK_TYPES.TASK });
+                    });
+                    if (Array.isArray(folder.subfolders)) {
+                        folder.subfolders.forEach(sub => collectTasks(sub));
+                    }
+                }
                 State.getFolders().forEach(f => {
                     if (f.id === SMART_FOLDERS.TRASH) return;
-                    Utils.getValidTasksArray(f.tasks).forEach(t => {
-                        if (!t.completed && t.date === todayISO)
-                            result.push({ ...t, folderId: f.id, folderName: f.name, folderIcon: f.icon, type: TASK_TYPES.TASK });
-                    });
+                    collectTasks(f);
                 });
 
                 State.getClients().forEach(c => {
@@ -1231,12 +1237,18 @@
             function getOverdueTasks() {
                 const todayISO = Utils.getTodayISO();
                 const result = [];
+                function collectTasks(folder) {
+                    Utils.getValidTasksArray(folder.tasks).forEach(t => {
+                        if (!t.completed && t.date && t.date < todayISO)
+                            result.push({ ...t, folderId: folder.id, folderName: folder.name, folderIcon: folder.icon, type: TASK_TYPES.TASK });
+                    });
+                    if (Array.isArray(folder.subfolders)) {
+                        folder.subfolders.forEach(sub => collectTasks(sub));
+                    }
+                }
                 State.getFolders().forEach(f => {
                     if (f.id === SMART_FOLDERS.TRASH) return;
-                    Utils.getValidTasksArray(f.tasks).forEach(t => {
-                        if (!t.completed && t.date && t.date < todayISO)
-                            result.push({ ...t, folderId: f.id, folderName: f.name, folderIcon: f.icon, type: TASK_TYPES.TASK });
-                    });
+                    collectTasks(f);
                 });
                 result.sort((a, b) => a.date.localeCompare(b.date));
                 return result;
