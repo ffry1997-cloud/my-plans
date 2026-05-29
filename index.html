@@ -1685,6 +1685,7 @@
                 if (!tl) return;
                 let subfoldersHTML = '';
                 // --- НОВЫЙ БЛОК: подпапки в ряд ---
+                const parentId = State.getParentFolderId(fid); 
                 if (Array.isArray(f.subfolders) && f.subfolders.length > 0) {
                     subfoldersHTML += '<div style="margin-bottom:12px;">';
                     subfoldersHTML += '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">';
@@ -1710,16 +1711,20 @@
                     }
                     
                     // Кнопка + и переключатель в том же ряду
-                    subfoldersHTML += '<button class="btn-sm btn-add" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="width:36px;height:36px;border-radius:50%;font-size:18px;padding:0;flex-shrink:0;">+</button>';
-                    subfoldersHTML += '<button class="btn-sm" id="btnToggleSubView" style="background:rgba(107,76,59,0.15);color:var(--accent);font-size:14px;border-radius:50%;width:36px;height:36px;min-width:36px;padding:0;flex-shrink:0;margin-left:auto;">⋮</button>';
+                    if (!parentId) {
+                        subfoldersHTML += '<button class="btn-sm btn-add" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="width:36px;height:36px;border-radius:50%;font-size:18px;padding:0;flex-shrink:0;">+</button>';
+                    }
+                    subfoldersHTML += '<button class="btn-sm" id="btnToggleSubView" ...>⋮</button>';
                     
                     subfoldersHTML += '</div></div>';
                 } else {
-                    // Нет подпапок — только кнопки
-                    subfoldersHTML += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">';
-                    subfoldersHTML += '<button class="btn-sm btn-add" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="border-radius:50%;width:36px;height:36px;font-size:18px;padding:0;">+</button>';
-                    subfoldersHTML += '<span style="font-size:12px;color:var(--text-secondary);">Новая подпапка</span>';
-                    subfoldersHTML += '</div>';
+                    // Нет подпапок — кнопка только для главной папки
+                    if (!parentId) {
+                        subfoldersHTML += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">';
+                        subfoldersHTML += '<button class="btn-sm btn-add" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="border-radius:50%;width:36px;height:36px;font-size:18px;padding:0;">+</button>';
+                        subfoldersHTML += '<span style="font-size:12px;color:var(--text-secondary);">Новая подпапка</span>';
+                        subfoldersHTML += '</div>';
+                    }
                 }
                 // --- КОНЕЦ БЛОКА ПОДПАПОК ---
 
