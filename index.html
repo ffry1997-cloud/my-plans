@@ -1601,7 +1601,8 @@
                 }
                 getEl('taskFilter').style.display = 'none';
                 getEl('btnTodaySort').style.display = (fid === SMART_FOLDERS.TODAY || fid === SMART_FOLDERS.OVERDUE) ? '' : 'none';
-                document.querySelector('.input-row').style.display = 'none';
+                const inputRow = document.querySelector('.input-row');
+                if (inputRow) inputRow.style.display = 'none';
 
                 const tasks = fid === SMART_FOLDERS.TRASH
                     ? (State.findFolderById(fid)?.tasks || [])
