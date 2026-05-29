@@ -2853,46 +2853,10 @@
             },
             exportData() {
                 try {
-                    function cleanTask(t) {
-                        const cleaned = { id: t.id, text: t.text };
-                        if (t.date) cleaned.date = t.date;
-                        if (t.time) cleaned.time = t.time;
-                        if (t.completed) cleaned.completed = true;
-                        if (t.repeat) cleaned.repeat = t.repeat;
-                        if (t.repeatDays) cleaned.repeatDays = t.repeatDays;
-                        if (t.subtasks && t.subtasks.length) {
-                            cleaned.subtasks = t.subtasks.map(s => ({
-                                id: s.id, text: s.text,
-                                ...(s.completed && { completed: true }),
-                                ...(s.time && { time: s.time })
-                            }));
-                        }
-                        if (t.keepSubtasksDone) cleaned.keepSubtasksDone = true;
-                        return cleaned;
-                    }
-
-                    function cleanFolder(f) {
-                        return {
-                            id: f.id, name: f.name, icon: f.icon,
-                            tasks: (f.tasks || []).map(cleanTask),
-                            ...(f.color && { color: f.color }),
-                            ...(f.customImage && { customImage: f.customImage }),
-                            ...(f.subfolders && f.subfolders.length && { subfolders: f.subfolders.map(cleanFolder) }),
-                            ...(f._subViewMode && { _subViewMode: f._subViewMode })
-                        };
-                    }
-
-                    const data = {
-                        folders: State.getFolders().map(cleanFolder),
-                        notes: State.getNotes().map(n => ({ id: n.id, text: n.text, updatedAt: n.updatedAt })),
-                        clients: State.getClients().map(c => ({
-                            id: c.id, name: c.name, date: c.date,
-                            ...(c.phone && { phone: c.phone })
-                        })),
-                        customQuotes: State.getCustomQuotes()
-                    };
-
-                    const json = JSON.stringify(data);
+                    const json = JSON.stringify({
+                        folders: State.getFolders(), notes: State.getNotes(),
+                        clients: State.getClients(), customQuotes: State.getCustomQuotes()
+                    });
                     const blob = new Blob([json], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -2902,8 +2866,8 @@
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                    UI.showToast('📤 Экспортировано (компактно)');
-                } catch (e) { UI.showToast('❌ Ошибка экспорта'); }
+                    UI.showToast('📤 Экспортировано');
+                } catch (e) { UI.showToast('❌ Ошибка'); }
             },
             importData() {
                 const inp = document.createElement('input');
