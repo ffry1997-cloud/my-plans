@@ -1601,7 +1601,8 @@
                     else if (fid === SMART_FOLDERS.OVERDUE) fe.textContent = '⚠️ Просроченные';
                     else fe.textContent = '🗑️ Корзина';
                 }
-                getEl('taskFilter').style.display = 'none';
+                const taskFilter = getEl('taskFilter');
+                if (taskFilter) taskFilter.style.display = 'none';
                 const btnTodaySort = getEl('btnTodaySort');
                 if (btnTodaySort) btnTodaySort.style.display = (fid === SMART_FOLDERS.TODAY || fid === SMART_FOLDERS.OVERDUE) ? '' : 'none';
                 const inputRow = document.querySelector('.input-row');
