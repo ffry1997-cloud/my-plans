@@ -2851,68 +2851,53 @@
                 State.save(); 
                 UI.renderAll();
             },
-            exportData: async function() {
+            exportData() {
                 try {
                     const json = JSON.stringify({
                         folders: State.getFolders(), notes: State.getNotes(),
                         clients: State.getClients(), customQuotes: State.getCustomQuotes()
-                    });
-
-                    const blob = new Blob([json]);
-                    const compressedStream = blob.stream().pipeThrough(new CompressionStream('gzip'));
-                    const compressedBlob = await new Response(compressedStream).blob();
-                    
-                    const url = URL.createObjectURL(compressedBlob);
+                    }, null, 2);
+                    const blob = new Blob([json], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'my_plans_backup_' + new Date().toISOString().slice(0, 10) + '.gz';
+                    a.download = 'my_plans_backup_' + new Date().toISOString().slice(0, 10) + '.json';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                    UI.showToast('📤 Экспортировано (сжато)');
-                } catch (e) {
-                    UI.showToast('❌ Ошибка экспорта');
-                }
+                    UI.showToast('📤 Экспортировано');
+                } catch (e) { UI.showToast('❌ Ошибка'); }
             },
             importData() {
                 const inp = document.createElement('input');
-                inp.type = 'file';
-                inp.accept = '.gz,.json,.txt';
-                inp.style.display = 'none';
+                inp.type = 'file'; inp.accept = '.json,.txt,application/json'; inp.style.display = 'none';
                 document.body.appendChild(inp);
-                inp.addEventListener('change', async function(e) {
+                inp.addEventListener('change', function(e) {
                     const file = e.target.files[0];
                     if (!file) { document.body.removeChild(inp); return; }
-                    try {
-                        let text;
-                        if (file.name.endsWith('.gz')) {
-                            const decompressedStream = file.stream().pipeThrough(new DecompressionStream('gzip'));
-                            text = await new Response(decompressedStream).text();
-                        } else {
-                            text = await file.text();
-                        }
-                        const imp = JSON.parse(text);
-                        if (!imp || typeof imp !== 'object' || !Array.isArray(imp.folders)) throw new Error('Формат');
-                        const backup = JSON.stringify({
-                            folders: State.getFolders(), notes: State.getNotes(),
-                            clients: State.getClients(), customQuotes: State.getCustomQuotes()
-                        });
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
                         try {
-                            localStorage.setItem(STORAGE_KEY, JSON.stringify(imp));
-                            State.load();
-                            Services.processRepeats();
-                            UI.renderAll();
-                            UI.showToast('📥 Импортировано!');
-                        } catch (inner) {
-                            localStorage.setItem(STORAGE_KEY, backup);
-                            State.load();
-                            throw inner;
-                        }
-                    } catch (err) {
-                        UI.showToast('❌ Ошибка: ' + err.message);
-                    }
-                    document.body.removeChild(inp);
+                            const imp = JSON.parse(ev.target.result);
+                            if (!imp || typeof imp !== 'object' || !Array.isArray(imp.folders)) throw new Error('Формат');
+                            const backup = JSON.stringify({
+                                folders: State.getFolders(), notes: State.getNotes(),
+                                clients: State.getClients(), customQuotes: State.getCustomQuotes()
+                            });
+                            try {
+                                localStorage.setItem(STORAGE_KEY, JSON.stringify(imp));
+                                State.load(); Services.processRepeats();
+                                UI.renderAll(); UI.showToast('📥 Импортировано');
+                            } catch (inner) {
+                                localStorage.setItem(STORAGE_KEY, backup);
+                                State.load(); throw inner;
+                            }
+                        } catch (err) { UI.showToast('❌ Ошибка: ' + err.message); }
+                        document.body.removeChild(inp);
+                    };
+                    reader.onerror = () => { UI.showToast('❌ Не удалось прочитать'); document.body.removeChild(inp); };
+                    reader.readAsText(file);
                 });
                 inp.click();
             },
