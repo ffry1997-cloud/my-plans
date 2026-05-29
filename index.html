@@ -362,8 +362,8 @@
         .subtask-checkbox::after {
             content: '';
             position: absolute;
-            top: -8px; left: -8px;
-            width: 40px; height: 40px;
+            top: -10px; left: -10px;
+            width: 44px; height: 44px;
             background: transparent;
             border-radius: 50%;
         }
@@ -3796,7 +3796,7 @@
             });
 
             const stb = getEl('scrollTopBtn');
-            window.addEventListener('scroll', function() { stb.classList.toggle('visible', window.scrollY > 300); });
+            window.addEventListener('scroll', function() { stb.classList.toggle('visible', window.scrollY > 150); });
             stb.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
             if ('Notification' in window && Notification.permission === 'granted') {
