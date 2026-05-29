@@ -1625,8 +1625,10 @@
             }
 
             function renderRegularFolderTasks(tc, fl, fid) {
-                getEl('btnTodaySort').style.display = 'none';
-                getEl('taskFilter').style.display = 'none';
+                const btnTodaySort = getEl('btnTodaySort');
+                if (btnTodaySort) btnTodaySort.style.display = 'none';
+                const taskFilter = getEl('taskFilter');
+                if (taskFilter) taskFilter.style.display = 'none';
                 const inputRow = document.querySelector('.input-row');
                 if (inputRow) inputRow.style.display = 'none';
 
