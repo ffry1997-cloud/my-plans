@@ -1750,7 +1750,7 @@
                     const subViewMode = f._subViewMode || 'list';
                     
                     if (subViewMode === 'grid') {
-                        subfoldersHTML += '<div style="display:flex;justify-content:center;flex-wrap:wrap;gap:10px;width:100%;">';
+                        subfoldersHTML += '<div style="display:flex;justify-content:center;flex-wrap:wrap;gap:14px;width:100%;">';
                         f.subfolders.forEach(sub => {
                             const stats = Utils.getFolderStats(sub);
                             subfoldersHTML += '<div class="folder-card" data-action="' + A.OPEN_FOLDER + '" data-folder-id="' + sub.id + '" style="width:100px;height:100px;flex-direction:column;justify-content:center;align-items:center;gap:6px;' + (sub.color ? 'background:' + sub.color + ';' : 'background:rgba(46,44,41,var(--opacity-card));') + 'border-radius:50%;text-align:center;flex-shrink:0;" ondragover="App.handleDragOver(event)" ondragleave="App.handleDragLeave(event)" ondrop="App.handleDrop(event, \'' + sub.id + '\')" oncontextmenu="event.stopPropagation();event.preventDefault();App.showSubFolderPanel(event,\'' + sub.id + '\',\'' + Utils.escapeHtml(sub.name).replace(/'/g, "\\'") + '\',\'' + stats.active + '\',\'' + stats.completed + '\');return false;" ontouchstart="event.stopPropagation();App.subFolderTouchStart(event,\'' + sub.id + '\',\'' + Utils.escapeHtml(sub.name).replace(/'/g, "\\'") + '\',\'' + stats.active + '\',\'' + stats.completed + '\')" ontouchend="App.subFolderTouchEnd(event)">';
