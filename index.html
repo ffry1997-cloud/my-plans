@@ -272,6 +272,7 @@
             display: flex; align-items: center; gap: var(--space-md); cursor: pointer;
             transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
             box-shadow: var(--shadow); border: 1px solid var(--border);
+            margin-bottom: var(--space-sm);
         }
         .folder-card:nth-child(1) { animation-delay: 0.05s; }
         .folder-card:nth-child(2) { animation-delay: 0.1s; }
@@ -318,7 +319,6 @@
         .folder-grid .folder-info { display: flex; flex-direction: column; align-items: center; }
         .folder-grid .folder-stats { justify-content: center; }
         .folder-list { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
-        #folderList { margin-bottom: var(--space-lg); }
         .view-toggle { display: none; }
 
         /* ========================================
@@ -330,6 +330,7 @@
             font-size: var(--fs-md); border: 1px solid var(--border);
             flex-wrap: wrap; transition: opacity 0.2s, transform 0.2s;
             -webkit-touch-callout: none;
+            margin-bottom: 6px;
         }
         .task-item:active {
             transform: scale(0.98);
@@ -424,7 +425,6 @@
             line-height: 1.4;
         }
         .no-tasks { text-align: center; padding: 28px; color: var(--text-secondary); font-style: italic; font-size: var(--fs-md); opacity: 0.7; }
-        #taskContainer .card { gap: 12px; }
 
         /* ========================================
            ПОЛЯ ВВОДА И КНОПКИ
