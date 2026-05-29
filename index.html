@@ -2800,6 +2800,49 @@
                     UI.showToast('🗑️ Удалена');
                 });
             },
+            moveFolder(folderId) {
+                const folder = State.findFolderById(folderId);
+                if (!folder || Utils.isSmartFolder(folderId)) { UI.showToast('❌ Нельзя переместить'); return; }
+                
+                const parentId = State.getParentFolderId(folderId);
+                
+                // Показываем окно выбора папки
+                const overlay = getEl('actionOverlay');
+                const panel = getEl('actionPanel');
+                const title = getEl('actionPanelTitle');
+                const buttons = getEl('actionPanelButtons');
+                
+                title.textContent = '📂 Переместить папку';
+                title.style.display = 'block';
+                
+                let html = '';
+                const allFolders = State.getFolders().filter(f => 
+                    f.id !== SMART_FOLDERS.TRASH && f.id !== folderId
+                );
+                
+                // Кнопка "В корень"
+                if (parentId) {
+                    html += '<button class="action-panel-btn" id="btnMoveToRoot" style="margin-bottom:2px;">📁 В корень (сделать основной папкой)</button>';
+                }
+                
+                allFolders.forEach(f => {
+                    const stats = Utils.getFolderStats(f);
+                    html += '<button class="action-panel-btn" onclick="App.moveFolderTo(\'' + folderId + '\',\'' + f.id + '\')" style="margin-bottom:2px;">' + (f.icon || '📁') + ' ' + Utils.escapeHtml(f.name) + ' <span style="font-size:11px;opacity:0.6;">(' + stats.total + ')</span></button>';
+                });
+                
+                buttons.innerHTML = html + 
+                    '<div class="settings-divider" style="margin:4px 0;"></div>' +
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                
+                panel.className = 'action-panel centered';
+                overlay.style.display = 'block';
+                panel.style.display = 'block';
+                
+                setTimeout(() => {
+                    const btnRoot = document.getElementById('btnMoveToRoot');
+                    if (btnRoot) btnRoot.addEventListener('click', () => App.moveFolderToRoot(folderId));
+                }, 50);
+            },
             editCustomQuote(side) {
                 const text = prompt('Цитата:', State.getCustomQuotes()[side] || '');
                 if (text !== null) {
@@ -3172,6 +3215,51 @@
                 UI.renderAll();
                 UI.showToast('📂 Перемещена');
             },
+
+            moveFolderTo: function(folderId, toFolderId) {
+                const folder = State.findFolderById(folderId);
+                const toFolder = State.findFolderById(toFolderId);
+                if (!folder || !toFolder || Utils.isSmartFolder(toFolderId)) { App._closePanel(); return; }
+                
+                const parentId = State.getParentFolderId(folderId);
+                
+                // Удаляем из текущего места
+                if (parentId) {
+                    State.removeSubFolder(parentId, folderId);
+                } else {
+                    State.removeFolder(folderId);
+                }
+                
+                // Добавляем как подпапку в новую папку
+                if (!Array.isArray(toFolder.subfolders)) toFolder.subfolders = [];
+                toFolder.subfolders.push(folder);
+                
+                if (State.getCurrentFolderId() === folderId) {
+                    State.setCurrentFolderId(toFolderId);
+                }
+                
+                State.save();
+                App._closePanel();
+                UI.renderAll();
+                UI.showToast('📂 Папка перемещена');
+            },
+            
+            moveFolderToRoot: function(folderId) {
+                const folder = State.findFolderById(folderId);
+                const parentId = State.getParentFolderId(folderId);
+                if (!folder || !parentId) { App._closePanel(); return; }
+                
+                // Удаляем из подпапок родителя
+                State.removeSubFolder(parentId, folderId);
+                
+                // Добавляем в корень
+                State.addFolder(folder);
+                
+                State.save();
+                App._closePanel();
+                UI.renderAll();
+                UI.showToast('📂 Папка в корне');
+            },
         
             doAction: function(action, taskId) {
                 getEl('actionPanel').style.display = 'none';
@@ -3206,6 +3294,7 @@
                     '<div class="settings-divider" style="margin:4px 0 8px;"></div>' +
                     '<button class="action-panel-btn" onclick="App.doFolderAction(\'rename\',\'' + folderId + '\')" style="margin-bottom:2px;">✏️ Переименовать</button>' +
                     '<button class="action-panel-btn" onclick="App.doFolderAction(\'icon\',\'' + folderId + '\')" style="margin-bottom:2px;">🎨 Сменить иконку/цвет</button>' +
+                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'move\',\'' + folderId + '\')" style="margin-bottom:2px;">📂 Переместить</button>' +
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doFolderAction(\'delete\',\'' + folderId + '\')">🗑️ Удалить папку</button>';
         
@@ -3232,6 +3321,7 @@
                     '<div class="settings-divider" style="margin:4px 0 8px;"></div>' +
                     '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'rename\',\'' + folderId + '\')" style="margin-bottom:2px;">✏️ Переименовать</button>' +
                     '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'icon\',\'' + folderId + '\')" style="margin-bottom:2px;">🎨 Сменить иконку/цвет</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'move\',\'' + folderId + '\')" style="margin-bottom:2px;">📂 Переместить</button>' +
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doSubFolderAction(\'delete\',\'' + folderId + '\')">🗑️ Удалить подпапку</button>';
                 
@@ -3350,6 +3440,10 @@
                             UI.showToast('✅ Оформление обновлено');
                         };
                     }
+                } else if (action === 'move') {
+                    if (sub) {
+                        Actions.moveFolder(folderId);
+                    }
                 } else if (action === 'delete') {
                     if (sub && parentId) {
                         Actions.deleteSubFolder(parentId, folderId);
@@ -3374,6 +3468,8 @@
                     Actions.editFolder(folderId);
                 } else if (action === 'icon') {
                     Actions.changeFolderIcon(folderId);
+                } else if (action === 'move') {
+                    Actions.moveFolder(folderId);
                 } else if (action === 'delete') {
                     Actions.deleteFolder(folderId);
                 }
