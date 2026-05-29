@@ -659,7 +659,7 @@
             z-index: 150;
         }
     </style>
-    <link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22%D0%9C%D0%BE%D0%B8%20%D0%BF%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22short_name%22%3A%22%D0%9F%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Ctext%20y%3D'.9em'%20font-size%3D'90'%3E%F0%9F%93%85%3C%2Ftext%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22any%22%5D%7D%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23232220%22%2C%22theme_color%22%3A%22%236b4c3b%22%7D">
+    <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22%D0%9C%D0%BE%D0%B8%20%D0%BF%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22short_name%22%3A%22%D0%9F%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23232220%22%2C%22theme_color%22%3A%22%236b4c3b%22%7D">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -3555,7 +3555,6 @@
                 }
             });
 
-            getEl('btnAddTask').addEventListener('click', Actions.addTask);
             getEl('btnAddFolder').addEventListener('click', Actions.addFolder);
             getEl('btnToggleView').addEventListener('click', function(e) {
                 e.stopPropagation();
