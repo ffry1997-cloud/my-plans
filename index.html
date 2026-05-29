@@ -1640,16 +1640,78 @@
                 if (!f) { tc.style.display = 'none'; fl.style.display = 'block'; return; }
 
                 tc.style.display = 'flex'; fl.style.display = 'none';
-                getEl('currentFolderName').textContent = (f.icon || DEFAULT_FOLDER_ICON) + ' ' + f.name;
-                // Если это подпапка — показываем родителя
+                // Статистика папки
+                const stats = Utils.getFolderStats(f);
+                
+                // Формируем название папки
+                let folderDisplayName = (f.icon || DEFAULT_FOLDER_ICON) + ' ' + f.name;
                 const parentId = State.getParentFolderId(fid);
                 if (parentId) {
                     const parent = State.getFolderById(parentId);
                     if (parent) {
-                        getEl('currentFolderName').textContent = (parent.icon || DEFAULT_FOLDER_ICON) + ' ' + parent.name + ' → ' + (f.icon || '📁') + ' ' + f.name;
+                        folderDisplayName = (parent.icon || DEFAULT_FOLDER_ICON) + ' ' + parent.name + ' → ' + (f.icon || '📁') + ' ' + f.name;
                     }
                 }
-                updateTaskFilterUI(Utils.getFolderStats(f));
+                
+                // Верхняя строка: [←] [+ Задача] [название] [5/3] [⋮]
+                const currentFilter = State.getCurrentTaskFilter();
+                getEl('currentFolderName').innerHTML = 
+                    '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;">' +
+                    '<div style="display:flex;align-items:center;gap:8px;">' +
+                    '<button class="btn-sm" id="btnBackToFoldersTop" style="background:var(--accent-light);color:var(--accent);padding:6px 12px;border-radius:20px;font-size:14px;">←</button>' +
+                    '<button class="btn-sm btn-add" id="btnAddTaskTop" style="padding:6px 14px;border-radius:20px;font-size:13px;white-space:nowrap;">+ Задача</button>' +
+                    '</div>' +
+                    '<span style="font-weight:700;font-size:15px;text-align:center;flex:1;">' + folderDisplayName + '</span>' +
+                    '<div style="display:flex;align-items:center;gap:6px;">' +
+                    '<span id="statActiveFilter" style="cursor:pointer;font-weight:600;color:' + (currentFilter === 'active' ? 'var(--accent)' : 'var(--text-secondary)') + ';font-size:14px;" title="Активные задачи">' + stats.active + '</span>' +
+                    '<span style="color:var(--text-secondary);font-size:14px;">/</span>' +
+                    '<span id="statCompletedFilter" style="cursor:pointer;font-weight:600;color:' + (currentFilter === 'completed' ? 'var(--accent)' : 'var(--text-secondary)') + ';font-size:14px;" title="Завершённые задачи">' + stats.completed + '</span>' +
+                    '<button class="btn-sm" id="btnTodaySort" style="background:rgba(107,76,59,0.15);color:var(--accent);font-size:14px;border-radius:50%;width:32px;height:32px;min-width:32px;padding:0;">⋮</button>' +
+                    '</div>' +
+                    '</div>';
+                
+                // Вешаем обработчики на цифры
+                setTimeout(() => {
+                    const activeEl = document.getElementById('statActiveFilter');
+                    const completedEl = document.getElementById('statCompletedFilter');
+                    if (activeEl) {
+                        activeEl.addEventListener('click', function() {
+                            State.setCurrentTaskFilter(FILTERS.ACTIVE);
+                            State.save();
+                            UI.renderTasks();
+                        });
+                    }
+                    if (completedEl) {
+                        completedEl.addEventListener('click', function() {
+                            State.setCurrentTaskFilter(FILTERS.COMPLETED);
+                            State.save();
+                            UI.renderTasks();
+                        });
+                    }
+                    // Вешаем обработчик на кнопку "+ Задача"
+                    const addBtn = document.getElementById('btnAddTaskTop');
+                    if (addBtn) {
+                        addBtn.addEventListener('click', function() {
+                            Actions.addTaskPopup();
+                        });
+                    }
+                    // Вешаем обработчик на кнопку "←"
+                    const backBtn = document.getElementById('btnBackToFoldersTop');
+                    if (backBtn) {
+                        backBtn.addEventListener('click', Actions.goBackToFolders);
+                    }
+                    // Сортировка
+                    const sortBtn = document.getElementById('btnTodaySort');
+                    if (sortBtn) {
+                        sortBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const dd = getEl('sortDropdown');
+                            if (dd) dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+                        });
+                    }
+                }, 50);
+                
+                updateTaskFilterUI(stats);
 
                 const tl = getEl('taskList');
                 if (!tl) return;
@@ -1710,7 +1772,7 @@
                 tl.innerHTML = subfoldersHTML + (filtered.length
                     ? filtered.map(t => buildTaskHTML(t, fid, false)).join('')
                     : '<div class="no-tasks">' + (filter === FILTERS.ACTIVE ? '🎉 Все задачи выполнены!' : '📭 Нет завершенных задач') + '</div>');
-            }   // ← ЗАКРЫВАЮЩАЯ СКОБКА renderRegularFolderTasks
+            }
 
             function updateTaskFilterUI(stats) {
                 getEl('activeCount').textContent = stats.active;
@@ -1978,6 +2040,77 @@
                 State.save();
                 UI.renderAll();
                 UI.showToast('✅ Задача добавлена!');
+            },
+            addTaskPopup() {
+                const cid = State.getCurrentFolderId();
+                if (Utils.isSmartFolder(cid)) { UI.showToast('❌ Нельзя создавать задачи в этой папке'); return; }
+                
+                const overlay = getEl('actionOverlay');
+                const panel = getEl('actionPanel');
+                const title = getEl('actionPanelTitle');
+                const buttons = getEl('actionPanelButtons');
+                
+                title.textContent = '➕ Новая задача';
+                title.style.display = 'block';
+                
+                buttons.innerHTML = 
+                    '<textarea id="popupTaskText" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Текст задачи..."></textarea>' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дата</label>' +
+                    '<input type="date" id="popupTaskDate" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время</label>' +
+                    '<input type="time" id="popupTaskTime" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Повтор</label>' +
+                    '<select id="popupTaskRepeat" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<option value="">Без повтора</option>' +
+                    '<option value="daily">Ежедневно</option>' +
+                    '<option value="weekly">Еженедельно</option>' +
+                    '<option value="monthly">Ежемесячно</option>' +
+                    '<option value="yearly">Ежегодно</option>' +
+                    '<option value="custom">Свой период</option>' +
+                    '</select>' +
+                    '<input type="number" id="popupTaskRepeatDays" placeholder="Дней" min="1" max="365" style="display:none;width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    '<button class="action-panel-btn" id="btnSavePopupTask">✅ Сохранить</button>' +
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                
+                panel.className = 'action-panel centered';
+                overlay.style.display = 'block';
+                panel.style.display = 'block';
+                
+                document.getElementById('popupTaskRepeat').onchange = function() {
+                    document.getElementById('popupTaskRepeatDays').style.display = this.value === 'custom' ? 'block' : 'none';
+                };
+                
+                setTimeout(() => {
+                    const ta = document.getElementById('popupTaskText');
+                    if (ta) { ta.focus(); autoResizeTextarea(ta); }
+                }, 100);
+                
+                document.getElementById('btnSavePopupTask').onclick = function() {
+                    const text = document.getElementById('popupTaskText').value.trim();
+                    if (!text) return;
+                    
+                    const f = State.findFolderById(cid);
+                    if (!f) return;
+                    
+                    const date = document.getElementById('popupTaskDate').value;
+                    const time = document.getElementById('popupTaskTime').value;
+                    const repeat = document.getElementById('popupTaskRepeat').value;
+                    const repeatDays = repeat === 'custom' ? parseInt(document.getElementById('popupTaskRepeatDays').value) || 1 : 0;
+                    
+                    f.tasks.push({
+                        id: Utils.generateId(), text, date, time: time || undefined,
+                        completed: false, subtasks: [], repeat: repeat || undefined,
+                        repeatDays: repeatDays || undefined, priority: 0,
+                        keepSubtasksDone: false
+                    });
+                    
+                    State.setCurrentTaskFilter(FILTERS.ACTIVE);
+                    State.save();
+                    UI.renderAll();
+                    App._closePanel();
+                    UI.showToast('✅ Задача добавлена!');
+                };
             },
             editTask(tid) {
                 const found = Utils.findTaskById(tid);
