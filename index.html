@@ -3866,47 +3866,6 @@
             window.addEventListener('scroll', function() { stb.classList.toggle('visible', window.scrollY > 150); });
             stb.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
-            if ('Notification' in window && Notification.permission === 'granted') {
-                // Флаг, чтобы утреннее уведомление отправлялось только один раз
-                let morningSent = false;
-                
-                setInterval(function() {
-                    const now = new Date();
-                    const hours = now.getHours();
-                    const mins = now.getMinutes();
-                    
-                    // Сброс флага в полночь
-                    if (hours === 0 && mins < 5) {
-                        morningSent = false;
-                    }
-                    
-                    // Утреннее уведомление со всеми задачами в 9:00
-                    if (hours === 9 && mins >= 0 && mins <= 10 && !morningSent) {
-                        morningSent = true;
-                        const todayTasks = Services.getTodayTasks();
-                        if (todayTasks.length > 0) {
-                            let body = '';
-                            todayTasks.forEach((t, i) => {
-                                const timeStr = t.time ? ' 🕐 ' + t.time : '';
-                                body += (t.completed ? '✅ ' : '☐ ') + t.text + timeStr + '\n';
-                            });
-                            new Notification('📅 Задачи на сегодня (' + todayTasks.length + ')', { 
-                                body: body, 
-                                tag: 'daily-tasks' 
-                            });
-                        }
-                    }
-                    
-                    // Задачи с временем — за час
-                    Services.getTasksForNotification().forEach(function(t) {
-                        if (t.time) {
-                            const min = Math.ceil((new Date(t.date + 'T' + t.time) - new Date()) / 60000);
-                            new Notification('⏰ Напоминание', { body: '«' + t.text + '» через ' + min + ' мин.', tag: t.id });
-                        }
-                    });
-                }, 300000);
-            }
-
             const actionPanel = getEl('actionPanel');
             if (actionPanel) {
                 actionPanel.addEventListener('click', function(e) {
@@ -3971,6 +3930,32 @@
         // ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ
         // ========================================
         function initialize() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+            
+            if ('Notification' in window && Notification.permission === 'granted') {
+                let morningSent = localStorage.getItem('morning_sent_' + Utils.getTodayISO());
+                if (!morningSent) {
+                    setTimeout(() => {
+                        const todayTasks = Services.getTodayTasks();
+                        if (todayTasks.length > 0) {
+                            let body = '';
+                            todayTasks.slice(0, 5).forEach(t => {
+                                body += '• ' + t.text + '\n';
+                            });
+                            if (todayTasks.length > 5) body += '...и ещё ' + (todayTasks.length - 5) + ' задач';
+                            new Notification('📅 Задачи на сегодня (' + todayTasks.length + ')', {
+                                body: body,
+                                tag: 'daily-tasks',
+                                requireInteraction: true
+                            });
+                            localStorage.setItem('morning_sent_' + Utils.getTodayISO(), 'true');
+                        }
+                    }, 1000);
+                }
+            }
+
             try {
                 const savedPreset = localStorage.getItem('theme_preset');
                 if (savedPreset && THEME_PRESETS[savedPreset]) {
