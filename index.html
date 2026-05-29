@@ -3542,7 +3542,10 @@
                     const reader = new FileReader();
                     reader.onload = function(ev) {
                         const bgLayer = document.getElementById('bgLayer');
-                        if (bgLayer) bgLayer.style.backgroundImage = 'url(' + ev.target.result + ')';
+                        if (bgLayer) {
+                            bgLayer.style.backgroundImage = 'url(' + ev.target.result + ')';
+                            bgLayer.style.display = 'block';
+                        }
                         document.body.classList.add('bg-image');
                         localStorage.setItem('bg_image', ev.target.result);
                         UI.showToast('🖼️ Фон обновлён');
@@ -3973,7 +3976,10 @@
                         localStorage.removeItem('bg_image');
                     } else {
                         const bgLayer = document.getElementById('bgLayer');
-                        if (bgLayer) bgLayer.style.backgroundImage = 'url(' + savedBg + ')';
+                        if (bgLayer) {
+                            bgLayer.style.backgroundImage = 'url(' + savedBg + ')';
+                            bgLayer.style.display = 'block';
+                        }
                         document.body.classList.add('bg-image');
                     }
                 }
