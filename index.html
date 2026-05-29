@@ -835,7 +835,7 @@
             OPEN_FOLDER: 'open-folder', CHANGE_ICON: 'change-icon', TOGGLE_TASK: 'toggle-task',
             EDIT_TASK: 'edit-task', DELETE_TASK: 'delete-task', ADD_SUBTASK: 'add-subtask',
             EDIT_SUBTASK: 'edit-subtask', DELETE_SUBTASK: 'delete-subtask', TOGGLE_SUBTASK: 'toggle-subtask',
-            SET_PRIORITY: 'set-priority', EDIT_CLIENT: 'edit-client', EMAIL_CLIENT: 'email-client',
+            EDIT_CLIENT: 'edit-client', EMAIL_CLIENT: 'email-client',
             DELETE_CLIENT: 'delete-client', SELECT_DATE: 'select-date', EDIT_CUSTOM_QUOTE: 'edit-custom-quote',
             DELETE_NOTE: 'delete-note', DELETE_FOLDER: 'delete-folder',
             DELETE_FOREVER: 'delete-forever', RESTORE_TASK: 'restore-task',
@@ -2234,13 +2234,6 @@
                 State.save();
                 UI.renderAll();
                 UI.showToast('📅 На завтра');
-            },
-            setPriority(tid, p) {
-                const found = Utils.findTaskById(tid);
-                if (!found) return;
-                found.task.priority = found.task.priority === p ? p - 1 : p;
-                State.save();
-                UI.renderTasks();
             },
             addSubtask(tid) {
                 const found = Utils.findTaskById(tid);
@@ -3875,7 +3868,6 @@
                 case A.EDIT_SUBTASK: Actions.editSubtask(ds.taskId, ds.subtaskId); break;
                 case A.DELETE_SUBTASK: Actions.deleteSubtask(ds.taskId, ds.subtaskId); break;
                 case A.TOGGLE_SUBTASK: Actions.toggleSubtask(ds.taskId, ds.subtaskId); break;
-                case A.SET_PRIORITY: Actions.setPriority(ds.taskId, parseInt(ds.priority)); break;
                 case 'toggle-keep-subtasks': {
                     const ft = Utils.findTaskById(ds.taskId);
                     if (ft) {
