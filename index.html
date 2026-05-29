@@ -3571,16 +3571,19 @@
                 }
             });
             
-            getEl('viewDropdown').addEventListener('click', function(e) {
-                const btn = e.target.closest('button');
-                if (!btn) return;
-                const newMode = btn.dataset.view;
-                State.setFolderViewMode(newMode);
-                State.save();
-                UI.renderFolderList();
-                this.style.display = 'none';
-                UI.showToast(newMode === 'list' ? 'Список' : 'Сетка');
-            });
+            const viewDropdown = getEl('viewDropdown');
+            if (viewDropdown) {
+                viewDropdown.addEventListener('click', function(e) {
+                    const btn = e.target.closest('button');
+                    if (!btn) return;
+                    const newMode = btn.dataset.view;
+                    State.setFolderViewMode(newMode);
+                    State.save();
+                    UI.renderFolderList();
+                    this.style.display = 'none';
+                    UI.showToast(newMode === 'list' ? 'Список' : 'Сетка');
+                });
+            }
             getEl('btnBackToFoldersTop').addEventListener('click', Actions.goBackToFolders);
             getEl('btnAddClient').addEventListener('click', Actions.addClient);
             getEl('btnAddNote').addEventListener('click', Actions.addNote);
@@ -3639,11 +3642,14 @@
                 panel.style.display = 'block';
             });
 
-            getEl('btnTodaySort').addEventListener('click', function(e) {
-                e.stopPropagation();
-                const dd = getEl('sortDropdown');
-                dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-            });
+            const btnTodaySort = getEl('btnTodaySort');
+            if (btnTodaySort) {
+                btnTodaySort.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const dd = getEl('sortDropdown');
+                    if (dd) dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+                });
+            }
 
             document.addEventListener('click', function(e) {
                 const btn = e.target.closest('#btnToggleSubView');
@@ -3722,10 +3728,13 @@
                 });
             });
 
-            (getEl('taskFilter') || {}).addEventListener?.('click', function(e) {
-                const b = e.target.closest('.task-filter-btn');
-                if (b) Actions.setTaskFilter(b.dataset.filter);
-            });
+            const taskFilter = getEl('taskFilter');
+            if (taskFilter) {
+                taskFilter.addEventListener('click', function(e) {
+                    const b = e.target.closest('.task-filter-btn');
+                    if (b) Actions.setTaskFilter(b.dataset.filter);
+                });
+            }
 
             const tr = getEl('taskRepeat'), trd = getEl('taskRepeatDays');
             if (tr && trd) tr.addEventListener('change', function() {
