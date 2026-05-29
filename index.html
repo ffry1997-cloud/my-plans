@@ -2858,15 +2858,28 @@
                         clients: State.getClients(), customQuotes: State.getCustomQuotes()
                     });
                     const blob = new Blob([json], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'my_plans_backup_' + new Date().toISOString().slice(0, 10) + '.json';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    UI.showToast('📤 Экспортировано');
+                    const fileName = 'my_plans_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+                    const file = new File([blob], fileName, { type: 'application/json' });
+
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share({ files: [file], title: 'Мои планы' })
+                            .then(() => UI.showToast('📤 Отправлено'))
+                            .catch(() => {
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url; a.download = fileName;
+                                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                                UI.showToast('📤 Экспортировано');
+                            });
+                    } else {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url; a.download = fileName;
+                        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        UI.showToast('📤 Экспортировано');
+                    }
                 } catch (e) { UI.showToast('❌ Ошибка'); }
             },
             importData() {
