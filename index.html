@@ -179,13 +179,18 @@
         }
         .client-card {
             background: rgba(46,44,41,var(--opacity-card)); border-radius: var(--radius);
+            animation: fadeInUp 0.2s ease backwards;
             padding: 14px; margin-bottom: 8px; border: 1px solid var(--border);
             word-wrap: break-word; overflow-wrap: break-word; line-height: 1.5;
         }
+        .client-card:nth-child(1) { animation-delay: 0.03s; }
+        .client-card:nth-child(2) { animation-delay: 0.06s; }
+        .client-card:nth-child(3) { animation-delay: 0.09s; }
         .client-card > div { flex-wrap: wrap; gap: 8px; }
         .client-card span { display: block; margin-top: 2px; }
         .note-card {
             background: rgba(46,44,41,var(--opacity-card));
+            animation: fadeInUp 0.2s ease backwards;
             border-left: 4px solid var(--accent);
             border-radius: var(--radius);
             padding: 14px;
@@ -274,6 +279,13 @@
             border-left: 4px solid var(--danger) !important;
             background: rgba(212, 148, 154, 0.12) !important;
         }
+        /* Анимация для подпапок внутри папки */
+        .card .folder-card {
+            animation: fadeInUp 0.2s ease backwards;
+        }
+        .card .folder-card:nth-child(1) { animation-delay: 0.03s; }
+        .card .folder-card:nth-child(2) { animation-delay: 0.06s; }
+        .card .folder-card:nth-child(3) { animation-delay: 0.09s; }
         .folder-icon-circle {
             width: 48px; height: 48px; border-radius: 50%; background: var(--accent-light);
             display: flex; align-items: center; justify-content: center; font-size: 24px;
@@ -315,6 +327,14 @@
             transform: scale(0.98);
             transition: transform 0.1s;
         }
+        .task-item {
+            animation: fadeInUp 0.2s ease backwards;
+        }
+        .task-item:nth-child(1) { animation-delay: 0.03s; }
+        .task-item:nth-child(2) { animation-delay: 0.06s; }
+        .task-item:nth-child(3) { animation-delay: 0.09s; }
+        .task-item:nth-child(4) { animation-delay: 0.12s; }
+        .task-item:nth-child(5) { animation-delay: 0.15s; }
         .task-item.completed { opacity: 0.45; background: var(--bg); }
         .task-item.completed { background: var(--success-light) !important; transition: all 0.3s; }
         .task-item.completed .task-text { text-decoration: line-through; }
