@@ -1658,10 +1658,10 @@
                 const currentFilter = State.getCurrentTaskFilter();
                 const isActive = currentFilter === FILTERS.ACTIVE;
                 getEl('currentFolderName').innerHTML = 
-                    '<div style="display:flex;align-items:center;width:100%;margin:0 -2px;">' +
+                    '<div style="display:flex;align-items:center;width:100%;">' +
                     '<button class="btn-sm btn-add" id="btnAddTaskTop" style="padding:8px 14px;border-radius:22px;font-size:13px;white-space:nowrap;flex-shrink:0;">+ Задача</button>' +
                     '<span style="font-weight:700;font-size:15px;text-align:center;flex:1;">' + folderDisplayName + '</span>' +
-                    '<button id="statFilterBtn" style="display:flex;align-items:center;gap:0;cursor:pointer;background:transparent;border:1.5px solid var(--border);border-radius:22px;padding:0;overflow:hidden;flex-shrink:0;">' +
+                    '<button id="statFilterBtn" style="display:flex;align-items:center;gap:0;cursor:pointer;background:transparent;border:1.5px solid var(--border);border-radius:22px;padding:0;overflow:hidden;flex-shrink:0;margin-right:-18px;">' +
                     '<span id="statActivePart" style="padding:8px 12px;font-size:13px;font-weight:600;color:' + (isActive ? 'var(--accent)' : 'var(--text-secondary)') + ';background:transparent;border-radius:22px 0 0 22px;">' + stats.active + '</span>' +
                     '<span style="color:var(--border);font-weight:300;padding:8px 0;font-size:13px;">/</span>' +
                     '<span id="statCompletedPart" style="padding:8px 12px;font-size:13px;font-weight:600;color:' + (!isActive ? 'var(--accent)' : 'var(--text-secondary)') + ';background:transparent;border-radius:0 22px 22px 0;">' + stats.completed + '</span>' +
