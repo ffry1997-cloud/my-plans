@@ -1238,7 +1238,7 @@
                 const now = new Date(); now.setHours(0, 0, 0, 0);
                 let hasChanges = false;
 
-                State.getFolders().forEach(f => {
+                function processFolder(f) {
                     if (f.id === SMART_FOLDERS.TRASH) return;
                     const snapshot = [...f.tasks];
                     snapshot.forEach(task => {
@@ -1283,7 +1283,14 @@
                             hasChanges = true;
                         } catch (e) {}
                     });
-                });
+
+                    // Обходим подпапки
+                    if (Array.isArray(f.subfolders)) {
+                        f.subfolders.forEach(sub => processFolder(sub));
+                    }
+                }
+
+                State.getFolders().forEach(f => processFolder(f));
 
                 if (hasChanges) State.save();
             }
