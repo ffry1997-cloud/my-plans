@@ -2878,13 +2878,13 @@
                                 var img = new Image();
                                 img.onload = function() {
                                     var canvas = document.createElement('canvas');
-                                    var maxSize = 300;
+                                    var maxSize = 500;
                                     var ratio = Math.min(maxSize / img.width, maxSize / img.height);
                                     canvas.width = img.width * ratio;
                                     canvas.height = img.height * ratio;
                                     var ctx = canvas.getContext('2d');
                                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                    f.customImage = canvas.toDataURL('image/jpeg', 0.6);
+                                    f.customImage = canvas.toDataURL('image/jpeg', 0.8);
                                     f.color = '';
                                     document.getElementById('photoPreviewCircle').style.backgroundImage = 'url(' + f.customImage + ')';
                                     document.getElementById('photoPreviewCircle').style.backgroundSize = 'cover';
@@ -3045,13 +3045,13 @@
                                 var img = new Image();
                                 img.onload = function() {
                                     var canvas = document.createElement('canvas');
-                                    var maxSize = 600;
+                                    var maxSize = 800;
                                     var ratio = Math.min(maxSize / img.width, maxSize / img.height);
                                     canvas.width = img.width * ratio;
                                     canvas.height = img.height * ratio;
                                     var ctx = canvas.getContext('2d');
                                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                    var compressed = canvas.toDataURL('image/jpeg', 0.6);
+                                    var compressed = canvas.toDataURL('image/jpeg', 0.8);
                                     const bgLayer = document.getElementById('bgLayer');
                                     if (bgLayer) {
                                         bgLayer.style.backgroundImage = 'url(' + compressed + ')';
@@ -3954,13 +3954,13 @@
                                         var img = new Image();
                                         img.onload = function() {
                                             var canvas = document.createElement('canvas');
-                                            var maxSize = 300;
+                                            var maxSize = 500;
                                             var ratio = Math.min(maxSize / img.width, maxSize / img.height);
                                             canvas.width = img.width * ratio;
                                             canvas.height = img.height * ratio;
                                             var ctx = canvas.getContext('2d');
                                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                            sub.customImage = canvas.toDataURL('image/jpeg', 0.6);
+                                            sub.customImage = canvas.toDataURL('image/jpeg', 0.8);
                                             sub.color = '';
                                             document.getElementById('photoPreviewCircle').style.backgroundImage = 'url(' + sub.customImage + ')';
                                             document.getElementById('photoPreviewCircle').style.backgroundSize = 'cover';
