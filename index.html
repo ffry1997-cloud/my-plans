@@ -579,7 +579,7 @@
             font-size: var(--fs-md); font-weight: 600; color: var(--text); 
             padding-bottom: var(--space-md); text-align: center; 
         }
-        .action-panel-buttons { display: flex; flex-direction: column; gap: 2px; }
+        .action-panel-buttons { display: flex; flex-direction: column; gap: 4px; }
         .action-panel-btn {
             padding: var(--space-md) var(--space-lg); border-radius: var(--radius-sm);
             border: none; font-size: 14px; cursor: pointer; font-family: var(--font);
@@ -2833,12 +2833,12 @@
                 
                 // Кнопка "В корень"
                 if (parentId) {
-                    html += '<button class="action-panel-btn" id="btnMoveToRoot" style="margin-bottom:2px;">В корень (сделать основной папкой)</button>';
+                    html += '<button class="action-panel-btn" id="btnMoveToRoot">В корень (сделать основной папкой)</button>';
                 }
                 
                 allFolders.forEach(f => {
                     const stats = Utils.getFolderStats(f);
-                    html += '<button class="action-panel-btn" onclick="App.moveFolderTo(\'' + folderId + '\',\'' + f.id + '\')" style="margin-bottom:2px;">' + (f.icon || '📁') + ' ' + Utils.escapeHtml(f.name) + ' <span style="font-size:11px;opacity:0.6;">(' + stats.total + ')</span></button>';
+                    html += '<button class="action-panel-btn" onclick="App.moveFolderTo(\'' + folderId + '\',\'' + f.id + '\')">' + (f.icon || '📁') + ' ' + Utils.escapeHtml(f.name) + ' <span style="font-size:11px;opacity:0.6;">(' + stats.total + ')</span></button>';
                 });
                 
                 buttons.innerHTML = html + 
@@ -3160,16 +3160,16 @@
 
                 if (isTrash) {
                     buttons.innerHTML =
-                        '<button class="action-panel-btn" onclick="App.doAction(\'restore-task\',\'' + taskId + '\')" style="margin-bottom:2px;">Восстановить</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'restore-task\',\'' + taskId + '\')">Восстановить</button>' +
                         '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-forever\',\'' + taskId + '\')">Удалить навсегда</button>';
                 } else {
                     buttons.innerHTML =
-                        '<button class="action-panel-btn" onclick="App.doAction(\'edit-task\',\'' + taskId + '\')" style="margin-bottom:2px;">Изменить</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'duplicate-task\',\'' + taskId + '\')" style="margin-bottom:2px;">Копия</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'add-subtask\',\'' + taskId + '\')" style="margin-bottom:2px;">Подзадача</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'move-to-tomorrow\',\'' + taskId + '\')" style="margin-bottom:2px;">На завтра</button>' +
-                        '<button class="action-panel-btn" onclick="App.showMovePanel(\'' + taskId + '\')" style="margin-bottom:2px;">Переместить</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'toggle-keep-subtasks\',\'' + taskId + '\')" style="margin-bottom:2px;">' + 
+                        '<button class="action-panel-btn" onclick="App.doAction(\'edit-task\',\'' + taskId + '\')">Изменить</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'duplicate-task\',\'' + taskId + '\')">Копия</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'add-subtask\',\'' + taskId + '\')">Подзадача</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'move-to-tomorrow\',\'' + taskId + '\')">На завтра</button>' +
+                        '<button class="action-panel-btn" onclick="App.showMovePanel(\'' + taskId + '\')">Переместить</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'toggle-keep-subtasks\',\'' + taskId + '\')">' +
                         (keepSubtasks ? 'Открепить подзадачи' : 'Закрепить подзадачи') + '</button>' +
                         '<div class="settings-divider" style="margin:4px 0;"></div>' +
                         '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-task\',\'' + taskId + '\')">Удалить</button>';
@@ -3201,13 +3201,13 @@
                     allFolders.forEach(f => {
                         const stats = Utils.getFolderStats(f);
                         const isCurrent = f.id === found.folder.id;
-                        html += '<button class="action-panel-btn" onclick="App.moveTaskTo(\'' + taskId + '\',\'' + f.id + '\')" style="margin-bottom:2px;' + (isCurrent ? 'opacity:0.4;' : '') + '">' + (f.icon || '📁') + ' ' + Utils.escapeHtml(f.name) + ' <span style="font-size:11px;opacity:0.6;">(' + stats.total + ')</span></button>';
+                        html += '<button class="action-panel-btn" onclick="App.moveTaskTo(\'' + taskId + '\',\'' + f.id + '\')" style="' + (isCurrent ? 'opacity:0.4;' : '') + '">' + (f.icon || '📁') + ' ' + Utils.escapeHtml(f.name) + ' <span style="font-size:11px;opacity:0.6;">(' + stats.total + ')</span></button>';
                         
                         if (Array.isArray(f.subfolders)) {
                             f.subfolders.forEach(sub => {
                                 const subStats = Utils.getFolderStats(sub);
                                 const isSubCurrent = sub.id === found.folder.id;
-                                html += '<button class="action-panel-btn" onclick="App.moveTaskTo(\'' + taskId + '\',\'' + sub.id + '\')" style="padding-left:28px;margin-bottom:2px;' + (isSubCurrent ? 'opacity:0.4;' : '') + '">↳ ' + (sub.icon || '📁') + ' ' + Utils.escapeHtml(sub.name) + ' <span style="font-size:11px;opacity:0.6;">(' + subStats.total + ')</span></button>';
+                                html += '<button class="action-panel-btn" onclick="App.moveTaskTo(\'' + taskId + '\',\'' + sub.id + '\')" style="padding-left:28px;' + (isSubCurrent ? 'opacity:0.4;' : '') + '">↳ ' + (sub.icon || '📁') + ' ' + Utils.escapeHtml(sub.name) + ' <span style="font-size:11px;opacity:0.6;">(' + subStats.total + ')</span></button>';
                             });
                         }
                     });
@@ -3316,9 +3316,9 @@
                     '<div style="padding:8px 14px;font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:4px;">' +
                     'Активных: ' + active + ' / Завершено: ' + completed + '</div>' +
                     '<div class="settings-divider" style="margin:4px 0 8px;"></div>' +
-                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'rename\',\'' + folderId + '\')" style="margin-bottom:2px;">Переименовать</button>' +
-                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'icon\',\'' + folderId + '\')" style="margin-bottom:2px;">Сменить иконку/цвет</button>' +
-                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'move\',\'' + folderId + '\')" style="margin-bottom:2px;">Переместить</button>' +
+                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'rename\',\'' + folderId + '\')">Переименовать</button>' +
+                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'icon\',\'' + folderId + '\')">Сменить иконку/цвет</button>' +
+                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'move\',\'' + folderId + '\')">Переместить</button>' +
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doFolderAction(\'delete\',\'' + folderId + '\')">Удалить папку</button>';
         
@@ -3343,9 +3343,9 @@
                     '<div style="padding:8px 14px;font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:4px;">' +
                     'Активных: ' + active + ' / Завершено: ' + completed + '</div>' +
                     '<div class="settings-divider" style="margin:4px 0 8px;"></div>' +
-                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'rename\',\'' + folderId + '\')" style="margin-bottom:2px;">Переименовать</button>' +
-                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'icon\',\'' + folderId + '\')" style="margin-bottom:2px;">Сменить иконку/цвет</button>' +
-                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'move\',\'' + folderId + '\')" style="margin-bottom:2px;">Переместить</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'rename\',\'' + folderId + '\')">Переименовать</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'icon\',\'' + folderId + '\')">Сменить иконку/цвет</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'move\',\'' + folderId + '\')">Переместить</button>' +
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doSubFolderAction(\'delete\',\'' + folderId + '\')">Удалить подпапку</button>';
                 
@@ -3510,8 +3510,8 @@
                 title.textContent = clientName;
         
                 buttons.innerHTML =
-                    '<button class="action-panel-btn" onclick="App.doClientAction(\'edit\',\'' + clientId + '\')" style="margin-bottom:2px;">Редактировать</button>' +
-                    '<button class="action-panel-btn" onclick="App.doClientAction(\'email\',\'' + clientId + '\')" style="margin-bottom:2px;">Отправить</button>' +
+                    '<button class="action-panel-btn" onclick="App.doClientAction(\'edit\',\'' + clientId + '\')">Редактировать</button>' +
+                    '<button class="action-panel-btn" onclick="App.doClientAction(\'email\',\'' + clientId + '\')">Отправить</button>' +
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doClientAction(\'delete\',\'' + clientId + '\')">Удалить</button>';
         
@@ -3544,7 +3544,7 @@
                 title.textContent = 'Подзадача';
                 
                 buttons.innerHTML =
-                    '<button class="action-panel-btn" onclick="App.doSubtaskAction(\'edit\',\'' + taskId + '\',\'' + subtaskId + '\')" style="margin-bottom:2px;">Изменить</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubtaskAction(\'edit\',\'' + taskId + '\',\'' + subtaskId + '\')">Изменить</button>' +
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
                     '<button class="action-panel-btn delete" onclick="App.doSubtaskAction(\'delete\',\'' + taskId + '\',\'' + subtaskId + '\')">Удалить</button>';
                 
