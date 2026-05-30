@@ -2152,9 +2152,9 @@
                         html += '<div class="task-item">🎂 ' + Utils.escapeHtml(t.text) + '</div>';
                     } else {
                         const timeStr = t.time ? '  ' + t.time : '';
-                        const folderStr = t.folder ? '<br><small style="color:var(--text-secondary)">📁 ' + Utils.escapeHtml(t.folder) + '</small>' : '';
+                        const folderStr = t.folder ? '<br><small style="color:var(--text-secondary)"><svg style="width:14px;height:14px;fill:var(--text-secondary);vertical-align:middle;margin-right:2px;"><use href="#icon-folder"></use></svg>' + Utils.escapeHtml(t.folder) + '</small>' : '';
                         html += '<div class="task-item" style="cursor:pointer" onclick="window.App.goToFolder(\'' +
-                            Utils.escapeHtml(t.folder || '') + '\')"><span>' + Utils.escapeHtml(t.text) + '</span>' + timeStr + '</div>';
+                            Utils.escapeHtml(t.folder || '') + '\')"><span>' + Utils.escapeHtml(t.text) + '</span>' + timeStr + folderStr + '</div>';
                     }
                 });
                 c.innerHTML = html;
