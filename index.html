@@ -739,7 +739,7 @@
         </div>
         <div class="section active" id="section-tasks">
             <div class="search-container" id="searchContainer" style="display:none;">
-                <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск по всем задачам..." autocomplete="off">
+                <input type="text" class="search-input" id="searchInput" placeholder="Поиск по всем задачам..." autocomplete="off">
                 <div class="search-stats" id="searchStats"></div>
             </div>
             <div class="week-overview" id="weekOverview" style="display:none;"></div>
@@ -791,7 +791,7 @@
         </div>
         <div class="section" id="section-stats">
             <div class="stats-card">
-                <h3 style="margin-bottom:12px;">📊 Статистика выполнения</h3>
+                <h3 style="margin-bottom:12px;">Статистика выполнения</h3>
                 <div class="stats-grid">
                     <div class="stat-item"><div class="stat-number" id="statTotal">0</div><div class="stat-label">Всего задач</div></div>
                     <div class="stat-item"><div class="stat-number" id="statCompleted">0</div><div class="stat-label">Выполнено</div></div>
@@ -801,10 +801,10 @@
                 <div id="statsDetails" style="margin-top:12px;font-size:12px;"></div>
             </div>
         </div>
-        <div class="section" id="section-ai"><div class="card"><h3>🧠 Рекомендации</h3><div id="aiContent"></div></div></div>
+        <div class="section" id="section-ai"><div class="card"><h3>Рекомендации</h3><div id="aiContent"></div></div></div>
         <div class="section" id="section-clients">
             <div class="card">
-                <h3>👥 Дни рождения</h3>
+                <h3>Дни рождения</h3>
                 <form style="display:flex;gap:6px;flex-wrap:wrap;" onsubmit="return false;">
                     <input type="text" class="input" id="clientName" placeholder="ФИО" style="flex:2;">
                     <input type="tel" class="input" id="clientPhone" placeholder="Телефон" style="flex:1;">
@@ -2397,7 +2397,7 @@
                     State.save();
                     UI.renderAll();
                     App._closePanel();
-                    UI.showToast('✅ Обновлено');
+                    UI.showToast('Обновлено');
                 };
             },
             deleteSubtask(tid, sid) {
@@ -2597,7 +2597,7 @@
                             if (colorInput) colorInput.value = '#6b4c3b';
                             const label = document.getElementById('folderColorLabel');
                             if (label) label.textContent = 'Выбрать свой цвет';
-                            UI.showToast('🖼️ Фото выбрано');
+                            UI.showToast('Фото выбрано');
                         };
                         reader.readAsDataURL(file);
                     };
@@ -2654,7 +2654,7 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '🎨 Оформление';
+                title.textContent = 'Оформление';
                 title.style.display = 'block';
                 
                 const savedPreset = localStorage.getItem('theme_preset') || '';
@@ -2678,7 +2678,7 @@
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<button class="action-panel-btn" onclick="App._pickPhoto()" style="margin-bottom:8px;">🖼️ Выбрать фото для фона</button>' +
+                    '<button class="action-panel-btn" onclick="App._pickPhoto()" style="margin-bottom:8px;">Выбрать фото для фона</button>' +
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
@@ -2833,7 +2833,7 @@
                 
                 // Кнопка "В корень"
                 if (parentId) {
-                    html += '<button class="action-panel-btn" id="btnMoveToRoot" style="margin-bottom:2px;">📁 В корень (сделать основной папкой)</button>';
+                    html += '<button class="action-panel-btn" id="btnMoveToRoot" style="margin-bottom:2px;">В корень (сделать основной папкой)</button>';
                 }
                 
                 allFolders.forEach(f => {
@@ -3237,7 +3237,7 @@
                 State.save();
                 App._closePanel();
                 UI.renderAll();
-                UI.showToast('📂 Перемещена');
+                UI.showToast('Перемещена');
             },
 
             moveFolderTo: function(folderId, toFolderId) {
@@ -3393,7 +3393,7 @@
                             State.save();
                             UI.renderAll();
                             App._closePanel();
-                            UI.showToast('✅ Подпапка переименована');
+                            UI.showToast('Подпапка переименована');
                         };
                     }
                 } else if (action === 'icon') {
@@ -3403,7 +3403,7 @@
                         const title = getEl('actionPanelTitle');
                         const buttons = getEl('actionPanelButtons');
                         
-                        title.textContent = '🎨 Оформление подпапки';
+                        title.textContent = 'Оформление подпапки';
                         title.style.display = 'block';
                         
                         buttons.innerHTML = 
@@ -3461,7 +3461,7 @@
                             State.save();
                             UI.renderAll();
                             App._closePanel();
-                            UI.showToast('✅ Оформление обновлено');
+                            UI.showToast('Оформление обновлено');
                         };
                     }
                 } else if (action === 'move') {
@@ -3571,7 +3571,7 @@
                 
                 getEl('menuDropdown').classList.remove('show');
                 
-                title.textContent = '⚙️ Настройки';
+                title.textContent = 'Настройки';
                 title.style.display = 'block';
                 
                 const s = App._settings;
@@ -3608,7 +3608,7 @@
                 Object.keys(preset).forEach(key => document.documentElement.style.setProperty(key, preset[key]));
                 localStorage.setItem('theme_preset', name);
                 localStorage.removeItem('custom_theme');
-                UI.showToast('🎨 Тема: ' + name);
+                UI.showToast('Тема: ' + name);
                 const buttons = getEl('actionPanelButtons');
                 if (buttons && buttons.style.display !== 'none') {
                     const btns = buttons.querySelectorAll('button[onclick*="_applyPreset"]');
@@ -3637,7 +3637,7 @@
                 });
                 
                 localStorage.setItem('custom_theme', color);
-                UI.showToast('🎨 Своя тема: ' + color);
+                UI.showToast('Своя тема: ' + color);
                 const picker = document.getElementById('customColorInput');
                 if (picker) picker.value = color;
                 const label = document.getElementById('customColorLabel');
