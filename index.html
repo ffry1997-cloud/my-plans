@@ -3525,7 +3525,7 @@
                 
                 buttons.innerHTML = 
                     '<div class="action-buttons-row">' +
-                    '<button id="btnConfirmYes">Да</button>' +
+                    '<button id="btnConfirmYes" class="delete">Да</button>' +
                     '<button id="btnConfirmNo">Отмена</button>' +
                     '</div>';
                 
@@ -3573,7 +3573,7 @@
                         '<button class="action-panel-btn" onclick="App.doAction(\'restore-task\',\'' + taskId + '\')">Восстановить</button>' +
                         '</div>' +
                         '<div class="action-section danger-section">' +
-                        '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-forever\',\'' + taskId + '\')">Удалить навсегда</button>' +
+                        '<div class="action-buttons-row"><button class="delete" onclick="App.doAction(\'delete-forever\',\'' + taskId + '\')">Удалить навсегда</button></div>' +
                         '</div>';
                 } else {
                     buttons.innerHTML =
@@ -3590,7 +3590,7 @@
                         (keepSubtasks ? 'Открепить подзадачи' : 'Закрепить подзадачи') + '</button>' +
                         '</div>' +
                         '<div class="action-section danger-section">' +
-                        '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-task\',\'' + taskId + '\')">Удалить</button>' +
+                        '<div class="action-buttons-row"><button class="delete" onclick="App.doAction(\'delete-task\',\'' + taskId + '\')">Удалить</button></div>' +
                         '</div>';
                 }
         
@@ -3744,7 +3744,7 @@
                     '<button class="action-panel-btn" onclick="App.doFolderAction(\'move\',\'' + folderId + '\')">Переместить</button>' +
                     '</div>' +
                     '<div class="action-section danger-section">' +
-                    '<button class="action-panel-btn delete" onclick="App.doFolderAction(\'delete\',\'' + folderId + '\')">Удалить папку</button>' +
+                    '<div class="action-buttons-row"><button class="delete" onclick="App.doFolderAction(\'delete\',\'' + folderId + '\')">Удалить папку</button></div>' +
                     '</div>';
         
                 panel.className = 'action-panel centered';
@@ -3774,7 +3774,7 @@
                     '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'move\',\'' + folderId + '\')">Переместить</button>' +
                     '</div>' +
                     '<div class="action-section danger-section">' +
-                    '<button class="action-panel-btn delete" onclick="App.doSubFolderAction(\'delete\',\'' + folderId + '\')">Удалить подпапку</button>' +
+                    '<div class="action-buttons-row"><button class="delete" onclick="App.doSubFolderAction(\'delete\',\'' + folderId + '\')">Удалить подпапку</button></div>' +
                     '</div>';
                 
                 panel.className = 'action-panel centered';
@@ -4024,7 +4024,7 @@
                     '<button class="action-panel-btn" onclick="App.doClientAction(\'email\',\'' + clientId + '\')">Отправить</button>' +
                     '</div>' +
                     '<div class="action-section danger-section">' +
-                    '<button class="action-panel-btn delete" onclick="App.doClientAction(\'delete\',\'' + clientId + '\')">Удалить</button>' +
+                    '<div class="action-buttons-row"><button class="delete" onclick="App.doClientAction(\'delete\',\'' + clientId + '\')">Удалить</button></div>' +
                     '</div>';
         
                 panel.className = 'action-panel centered';
@@ -4061,7 +4061,7 @@
                     '<button class="action-panel-btn" onclick="App.doSubtaskAction(\'edit\',\'' + taskId + '\',\'' + subtaskId + '\')">Изменить</button>' +
                     '</div>' +
                     '<div class="action-section danger-section">' +
-                    '<button class="action-panel-btn delete" onclick="App.doSubtaskAction(\'delete\',\'' + taskId + '\',\'' + subtaskId + '\')">Удалить</button>' +
+                    '<div class="action-buttons-row"><button class="delete" onclick="App.doSubtaskAction(\'delete\',\'' + taskId + '\',\'' + subtaskId + '\')">Удалить</button></div>' +
                     '</div>';
                 
                 panel.className = 'action-panel centered';
