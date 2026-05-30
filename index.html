@@ -1921,7 +1921,7 @@
                 getEl('currentFolderName').innerHTML = 
                     '<div style="display:flex;align-items:center;justify-content:space-between;width:100%;">' +
                     '<button class="btn-sm btn-add" id="btnAddTaskTop" style="padding:8px 14px;border-radius:22px;font-size:13px;white-space:nowrap;flex-shrink:0;">+ Задача</button>' +
-                    '<span style="font-weight:700;font-size:16px;text-align:center;">' + folderDisplayName + '</span>' +
+                    '<span style="font-weight:700;font-size:16px;text-align:center;flex:1;">' + folderDisplayName + '</span>' +
                     '<button id="statFilterBtn" style="display:flex;align-items:center;gap:0;cursor:pointer;background:transparent;border:1.5px solid var(--border);border-radius:22px;padding:0;overflow:hidden;flex-shrink:0;">' +
                     '<span id="statActivePart" style="padding:8px 12px;font-size:13px;font-weight:600;color:' + (isActive ? 'var(--accent)' : 'var(--text-secondary)') + ';background:transparent;border-radius:22px 0 0 22px;">' + stats.active + '</span>' +
                     '<span style="color:var(--border);font-weight:300;padding:8px 0;font-size:13px;">/</span>' +
@@ -2095,7 +2095,9 @@
             }
 
             function renderCalendar(year, month, selectedDate) {
-                getEl('calendarTitle').textContent = new Date(year, month).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+                var monthName = new Date(year, month).toLocaleDateString('ru-RU', { month: 'long' });
+                monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+                getEl('calendarTitle').textContent = monthName + ' ' + new Date(year, month).getFullYear();
                 const grid = getEl('calendarGrid');
                 if (!grid) return;
 
@@ -2152,7 +2154,7 @@
                         const timeStr = t.time ? '  ' + t.time : '';
                         const folderStr = t.folder ? '<br><small style="color:var(--text-secondary)">📁 ' + Utils.escapeHtml(t.folder) + '</small>' : '';
                         html += '<div class="task-item" style="cursor:pointer" onclick="window.App.goToFolder(\'' +
-                            Utils.escapeHtml(t.folder || '') + '\')"><span>' + Utils.escapeHtml(t.text) + '</span>' + timeStr + folderStr + '</div>';
+                            Utils.escapeHtml(t.folder || '') + '\')"><span>' + Utils.escapeHtml(t.text) + '</span>' + timeStr + '</div>';
                     }
                 });
                 c.innerHTML = html;
