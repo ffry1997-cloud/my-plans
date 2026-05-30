@@ -14,7 +14,7 @@
             var bg = localStorage.getItem('bg_image');
             if (bg) {
                 var s = document.createElement('style');
-                s.textContent = 'body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:url('+bg+') center/cover;z-index:-1;}body::after{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:-1;}body{background:transparent;}';
+                s.textContent = 'body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:url('+bg+') center/cover;z-index:-1;}body::after{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.3);z-index:-1;}body{background:transparent;}';
                 document.head.appendChild(s);
             }
         })();
@@ -653,7 +653,7 @@
         body.bg-image::before {
             content: ''; position: fixed; top: 0; left: 0; width: 100%; 
             height: 100%; height: 100dvh; min-height: 100vh;
-            background: rgba(0,0,0,0.5); z-index: 0;
+            background: rgba(0,0,0,0.3); z-index: 0;
         }
         body.bg-image .app-container { position: relative; z-index: 1; }
         body.no-transition * { transition: none !important; }
@@ -2800,9 +2800,9 @@
                         '</div>' +
                         '<button class="btn-choose-icon" id="btnPickFolderPhoto">Выбрать фото для фона</button>' +
                         '</div>' +
-                        
-                        ((f.customImage || f.color) ? '<button class="action-panel-btn delete" id="btnClearFolderBg" style="margin-top:4px;">✕ Убрать фон</button>' : '') +
-                        
+
+                        ((f.customImage || f.color) ? '<div class="action-buttons-row"><button id="btnClearFolderBg">✕ Убрать фон</button></div>' : '') +
+                                                
                         '<div class="settings-divider" style="margin:8px 0;"></div>' +
                         
                         '<div class="action-buttons-row">' +
@@ -2964,8 +2964,8 @@
                         '</div>' +
                         '<button class="btn-choose-icon" id="btnPickBgPhoto">Выбрать фото для фона</button>' +
                         '</div>' +
-                        
-                        (savedBg ? '<button class="action-panel-btn delete" id="btnClearBgPhoto" style="margin-top:4px;">✕ Убрать фон</button>' : '') +
+
+                        (savedBg ? '<div class="action-buttons-row"><button id="btnClearBgPhoto">✕ Убрать фон</button></div>' : '') +
                         
                         '<div class="settings-divider" style="margin:8px 0;"></div>' +
                         
@@ -3859,8 +3859,8 @@
                                 '</div>' +
                                 '<button class="btn-choose-icon" id="btnPickFolderPhoto">Выбрать фото для фона</button>' +
                                 '</div>' +
-                                
-                                ((sub.customImage || sub.color) ? '<button class="action-panel-btn delete" id="btnClearSubFolderBg" style="margin-top:4px;">✕ Убрать фон</button>' : '') +
+
+                                ((sub.customImage || sub.color) ? '<div class="action-buttons-row"><button id="btnClearSubFolderBg">✕ Убрать фон</button></div>' : '') +
                                 
                                 '<div class="settings-divider" style="margin:8px 0;"></div>' +
                                 
