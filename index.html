@@ -3408,7 +3408,7 @@
                     if (t.type === TASK_TYPES.BIRTHDAY) {
                         list += '<div class="task-item">🎂 ' + Utils.escapeHtml(t.text) + '</div>';
                     } else {
-                        list += '<div class="task-item" style="cursor:pointer" onclick="window.App.goToFolder(\'' + Utils.escapeHtml(t.folder || '') + '\')"><span>' + (t.icon || '') + '</span> <span>' + Utils.escapeHtml(t.text) + '</span></div>';
+                        list += '<div class="task-item" style="cursor:pointer" onclick="document.getElementById(\'weekViewTaskList\').style.display=\'none\';window.App.goToFolder(\'' + Utils.escapeHtml(t.folder || '') + '\')"><span>' + Utils.escapeHtml(t.text) + '</span></div>';
                     }
                 });
                 list += '<br><button class="btn-sm" style="background:var(--accent-light);color:var(--accent);" onclick="document.getElementById(\'weekViewTaskList\').style.display=\'none\'">← Закрыть</button></div>';
