@@ -2939,12 +2939,17 @@
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<button class="settings-close" onclick="App._closePanel()">Закрыть</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnCloseTheme">Закрыть</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
+                
+            document.getElementById('btnCloseTheme').onclick = () => App._closePanel();
+                
             },
             setTaskFilter(filter) { State.setCurrentTaskFilter(filter); State.save(); UI.renderTasks(); },
             addClient() {
@@ -3103,7 +3108,9 @@
                 
                 buttons.innerHTML = html + 
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnCancelMoveFolder">Отмена</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -3113,6 +3120,7 @@
                     const btnRoot = document.getElementById('btnMoveToRoot');
                     if (btnRoot) btnRoot.addEventListener('click', () => App.moveFolderToRoot(folderId));
                 }, 50);
+                document.getElementById('btnCancelMoveFolder').onclick = () => App._closePanel();
             },
             editCustomQuote(side) {
                 const text = prompt('Цитата:', State.getCustomQuotes()[side] || '');
@@ -3377,8 +3385,10 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<button class="action-panel-btn" id="btnConfirmYes" style="justify-content:center;">Да</button>' +
-                    '<button class="settings-close" id="btnConfirmNo">Отмена</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnConfirmYes">Да</button>' +
+                    '<button id="btnConfirmNo">Отмена</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -3485,12 +3495,15 @@
                     
                     buttons.innerHTML = html + 
                         '<div class="settings-divider" style="margin:4px 0;"></div>' +
-                        '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                        '<div class="action-buttons-row">' +
+                        '<button id="btnCancelMoveTask">Отмена</button>' +
+                        '</div>';
                     
                     panel.className = 'action-panel centered';
                     overlay.style.display = 'block';
                     panel.style.display = 'block';
                 }, 50);
+                document.getElementById('btnCancelMoveTask').onclick = () => App._closePanel();
             },
             
             moveTaskTo: function(taskId, toFolderId) {
@@ -3963,12 +3976,15 @@
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<button class="settings-close" onclick="App._closePanel()">Закрыть</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnCloseSettings">Закрыть</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
+                document.getElementById('btnCloseSettings').onclick = () => App._closePanel();
             },
             
             _applyPreset: function(name) {
@@ -4196,13 +4212,17 @@
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<button class="settings-close" onclick="App._closePanel()">Закрыть</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnCloseOpacity">Закрыть</button>' +
+                    '</div>';
 
                 
                 panel.className = 'action-panel centered';
                 
                 overlay.style.display = 'block';
                 panel.style.display = 'block';
+
+                document.getElementById('btnCloseOpacity').onclick = () => App._closePanel();
             });
 
             const btnTodaySort = getEl('btnTodaySort');
