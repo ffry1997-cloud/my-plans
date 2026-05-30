@@ -2187,7 +2187,7 @@
                     '<button class="action-panel-btn" onclick="App._closePanel();App.showMovePanel(\'' + task.id + '\')" style="margin-bottom:2px;">Переместить</button>' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveTask">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -2310,7 +2310,7 @@
                     '<input type="time" id="subtaskTime" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveSubtask">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -2371,7 +2371,7 @@
                     '</div>' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveSubtask">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -2422,7 +2422,7 @@
                     '<input type="text" id="newFolderName" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название папки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveNewFolder">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -2460,7 +2460,7 @@
                     '<input type="text" id="newSubFolderName" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название подпапки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveNewSubFolder">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -2520,7 +2520,7 @@
                     '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(f.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название папки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveFolderName">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -2574,7 +2574,7 @@
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
                     '<button class="action-panel-btn" id="btnSaveFolderAppearance">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -2682,7 +2682,7 @@
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Закрыть</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Закрыть</button>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -2723,7 +2723,7 @@
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<button class="action-panel-btn" id="btnSaveClient">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -3118,7 +3118,7 @@
                 
                 buttons.innerHTML = 
                     '<button class="action-panel-btn" id="btnConfirmYes" style="justify-content:center;">Да</button>' +
-                    '<button class="settings-close" id="btnConfirmNo" style="margin-top:4px;">Отмена</button>';
+                    '<button class="settings-close" id="btnConfirmNo">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -3375,7 +3375,7 @@
                             '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(sub.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название подпапки">' +
                             '<div class="settings-divider" style="margin:8px 0;"></div>' +
                             '<button class="action-panel-btn" id="btnSaveSubFolderName">Сохранить</button>' +
-                            '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                            '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                         
                         panel.className = 'action-panel centered';
                         overlay.style.display = 'block';
@@ -3420,7 +3420,7 @@
                             (sub.color ? '<button class="action-panel-btn delete" id="btnClearSubFolderBg" style="margin-bottom:8px;">✕ Убрать фон</button>' : '') +
                             '<div class="settings-divider" style="margin:8px 0;"></div>' +
                             '<button class="action-panel-btn" id="btnSaveSubFolderAppearance">Сохранить</button>' +
-                            '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
+                            '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                         
                         panel.className = 'action-panel centered';
                         overlay.style.display = 'block';
@@ -3594,7 +3594,7 @@
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Закрыть</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Закрыть</button>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -3827,7 +3827,7 @@
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Закрыть</button>';
+                    '<button class="settings-close" onclick="App._closePanel()">Закрыть</button>';
 
                 
                 panel.className = 'action-panel centered';
