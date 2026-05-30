@@ -3675,16 +3675,23 @@
                                 '</div>' +
                                 '<button class="btn-choose-icon" id="btnOpenIconGrid">Выбрать иконку</button>' +
                                 '</div>' +
-                                
-                                '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Цвет фона</label>' +
-                                '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
-                                '<input type="color" id="folderColorInput" value="' + (sub.color || '#6b4c3b') + '" style="width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;padding:0;overflow:hidden;background:transparent;-webkit-appearance:none;flex-shrink:0;">' +
-                                '<span id="folderColorLabel" style="font-size:14px;color:var(--text);">Выбрать свой цвет</span>' +
+                                '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Цвет фона</div>' +
+                                '<div class="icon-preview">' +
+                                '<div class="icon-preview-circle" id="colorPreviewCircle" style="' + (sub.color ? 'background:' + sub.color + ';' : '') + ';cursor:pointer;">' +
+                                '</div>' +
+                                '<button class="btn-choose-icon" id="btnPickColor">Выбрать цвет</button>' +
+                                '<input type="color" id="folderColorInput" value="' + (sub.color || '#6b4c3b') + '" style="position:absolute;opacity:0;width:0;height:0;">' +
                                 '</div>' +
                                 
-                                '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                                '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Фото фона</div>' +
+                                '<div class="icon-preview">' +
+                                '<div class="icon-preview-circle" id="photoPreviewCircle" style="' + (sub.customImage ? 'background-image:url(' + sub.customImage + ');background-size:cover;background-position:center;' : (sub.color ? 'background:' + sub.color + ';' : '')) + ';cursor:pointer;">' +
+                                '</div>' +
+                                '<button class="btn-choose-icon" id="btnPickFolderPhoto">Выбрать фото для фона</button>' +
+                                '</div>' +
                                 
-                                (sub.color ? '<button class="action-panel-btn delete" id="btnClearSubFolderBg" style="margin-bottom:8px;">✕ Убрать фон</button>' : '') +
+                                ((sub.customImage || sub.color) ? '<button class="action-panel-btn delete" id="btnClearSubFolderBg" style="margin-top:4px;">✕ Убрать фон</button>' : '') +
+                                
                                 '<div class="settings-divider" style="margin:8px 0;"></div>' +
                                 
                                 '<div class="action-buttons-row">' +
@@ -3708,12 +3715,50 @@
                             
                             document.getElementById('btnOpenIconGrid').onclick = (e) => { e.stopPropagation(); showIconGrid(); };
                             
-                            const cp = document.getElementById('folderColorInput');
-                            const cl = document.getElementById('folderColorLabel');
-                            if (cp && cl) cp.oninput = () => { cl.textContent = cp.value; };
+                            document.getElementById('colorPreviewCircle').onclick = () => {
+                                document.getElementById('folderColorInput').click();
+                            };
+                            document.getElementById('btnPickColor').onclick = () => {
+                                document.getElementById('folderColorInput').click();
+                            };
                             
-                            const btnClearSub = document.getElementById('btnClearSubFolderBg');
-                            if (btnClearSub) btnClearSub.onclick = (e) => { e.stopPropagation(); sub.color = ''; UI.showToast('Фон убран'); };
+                            const cp = document.getElementById('folderColorInput');
+                            if (cp) cp.oninput = () => {
+                                document.getElementById('colorPreviewCircle').style.background = cp.value;
+                            };
+                            
+                            document.getElementById('photoPreviewCircle').onclick = () => {
+                                document.getElementById('btnPickFolderPhoto').click();
+                            };
+                            document.getElementById('btnPickFolderPhoto').onclick = (e) => {
+                                e.stopPropagation();
+                                const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+                                inp.onchange = (ev) => {
+                                    const file = ev.target.files[0]; if (!file) return;
+                                    const reader = new FileReader();
+                                    reader.onload = (event) => { 
+                                        sub.customImage = event.target.result; 
+                                        sub.color = '';
+                                        document.getElementById('photoPreviewCircle').style.backgroundImage = 'url(' + event.target.result + ')';
+                                        document.getElementById('photoPreviewCircle').style.backgroundSize = 'cover';
+                                        document.getElementById('photoPreviewCircle').style.backgroundPosition = 'center';
+                                        UI.showToast('Фото выбрано'); 
+                                    };
+                                    reader.readAsDataURL(file);
+                                };
+                                inp.click();
+                            };
+                            
+                            const btnClear = document.getElementById('btnClearSubFolderBg');
+                            if (btnClear) btnClear.onclick = (e) => { 
+                                e.stopPropagation(); 
+                                sub.customImage = ''; 
+                                sub.color = ''; 
+                                document.getElementById('photoPreviewCircle').style.backgroundImage = '';
+                                document.getElementById('colorPreviewCircle').style.background = '';
+                                document.getElementById('folderColorInput').value = '#6b4c3b';
+                                UI.showToast('Фон убран'); 
+                            };
                         };
                         
                         const showIconGrid = () => {
