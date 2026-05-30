@@ -937,7 +937,7 @@
             <div class="tab active" data-tab="tasks">Папки</div>
             <div class="tab" data-tab="calendar">Календарь</div>
             <div class="tab" data-tab="stats">Статистика</div>
-            <div class="tab" data-tab="ai">ИИ</div>
+            <div class="tab" data-tab="ai">Важное</div>
             <div class="tab" data-tab="clients">Дни рождения</div>
             <div class="tab" data-tab="ideas">Идеи</div>
         </div>
@@ -2168,7 +2168,7 @@
                     c.innerHTML = '<p style="text-align:center;padding:20px;">Всё под контролем!</p>';
                     return;
                 }
-                c.innerHTML = '<strong style="display:block;margin-bottom:8px;">Ближайшие ДР:</strong>' +
+                c.innerHTML = '<strong style="display:block;margin-bottom:8px;">Ближайшие события:</strong>' +
                     upcoming.map(x => 
                         '<div class="client-card" style="margin-bottom:8px;">' +
                         '<span>' + Utils.escapeHtml(x.name) + ' — через ' + x.daysUntil + ' дн.</span>' +
