@@ -2851,6 +2851,11 @@
                             const newIcon = item.dataset.icon;
                             f.icon = newIcon;
                             currentIcon = newIcon;
+                            // Обновить превью в кружке на основном экране
+                            const previewCircle = document.getElementById('iconPreviewCircle');
+                            if (previewCircle) {
+                                previewCircle.innerHTML = '<svg><use href="#icon-' + newIcon + '"></use></svg>';
+                            }
                         };
                     });
                     
@@ -3721,6 +3726,11 @@
                                     const newIcon = item.dataset.icon;
                                     sub.icon = newIcon;
                                     currentIcon = newIcon;
+                                    // Обновить превью в кружке на основном экране
+                                    const previewCircle = document.getElementById('iconPreviewCircle');
+                                    if (previewCircle) {
+                                        previewCircle.innerHTML = '<svg><use href="#icon-' + newIcon + '"></use></svg>';
+                                    }
                                 };
                             });
                             
