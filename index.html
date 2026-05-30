@@ -2159,8 +2159,8 @@
                         html += '<div class="task-item">🎂 ' + Utils.escapeHtml(t.text) + '</div>';
                     } else {
                         const timeStr = t.time ? '  ' + t.time : '';
-                        const folderStr = t.folder ? '<br><small style="color:var(--text-secondary);">' + Utils.escapeHtml(t.folder) + '</small>' : '';
-                        html += '<div class="task-item" style="cursor:pointer;flex-direction:column;align-items:flex-start;" onclick="window.App.goToFolder(\'' +
+                        const folderStr = t.folder ? '<br><small style="color:var(--text-secondary)"><svg style="width:14px;height:14px;fill:var(--text-secondary);vertical-align:middle;margin-right:2px;"><use href="#icon-folder"></use></svg>' + Utils.escapeHtml(t.folder) + '</small>' : '';
+                        html += '<div class="task-item" style="cursor:pointer" onclick="window.App.goToFolder(\'' +
                             Utils.escapeHtml(t.folder || '') + '\')"><span>' + Utils.escapeHtml(t.text) + '</span>' + timeStr + folderStr + '</div>';
                     }
                 });
@@ -2875,12 +2875,23 @@
                             const file = ev.target.files[0]; if (!file) return;
                             const reader = new FileReader();
                             reader.onload = (event) => { 
-                                f.customImage = event.target.result; 
-                                f.color = '';
-                                document.getElementById('photoPreviewCircle').style.backgroundImage = 'url(' + event.target.result + ')';
-                                document.getElementById('photoPreviewCircle').style.backgroundSize = 'cover';
-                                document.getElementById('photoPreviewCircle').style.backgroundPosition = 'center';
-                                UI.showToast('Фото выбрано'); 
+                                var img = new Image();
+                                img.onload = function() {
+                                    var canvas = document.createElement('canvas');
+                                    var maxSize = 300;
+                                    var ratio = Math.min(maxSize / img.width, maxSize / img.height);
+                                    canvas.width = img.width * ratio;
+                                    canvas.height = img.height * ratio;
+                                    var ctx = canvas.getContext('2d');
+                                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                                    f.customImage = canvas.toDataURL('image/jpeg', 0.6);
+                                    f.color = '';
+                                    document.getElementById('photoPreviewCircle').style.backgroundImage = 'url(' + f.customImage + ')';
+                                    document.getElementById('photoPreviewCircle').style.backgroundSize = 'cover';
+                                    document.getElementById('photoPreviewCircle').style.backgroundPosition = 'center';
+                                    UI.showToast('Фото выбрано');
+                                };
+                                img.src = event.target.result;
                             };
                             reader.readAsDataURL(file);
                         };
@@ -3031,17 +3042,29 @@
                             if (file.size > 500000) { UI.showToast('Фото слишком большое (макс 500 КБ)'); return; }
                             const reader = new FileReader();
                             reader.onload = (event) => {
-                                const bgLayer = document.getElementById('bgLayer');
-                                if (bgLayer) {
-                                    bgLayer.style.backgroundImage = 'url(' + event.target.result + ')';
-                                    bgLayer.style.display = 'block';
-                                }
-                                document.body.classList.add('bg-image');
-                                localStorage.setItem('bg_image', event.target.result);
-                                document.getElementById('bgPhotoCircle').style.backgroundImage = 'url(' + event.target.result + ')';
-                                document.getElementById('bgPhotoCircle').style.backgroundSize = 'cover';
-                                document.getElementById('bgPhotoCircle').style.backgroundPosition = 'center';
-                                UI.showToast('Фон обновлён');
+                                var img = new Image();
+                                img.onload = function() {
+                                    var canvas = document.createElement('canvas');
+                                    var maxSize = 600;
+                                    var ratio = Math.min(maxSize / img.width, maxSize / img.height);
+                                    canvas.width = img.width * ratio;
+                                    canvas.height = img.height * ratio;
+                                    var ctx = canvas.getContext('2d');
+                                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                                    var compressed = canvas.toDataURL('image/jpeg', 0.6);
+                                    const bgLayer = document.getElementById('bgLayer');
+                                    if (bgLayer) {
+                                        bgLayer.style.backgroundImage = 'url(' + compressed + ')';
+                                        bgLayer.style.display = 'block';
+                                    }
+                                    document.body.classList.add('bg-image');
+                                    localStorage.setItem('bg_image', compressed);
+                                    document.getElementById('bgPhotoCircle').style.backgroundImage = 'url(' + compressed + ')';
+                                    document.getElementById('bgPhotoCircle').style.backgroundSize = 'cover';
+                                    document.getElementById('bgPhotoCircle').style.backgroundPosition = 'center';
+                                    UI.showToast('Фон обновлён');
+                                };
+                                img.src = event.target.result;
                             };
                             reader.readAsDataURL(file);
                         };
@@ -3927,13 +3950,24 @@
                                 inp.onchange = (ev) => {
                                     const file = ev.target.files[0]; if (!file) return;
                                     const reader = new FileReader();
-                                    reader.onload = (event) => { 
-                                        sub.customImage = event.target.result; 
-                                        sub.color = '';
-                                        document.getElementById('photoPreviewCircle').style.backgroundImage = 'url(' + event.target.result + ')';
-                                        document.getElementById('photoPreviewCircle').style.backgroundSize = 'cover';
-                                        document.getElementById('photoPreviewCircle').style.backgroundPosition = 'center';
-                                        UI.showToast('Фото выбрано'); 
+                                    reader.onload = (event) => {
+                                        var img = new Image();
+                                        img.onload = function() {
+                                            var canvas = document.createElement('canvas');
+                                            var maxSize = 300;
+                                            var ratio = Math.min(maxSize / img.width, maxSize / img.height);
+                                            canvas.width = img.width * ratio;
+                                            canvas.height = img.height * ratio;
+                                            var ctx = canvas.getContext('2d');
+                                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                                            sub.customImage = canvas.toDataURL('image/jpeg', 0.6);
+                                            sub.color = '';
+                                            document.getElementById('photoPreviewCircle').style.backgroundImage = 'url(' + sub.customImage + ')';
+                                            document.getElementById('photoPreviewCircle').style.backgroundSize = 'cover';
+                                            document.getElementById('photoPreviewCircle').style.backgroundPosition = 'center';
+                                            UI.showToast('Фото выбрано');
+                                        };
+                                        img.src = event.target.result;
                                     };
                                     reader.readAsDataURL(file);
                                 };
