@@ -3540,7 +3540,6 @@
                 const buttons = getEl('actionPanelButtons');
                 const overlay = getEl('actionOverlay');
         
-                title.textContent = taskText;
 
                 const found = Utils.findTaskById(taskId);
                 const keepSubtasks = found?.task.keepSubtasksDone || false;
@@ -3710,8 +3709,7 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 const overlay = getEl('actionOverlay');
-        
-                title.textContent = folderName;
+    
         
                 buttons.innerHTML =
                     '<div class="action-section-title">' + Utils.escapeHtml(folderName) + '</div>' +
@@ -3742,7 +3740,6 @@
                 const buttons = getEl('actionPanelButtons');
                 const overlay = getEl('actionOverlay');
                 
-                title.textContent = folderName;
                 
                 buttons.innerHTML =
                     '<div class="action-section-title">' + Utils.escapeHtml(folderName) + '</div>' +
@@ -3998,7 +3995,6 @@
                 const buttons = getEl('actionPanelButtons');
                 const overlay = getEl('actionOverlay');
         
-                title.textContent = clientName;
         
                 buttons.innerHTML =
                     '<div class="action-section-title">' + Utils.escapeHtml(clientName) + '</div>' +
