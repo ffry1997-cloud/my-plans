@@ -2164,9 +2164,16 @@
                 const c = getEl('aiContent');
                 if (!c) return;
                 const upcoming = Services.getUpcomingBirthdays();
-                c.innerHTML = upcoming.length
-                    ? '<strong>Ближайшие ДР:</strong><br>' + upcoming.map(x => '• ' + Utils.escapeHtml(x.name) + ' — через ' + x.daysUntil + ' дн.').join('<br>')
-                    : '<p>Всё под контролем!</p>';
+                if (!upcoming.length) {
+                    c.innerHTML = '<p style="text-align:center;padding:20px;">Всё под контролем!</p>';
+                    return;
+                }
+                c.innerHTML = '<strong style="display:block;margin-bottom:8px;">Ближайшие ДР:</strong>' +
+                    upcoming.map(x => 
+                        '<div class="client-card" style="margin-bottom:8px;">' +
+                        '<span>' + Utils.escapeHtml(x.name) + ' — через ' + x.daysUntil + ' дн.</span>' +
+                        '</div>'
+                    ).join('');
             }
 
             function renderClients() {
