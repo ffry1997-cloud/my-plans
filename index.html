@@ -4340,7 +4340,6 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML =
-                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Прозрачность</label>' +
                     '<div id="opacityValue" style="text-align:center;font-size:24px;margin:8px 0;color:var(--text);">' + Math.round(currentOpacity * 100) + '%</div>' +
                     '<input type="range" id="opacitySlider" min="10" max="100" value="' + Math.round(currentOpacity * 100) + '" style="width:100%;margin-bottom:12px;" oninput="App._updateOpacity(this.value)">' +
                     
