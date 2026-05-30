@@ -1882,12 +1882,12 @@
                 const stats = Utils.getFolderStats(f);
                 
                 // Формируем название папки
-                let folderDisplayName = (f.icon || DEFAULT_FOLDER_ICON) + ' ' + f.name;
+                let folderDisplayName = f.name;
                 const parentId = State.getParentFolderId(fid);
                 if (parentId) {
                     const parent = State.getFolderById(parentId);
                     if (parent) {
-                        folderDisplayName = (parent.icon || DEFAULT_FOLDER_ICON) + ' ' + parent.name + ' → ' + (f.icon || '📁') + ' ' + f.name;
+                        folderDisplayName = parent.name + ' → ' + f.name;
                     }
                 }
                 
