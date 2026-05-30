@@ -2567,7 +2567,7 @@
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<button class="action-panel-btn" id="btnPickFolderPhoto" style="margin-bottom:8px;">🖼️ Выбрать фото для фона</button>' +
+                    '<button class="action-panel-btn" id="btnPickFolderPhoto" style="margin-bottom:8px;">Выбрать фото для фона</button>' +
                     
                     (f.customImage || f.color ? '<button class="action-panel-btn delete" id="btnClearFolderBg" style="margin-bottom:8px;">✕ Убрать фон</button>' : '') +
                     
@@ -2614,7 +2614,7 @@
                         if (colorInput) colorInput.value = '#6b4c3b';
                         const label = document.getElementById('folderColorLabel');
                         if (label) label.textContent = 'Выбрать свой цвет';
-                        UI.showToast('🗑️ Фон убран');
+                        UI.showToast('Фон убран');
                     };
                 }
                 
@@ -2978,14 +2978,14 @@
                 if (!tasks.length) { UI.showToast('Нет задач в ближайший час'); return; }
                 tasks.forEach(t => {
                     const min = Math.ceil((new Date(t.date + 'T' + t.time) - new Date()) / 60000);
-                    new Notification('⏰ Напоминание', { body: '«' + t.text + '» через ' + min + ' мин.', tag: t.id });
+                    new Notification('Напоминание', { body: '«' + t.text + '» через ' + min + ' мин.', tag: t.id });
                 });
-                UI.showToast('🔔 Найдено: ' + tasks.length + ' задач');
+                UI.showToast('Найдено: ' + tasks.length + ' задач');
             },
             goToFolder(folderName) {
                 const f = State.getFolders().find(x => x.name === folderName);
                 if (f) { Actions.openFolder(f.id); }
-                else { UI.showToast('📁 Папка не найдена'); }
+                else { UI.showToast('Папка не найдена'); }
             },
             toggleWeekView() {
                 const wo = getEl('weekOverview');
@@ -2995,12 +2995,12 @@
             openDateView(ds) {
                 const tasks = Services.getTasksForDate(ds);
                 if (!tasks || !tasks.length) { UI.showToast('Нет задач на ' + Utils.formatDate(ds)); return; }
-                let list = '<div style="padding:10px"><strong>📅 ' + Utils.formatDate(ds) + '</strong><br><br>';
+                let list = '<div style="padding:10px"><strong> ' + Utils.formatDate(ds) + '</strong><br><br>';
                 tasks.forEach(t => {
                     if (t.type === TASK_TYPES.BIRTHDAY) {
                         list += '<div class="task-item">🎂 ' + Utils.escapeHtml(t.text) + '</div>';
                     } else {
-                        list += '<div class="task-item" style="cursor:pointer" onclick="window.App.goToFolder(\'' + Utils.escapeHtml(t.folder || '') + '\')"><span>' + (t.icon || '📌') + '</span> <span>' + Utils.escapeHtml(t.text) + '</span></div>';
+                        list += '<div class="task-item" style="cursor:pointer" onclick="window.App.goToFolder(\'' + Utils.escapeHtml(t.folder || '') + '\')"><span>' + (t.icon || '') + '</span> <span>' + Utils.escapeHtml(t.text) + '</span></div>';
                     }
                 });
                 list += '<br><button class="btn-sm" style="background:var(--accent-light);color:var(--accent);" onclick="document.getElementById(\'weekViewTaskList\').style.display=\'none\'">← Закрыть</button></div>';
@@ -3442,7 +3442,7 @@
                                 if (colorInput) colorInput.value = '#6b4c3b';
                                 const label = document.getElementById('folderColorLabel');
                                 if (label) label.textContent = 'Выбрать свой цвет';
-                                UI.showToast('🗑️ Фон убран');
+                                UI.showToast('Фон убран');
                             };
                         }
                         setTimeout(() => document.getElementById('folderIconInput').focus(), 100);
@@ -3668,7 +3668,7 @@
                         }
                         document.body.classList.add('bg-image');
                         localStorage.setItem('bg_image', ev.target.result);
-                        UI.showToast('🖼️ Фон обновлён');
+                        UI.showToast('Фон обновлён');
                     };
                     reader.readAsDataURL(file);
                 };
@@ -3817,7 +3817,7 @@
                 
                 const currentOpacity = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--opacity-card').trim()) || 0.75;
                 
-                title.textContent = '🔲 Прозрачность';
+                title.textContent = 'Прозрачность';
                 title.style.display = 'block';
                 
                 buttons.innerHTML =
@@ -4021,7 +4021,7 @@
                         ft.task.keepSubtasksDone = !ft.task.keepSubtasksDone;
                         State.save();
                         UI.renderAll();
-                        UI.showToast(ft.task.keepSubtasksDone ? '🔒 Подзадачи закреплены' : '🔓 Подзадачи откреплены');
+                        UI.showToast(ft.task.keepSubtasksDone ? 'Подзадачи закреплены' : 'Подзадачи откреплены');
                     }
                     break;  
                 }
@@ -4116,7 +4116,7 @@
                 App._applySettings();
                 
                 const currentMode = State.getFolderViewMode();
-                const viewIcon = currentMode === 'list' ? '📋' : '🔲';
+                const viewIcon = currentMode === 'list' ? '' : '';
                 const viewLabel = currentMode === 'list' ? 'Список' : 'Сетка';
                 const viewBtn = getEl('btnViewMenu');
                 if (viewBtn) viewBtn.innerHTML = '<span class="menu-icon">' + viewIcon + '</span> Вид: ' + viewLabel;
