@@ -851,6 +851,13 @@
             border-color: var(--accent);
             background: var(--accent-light);
         }
+        .action-buttons-row button.delete {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+        .action-buttons-row button.delete:hover {
+            background: var(--danger-light);
+        }
         
     </style>
     <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22%D0%9C%D0%BE%D0%B8%20%D0%BF%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22short_name%22%3A%22%D0%9F%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23232220%22%2C%22theme_color%22%3A%22%236b4c3b%22%7D">
@@ -2801,8 +2808,7 @@
                         '<button class="btn-choose-icon" id="btnPickFolderPhoto">Выбрать фото для фона</button>' +
                         '</div>' +
 
-                        ((f.customImage || f.color) ? '<div class="action-buttons-row"><button id="btnClearFolderBg">✕ Убрать фон</button></div>' : '') +
-                                                
+                        ((f.customImage || f.color) ? '<div class="action-buttons-row"><button id="btnClearFolderBg" class="delete">✕ Убрать фон</button></div>' : '') +                                                
                         '<div class="settings-divider" style="margin:8px 0;"></div>' +
                         
                         '<div class="action-buttons-row">' +
@@ -2965,8 +2971,7 @@
                         '<button class="btn-choose-icon" id="btnPickBgPhoto">Выбрать фото для фона</button>' +
                         '</div>' +
 
-                        (savedBg ? '<div class="action-buttons-row"><button id="btnClearBgPhoto">✕ Убрать фон</button></div>' : '') +
-                        
+                        (savedBg ? '<div class="action-buttons-row"><button id="btnClearBgPhoto" class="delete">✕ Убрать фон</button></div>' : '') +                        
                         '<div class="settings-divider" style="margin:8px 0;"></div>' +
                         
                         '<div class="action-buttons-row">' +
@@ -3860,8 +3865,7 @@
                                 '<button class="btn-choose-icon" id="btnPickFolderPhoto">Выбрать фото для фона</button>' +
                                 '</div>' +
 
-                                ((sub.customImage || sub.color) ? '<div class="action-buttons-row"><button id="btnClearSubFolderBg">✕ Убрать фон</button></div>' : '') +
-                                
+                                ((sub.customImage || sub.color) ? '<div class="action-buttons-row"><button id="btnClearSubFolderBg" class="delete">✕ Убрать фон</button></div>' : '') +                                
                                 '<div class="settings-divider" style="margin:8px 0;"></div>' +
                                 
                                 '<div class="action-buttons-row">' +
