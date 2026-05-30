@@ -2029,7 +2029,7 @@
                 Services.processRepeats();
                 State.save();
                 UI.renderAll();
-                UI.showToast(found.task.completed ? '✅ Выполнена' : '🔄 Восстановлена');
+                UI.showToast(found.task.completed ? 'Выполнена' : 'Восстановлена');
 
                 if (found.task.completed) {
                     try { confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } }); } catch (e) {}
@@ -2039,7 +2039,7 @@
                             try { confetti({ particleCount: 200, spread: 120, origin: { y: 0.5 } }); } catch (e) {}
                             try { confetti({ particleCount: 200, spread: 120, origin: { y: 0.5, x: 0.2 } }); } catch (e) {}
                             try { confetti({ particleCount: 200, spread: 120, origin: { y: 0.5, x: 0.8 } }); } catch (e) {}
-                            UI.showToast('🎉 Все задачи выполнены!');
+                            UI.showToast('Все задачи выполнены!');
                         }, 300);
                     }
                 }
@@ -2072,7 +2072,7 @@
                 State.setCurrentTaskFilter(FILTERS.ACTIVE);
                 State.save();
                 UI.renderAll();
-                UI.showToast('✅ Задача добавлена!');
+                UI.showToast('Задача добавлена!');
             },
             addTaskPopup() {
                 const cid = State.getCurrentFolderId();
@@ -2083,7 +2083,7 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '➕ Новая задача';
+                title.textContent = 'Новая задача';
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
@@ -2103,7 +2103,7 @@
                     '</select>' +
                     '<input type="number" id="popupTaskRepeatDays" placeholder="Дней" min="1" max="365" style="display:none;width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSavePopupTask">✅ Сохранить</button>' +
+                    '<button class="action-panel-btn" id="btnSavePopupTask">Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
@@ -2142,7 +2142,7 @@
                     State.save();
                     UI.renderAll();
                     App._closePanel();
-                    UI.showToast('✅ Задача добавлена!');
+                    UI.showToast('Задача добавлена!');
                 };
             },
             editTask(tid) {
@@ -2155,7 +2155,7 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '✏️ Редактировать задачу';
+                title.textContent = 'Редактировать задачу';
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
@@ -2186,7 +2186,7 @@
                     '</div>' +
                     '<button class="action-panel-btn" onclick="App._closePanel();App.showMovePanel(\'' + task.id + '\')" style="margin-bottom:2px;">📂 Переместить</button>' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveTask">✅ Сохранить</button>' +
+                    '<button class="action-panel-btn" id="btnSaveTask">Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
@@ -2226,7 +2226,7 @@
                     State.save();
                     UI.renderAll();
                     App._closePanel();
-                    UI.showToast('✅ Задача обновлена');
+                    UI.showToast('Задача обновлена');
                 };
             },
             deleteTask(tid) {
@@ -2244,7 +2244,7 @@
                     trash.tasks.push(found.task);
                     State.save();
                     UI.renderAll();
-                    UI.showToast('🗑️ В корзине');
+                    UI.showToast('В корзине');
                 });
             },
             deleteForever(tid) {
@@ -2254,7 +2254,7 @@
                     found.folder.tasks = found.folder.tasks.filter(t => t.id !== tid);
                     State.save();
                     UI.renderAll();
-                    UI.showToast('💥 Удалена навсегда');
+                    UI.showToast('Удалена навсегда');
                 });
             },
             restoreTask(tid) {
@@ -2268,7 +2268,7 @@
                 target.tasks.push(task);
                 State.save();
                 UI.renderAll();
-                UI.showToast('↩️ Восстановлена');
+                UI.showToast('Восстановлена');
             },
             duplicateTask(tid) {
                 const found = Utils.findTaskById(tid);
@@ -2280,7 +2280,7 @@
                 found.folder.tasks.push(newTask);
                 State.save();
                 UI.renderAll();
-                UI.showToast('📋 Дублирована');
+                UI.showToast('Дублирована');
             },
             moveToTomorrow(tid) {
                 const found = Utils.findTaskById(tid);
@@ -2290,7 +2290,7 @@
                 found.task.date = Utils.formatDateISO(tomorrow);
                 State.save();
                 UI.renderAll();
-                UI.showToast('📅 На завтра');
+                UI.showToast('На завтра');
             },
             addSubtask(tid) {
                 const found = Utils.findTaskById(tid);
@@ -2301,7 +2301,7 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '➕ Новая подзадача';
+                title.textContent = 'Новая подзадача';
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
@@ -2309,7 +2309,7 @@
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время (необязательно)</label>' +
                     '<input type="time" id="subtaskTime" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveSubtask">✅ Сохранить</button>' +
+                    '<button class="action-panel-btn" id="btnSaveSubtask">Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
@@ -2336,7 +2336,7 @@
                     State.save();
                     UI.renderAll();
                     App._closePanel();
-                    UI.showToast('✅ Подзадача добавлена');
+                    UI.showToast('Подзадача добавлена');
                 };
             },
             toggleSubtask(tid, sid) {
@@ -2359,7 +2359,7 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '✏️ Подзадача';
+                title.textContent = 'Подзадача';
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
@@ -2370,7 +2370,7 @@
                     '<button type="button" onclick="document.getElementById(\'subtaskTime\').value=\'\'" style="padding:12px 14px;border-radius:14px;border:1.5px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:14px;white-space:nowrap;">✕</button>' +
                     '</div>' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveSubtask">✅ Сохранить</button>' +
+                    '<button class="action-panel-btn" id="btnSaveSubtask">Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
@@ -2415,13 +2415,13 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '📁 Новая папка';
+                title.textContent = 'Новая папка';
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
                     '<input type="text" id="newFolderName" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название папки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveNewFolder">✅ Сохранить</button>' +
+                    '<button class="action-panel-btn" id="btnSaveNewFolder">Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
@@ -2441,7 +2441,7 @@
                     State.save();
                     UI.renderAll();
                     App._closePanel();
-                    UI.showToast('📁 Создана');
+                    UI.showToast('Создана');
                 };
             },
             addSubFolder(parentId) {
@@ -2453,13 +2453,13 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '📁 Новая подпапка в «' + parent.name + '»';
+                title.textContent = 'Новая подпапка в «' + parent.name + '»';
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
                     '<input type="text" id="newSubFolderName" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название подпапки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveNewSubFolder">✅ Сохранить</button>' +
+                    '<button class="action-panel-btn" id="btnSaveNewSubFolder">Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
@@ -2487,7 +2487,7 @@
                     State.save();
                     UI.renderAll();
                     App._closePanel();
-                    UI.showToast('📁 Подпапка создана');
+                    UI.showToast('Подпапка создана');
                 };
             },
             deleteSubFolder(parentId, subFolderId) {
@@ -2501,7 +2501,7 @@
                     }
                     State.save();
                     UI.renderAll();
-                    UI.showToast('🗑️ Подпапка удалена');
+                    UI.showToast('Подпапка удалена');
                 });
             },
             editFolder(fid) {
@@ -2513,13 +2513,13 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '✏️ Переименовать папку';
+                title.textContent = 'Переименовать папку';
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
                     '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(f.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название папки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveFolderName">✅ Сохранить</button>' +
+                    '<button class="action-panel-btn" id="btnSaveFolderName">Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
@@ -2540,7 +2540,7 @@
                     State.save();
                     UI.renderAll();
                     App._closePanel();
-                    UI.showToast('✅ Папка переименована');
+                    UI.showToast('Папка переименована');
                 };
             },
             changeFolderIcon(fid) {
@@ -2552,7 +2552,7 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '🎨 Оформление папки';
+                title.textContent = 'Оформление папки';
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
@@ -2573,7 +2573,7 @@
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<button class="action-panel-btn" id="btnSaveFolderAppearance">✅ Сохранить</button>' +
+                    '<button class="action-panel-btn" id="btnSaveFolderAppearance">Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
@@ -2645,7 +2645,7 @@
                     State.save();
                     UI.renderAll();
                     App._closePanel();
-                    UI.showToast('✅ Оформление обновлено');
+                    UI.showToast('Оформление обновлено');
                 };
             },
             changeTheme() {
@@ -2697,7 +2697,7 @@
                 if (!name || !date) { UI.showToast('❌ Введите имя и дату'); return; }
                 State.addClient({ id: Utils.generateId(), name, phone, date });
                 ni.value = ''; pi.value = ''; di.value = '';
-                State.save(); UI.renderAll(); UI.showToast('👤 Добавлен');
+                State.save(); UI.renderAll(); UI.showToast('Добавлен');
             },
             editClient(cid) {
                 const c = State.getClientById(cid);
@@ -2708,7 +2708,7 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '✏️ Редактировать клиента';
+                title.textContent = 'Редактировать клиента';
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
@@ -2722,7 +2722,7 @@
                     '<input type="date" id="editClientDate" value="' + (c.date || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveClient">✅ Сохранить</button>' +
+                    '<button class="action-panel-btn" id="btnSaveClient">Сохранить</button>' +
                     '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
@@ -2758,7 +2758,7 @@
                     State.save();
                     UI.renderClients();
                     App._closePanel();
-                    UI.showToast('✅ Обновлено');
+                    UI.showToast('Обновлено');
                 };
             },
             deleteClient(cid) {
@@ -2766,7 +2766,7 @@
                     State.removeClient(cid);
                     State.save();
                     UI.renderClients();
-                    UI.showToast('🗑️ Удален');
+                    UI.showToast('Удален');
                 });
             },
             emailClient(cid) {
@@ -2792,14 +2792,14 @@
                 if (!text) return;
                 State.addNote({ id: Utils.generateId(), text, updatedAt: Date.now() });
                 nt.value = '';
-                State.save(); UI.renderAll(); UI.showToast('💡 Добавлена');
+                State.save(); UI.renderAll(); UI.showToast('Добавлена');
             },
             deleteNote(nid) {
                 App.showConfirm('Удалить заметку?', () => {
                     State.removeNote(nid);
                     State.save();
                     UI.renderNotes();
-                    UI.showToast('🗑️ Удалена');
+                    UI.showToast('Удалена');
                 });
             },
             deleteFolder(fid) {
@@ -2808,7 +2808,7 @@
                     if (State.getCurrentFolderId() === fid) State.setCurrentFolderId(null);
                     State.save();
                     UI.renderAll();
-                    UI.showToast('🗑️ Удалена');
+                    UI.showToast('Удалена');
                 });
             },
             moveFolder(folderId) {
@@ -2823,7 +2823,7 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = '📂 Переместить папку';
+                title.textContent = 'Переместить папку';
                 title.style.display = 'block';
                 
                 let html = '';
@@ -2912,14 +2912,14 @@
 
                     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                         navigator.share({ files: [file], title: 'Мои планы' })
-                            .then(() => UI.showToast('📤 Отправлено'))
+                            .then(() => UI.showToast('Отправлено'))
                             .catch(() => {
                                 const url = URL.createObjectURL(blob);
                                 const a = document.createElement('a');
                                 a.href = url; a.download = fileName;
                                 document.body.appendChild(a); a.click(); document.body.removeChild(a);
                                 URL.revokeObjectURL(url);
-                                UI.showToast('📤 Экспортировано');
+                                UI.showToast('Экспортировано');
                             });
                     } else {
                         const url = URL.createObjectURL(blob);
@@ -2927,7 +2927,7 @@
                         a.href = url; a.download = fileName;
                         document.body.appendChild(a); a.click(); document.body.removeChild(a);
                         URL.revokeObjectURL(url);
-                        UI.showToast('📤 Экспортировано');
+                        UI.showToast('Экспортировано');
                     }
                 } catch (e) { UI.showToast('❌ Ошибка'); }
             },
@@ -2950,7 +2950,7 @@
                             try {
                                 localStorage.setItem(STORAGE_KEY, JSON.stringify(imp));
                                 State.load(); Services.processRepeats();
-                                UI.renderAll(); UI.showToast('📥 Импортировано');
+                                UI.renderAll(); UI.showToast('Импортировано');
                             } catch (inner) {
                                 localStorage.setItem(STORAGE_KEY, backup);
                                 State.load(); throw inner;
@@ -3066,7 +3066,7 @@
                     tf.tasks.push(task);
                     State.save();
                     UI.renderAll();
-                    UI.showToast('📦 Перемещена');
+                    UI.showToast('Перемещена');
                 } catch (err) { UI.showToast('❌ Ошибка'); }
             },
             openDateView: function(ds) { Actions.openDateView(ds); },
@@ -3265,7 +3265,7 @@
                 State.save();
                 App._closePanel();
                 UI.renderAll();
-                UI.showToast('📂 Папка перемещена');
+                UI.showToast('Папка перемещена');
             },
             
             moveFolderToRoot: function(folderId) {
@@ -3282,7 +3282,7 @@
                 State.save();
                 App._closePanel();
                 UI.renderAll();
-                UI.showToast('📂 Папка в корне');
+                UI.showToast('Папка в корне');
             },
         
             doAction: function(action, taskId) {
@@ -3374,7 +3374,7 @@
                         buttons.innerHTML = 
                             '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(sub.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название подпапки">' +
                             '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                            '<button class="action-panel-btn" id="btnSaveSubFolderName">✅ Сохранить</button>' +
+                            '<button class="action-panel-btn" id="btnSaveSubFolderName">Сохранить</button>' +
                             '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                         
                         panel.className = 'action-panel centered';
@@ -3419,7 +3419,7 @@
                             '<div class="settings-divider" style="margin:8px 0;"></div>' +
                             (sub.color ? '<button class="action-panel-btn delete" id="btnClearSubFolderBg" style="margin-bottom:8px;">✕ Убрать фон</button>' : '') +
                             '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                            '<button class="action-panel-btn" id="btnSaveSubFolderAppearance">✅ Сохранить</button>' +
+                            '<button class="action-panel-btn" id="btnSaveSubFolderAppearance">Сохранить</button>' +
                             '<button class="settings-close" onclick="App._closePanel()" style="margin-top:4px;">Отмена</button>';
                         
                         panel.className = 'action-panel centered';
