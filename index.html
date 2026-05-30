@@ -1780,7 +1780,7 @@
                 else if (f.opacity) bgStyle = '';
                 else bgStyle = '';
 
-                const iconHTML = '<svg style="width:28px;height:28px;fill:var(--text);"><use href="#icon-' + ((f.icon && f.icon.startsWith('icon-')) ? f.icon.replace('icon-','') : 'folder') + '"></use></svg>';
+                const iconHTML = '<svg style="width:28px;height:28px;fill:var(--text);"><use href="#icon-' + (f.icon || 'folder') + '"></use></svg>';
                 return '<div class="folder-card" style="' + bgStyle + '" data-action="' + A.OPEN_FOLDER +
                     '" data-folder-id="' + f.id + '" data-folder-name="' + Utils.escapeHtml(f.name).replace(/'/g, "\\'") + '"' +
                     ' data-folder-stats="' + stats.active + '/' + stats.completed + '"' +
