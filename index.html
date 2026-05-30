@@ -3072,9 +3072,22 @@
             openDateView: function(ds) { Actions.openDateView(ds); },
             goToFolder: function(folderName) {
                 const allFolders = State.getFolders();
+                
+                function findInFolder(folder) {
+                    if (folder.name === folderName) return folder;
+                    if (Array.isArray(folder.subfolders)) {
+                        for (const sub of folder.subfolders) {
+                            const found = findInFolder(sub);
+                            if (found) return found;
+                        }
+                    }
+                    return null;
+                }
+                
                 for (let i = 0; i < allFolders.length; i++) {
-                    if (allFolders[i].name === folderName) {
-                        State.setCurrentFolderId(allFolders[i].id);
+                    const found = findInFolder(allFolders[i]);
+                    if (found) {
+                        State.setCurrentFolderId(found.id);
                         State.setCurrentTaskFilter('active');
                         const sc = getEl('searchContainer');
                         if (sc) sc.style.display = 'none';
@@ -3087,7 +3100,7 @@
                         return;
                     }
                 }
-                UI.showToast('📁 Папка не найдена: ' + folderName);
+                UI.showToast('Папка не найдена: ' + folderName);
             },
 
             _confirmCallback: null,
