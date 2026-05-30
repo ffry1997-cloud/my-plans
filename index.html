@@ -3117,7 +3117,7 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<button class="action-panel-btn" id="btnConfirmYes" style="justify-content:center;">✅ Да</button>' +
+                    '<button class="action-panel-btn" id="btnConfirmYes" style="justify-content:center;">Да</button>' +
                     '<button class="settings-close" id="btnConfirmNo" style="margin-top:4px;">Отмена</button>';
                 
                 panel.className = 'action-panel centered';
@@ -3160,19 +3160,19 @@
 
                 if (isTrash) {
                     buttons.innerHTML =
-                        '<button class="action-panel-btn" onclick="App.doAction(\'restore-task\',\'' + taskId + '\')" style="margin-bottom:2px;">↩️ Восстановить</button>' +
-                        '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-forever\',\'' + taskId + '\')">💥 Удалить навсегда</button>';
+                        '<button class="action-panel-btn" onclick="App.doAction(\'restore-task\',\'' + taskId + '\')" style="margin-bottom:2px;">Восстановить</button>' +
+                        '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-forever\',\'' + taskId + '\')">Удалить навсегда</button>';
                 } else {
                     buttons.innerHTML =
-                        '<button class="action-panel-btn" onclick="App.doAction(\'edit-task\',\'' + taskId + '\')" style="margin-bottom:2px;">✏️ Изменить</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'duplicate-task\',\'' + taskId + '\')" style="margin-bottom:2px;">📋 Копия</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'add-subtask\',\'' + taskId + '\')" style="margin-bottom:2px;">➕ Подзадача</button>' +
-                        '<button class="action-panel-btn" onclick="App.doAction(\'move-to-tomorrow\',\'' + taskId + '\')" style="margin-bottom:2px;">📅 На завтра</button>' +
-                        '<button class="action-panel-btn" onclick="App.showMovePanel(\'' + taskId + '\')" style="margin-bottom:2px;">📂 Переместить</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'edit-task\',\'' + taskId + '\')" style="margin-bottom:2px;">Изменить</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'duplicate-task\',\'' + taskId + '\')" style="margin-bottom:2px;">Копия</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'add-subtask\',\'' + taskId + '\')" style="margin-bottom:2px;">Подзадача</button>' +
+                        '<button class="action-panel-btn" onclick="App.doAction(\'move-to-tomorrow\',\'' + taskId + '\')" style="margin-bottom:2px;">На завтра</button>' +
+                        '<button class="action-panel-btn" onclick="App.showMovePanel(\'' + taskId + '\')" style="margin-bottom:2px;">Переместить</button>' +
                         '<button class="action-panel-btn" onclick="App.doAction(\'toggle-keep-subtasks\',\'' + taskId + '\')" style="margin-bottom:2px;">' + 
-                        (keepSubtasks ? '🔓 Открепить подзадачи' : '🔒 Закрепить подзадачи') + '</button>' +
+                        (keepSubtasks ? 'Открепить подзадачи' : 'Закрепить подзадачи') + '</button>' +
                         '<div class="settings-divider" style="margin:4px 0;"></div>' +
-                        '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-task\',\'' + taskId + '\')">✕ Удалить</button>';
+                        '<button class="action-panel-btn delete" onclick="App.doAction(\'delete-task\',\'' + taskId + '\')">Удалить</button>';
                 }
         
                 panel.className = 'action-panel centered';
@@ -3314,13 +3314,13 @@
         
                 buttons.innerHTML =
                     '<div style="padding:8px 14px;font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:4px;">' +
-                    '📋 Активных: ' + active + ' / ✅ Завершено: ' + completed + '</div>' +
+                    'Активных: ' + active + ' / Завершено: ' + completed + '</div>' +
                     '<div class="settings-divider" style="margin:4px 0 8px;"></div>' +
-                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'rename\',\'' + folderId + '\')" style="margin-bottom:2px;">✏️ Переименовать</button>' +
-                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'icon\',\'' + folderId + '\')" style="margin-bottom:2px;">🎨 Сменить иконку/цвет</button>' +
-                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'move\',\'' + folderId + '\')" style="margin-bottom:2px;">📂 Переместить</button>' +
+                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'rename\',\'' + folderId + '\')" style="margin-bottom:2px;">Переименовать</button>' +
+                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'icon\',\'' + folderId + '\')" style="margin-bottom:2px;">Сменить иконку/цвет</button>' +
+                    '<button class="action-panel-btn" onclick="App.doFolderAction(\'move\',\'' + folderId + '\')" style="margin-bottom:2px;">Переместить</button>' +
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
-                    '<button class="action-panel-btn delete" onclick="App.doFolderAction(\'delete\',\'' + folderId + '\')">🗑️ Удалить папку</button>';
+                    '<button class="action-panel-btn delete" onclick="App.doFolderAction(\'delete\',\'' + folderId + '\')">Удалить папку</button>';
         
                 panel.className = 'action-panel centered';
         
@@ -3341,13 +3341,13 @@
                 
                 buttons.innerHTML =
                     '<div style="padding:8px 14px;font-size:12px;color:var(--text-secondary);text-align:center;margin-bottom:4px;">' +
-                    '📋 Активных: ' + active + ' / ✅ Завершено: ' + completed + '</div>' +
+                    'Активных: ' + active + ' / Завершено: ' + completed + '</div>' +
                     '<div class="settings-divider" style="margin:4px 0 8px;"></div>' +
-                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'rename\',\'' + folderId + '\')" style="margin-bottom:2px;">✏️ Переименовать</button>' +
-                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'icon\',\'' + folderId + '\')" style="margin-bottom:2px;">🎨 Сменить иконку/цвет</button>' +
-                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'move\',\'' + folderId + '\')" style="margin-bottom:2px;">📂 Переместить</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'rename\',\'' + folderId + '\')" style="margin-bottom:2px;">Переименовать</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'icon\',\'' + folderId + '\')" style="margin-bottom:2px;">Сменить иконку/цвет</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubFolderAction(\'move\',\'' + folderId + '\')" style="margin-bottom:2px;">Переместить</button>' +
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
-                    '<button class="action-panel-btn delete" onclick="App.doSubFolderAction(\'delete\',\'' + folderId + '\')">🗑️ Удалить подпапку</button>';
+                    '<button class="action-panel-btn delete" onclick="App.doSubFolderAction(\'delete\',\'' + folderId + '\')">Удалить подпапку</button>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -3510,10 +3510,10 @@
                 title.textContent = clientName;
         
                 buttons.innerHTML =
-                    '<button class="action-panel-btn" onclick="App.doClientAction(\'edit\',\'' + clientId + '\')" style="margin-bottom:2px;">✏️ Редактировать</button>' +
-                    '<button class="action-panel-btn" onclick="App.doClientAction(\'email\',\'' + clientId + '\')" style="margin-bottom:2px;">📧 Отправить</button>' +
+                    '<button class="action-panel-btn" onclick="App.doClientAction(\'edit\',\'' + clientId + '\')" style="margin-bottom:2px;">Редактировать</button>' +
+                    '<button class="action-panel-btn" onclick="App.doClientAction(\'email\',\'' + clientId + '\')" style="margin-bottom:2px;">Отправить</button>' +
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
-                    '<button class="action-panel-btn delete" onclick="App.doClientAction(\'delete\',\'' + clientId + '\')">✕ Удалить</button>';
+                    '<button class="action-panel-btn delete" onclick="App.doClientAction(\'delete\',\'' + clientId + '\')">Удалить</button>';
         
                 panel.className = 'action-panel centered';
         
@@ -3544,9 +3544,9 @@
                 title.textContent = 'Подзадача';
                 
                 buttons.innerHTML =
-                    '<button class="action-panel-btn" onclick="App.doSubtaskAction(\'edit\',\'' + taskId + '\',\'' + subtaskId + '\')" style="margin-bottom:2px;">✏️ Изменить</button>' +
+                    '<button class="action-panel-btn" onclick="App.doSubtaskAction(\'edit\',\'' + taskId + '\',\'' + subtaskId + '\')" style="margin-bottom:2px;">Изменить</button>' +
                     '<div class="settings-divider" style="margin:4px 0;"></div>' +
-                    '<button class="action-panel-btn delete" onclick="App.doSubtaskAction(\'delete\',\'' + taskId + '\',\'' + subtaskId + '\')">✕ Удалить</button>';
+                    '<button class="action-panel-btn delete" onclick="App.doSubtaskAction(\'delete\',\'' + taskId + '\',\'' + subtaskId + '\')">Удалить</button>';
                 
                 panel.className = 'action-panel centered';
                 
