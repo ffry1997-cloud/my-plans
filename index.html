@@ -2259,7 +2259,7 @@
             },
             addTaskPopup() {
                 const cid = State.getCurrentFolderId();
-                if (Utils.isSmartFolder(cid)) { UI.showToast('❌ Нельзя создавать задачи в этой папке'); return; }
+                if (Utils.isSmartFolder(cid)) { UI.showToast('Нельзя создавать задачи в этой папке'); return; }
                 
                 const overlay = getEl('actionOverlay');
                 const panel = getEl('actionPanel');
@@ -2421,7 +2421,7 @@
             deleteTask(tid) {
                 const found = Utils.findTaskById(tid);
                 if (!found) return;
-                if (found.folder.id === SMART_FOLDERS.TRASH) { UI.showToast('❌ Задача уже в корзине'); return; }
+                if (found.folder.id === SMART_FOLDERS.TRASH) { UI.showToast('Задача уже в корзине'); return; }
                 
                 App.showConfirm('Переместить задачу в корзину?', () => {
                     found.folder.tasks = found.folder.tasks.filter(t => t.id !== tid);
@@ -2453,7 +2453,7 @@
                 if (idx === -1) return;
                 const task = trash.tasks.splice(idx, 1)[0];
                 const target = State.getFolders().find(f => f.id !== SMART_FOLDERS.TRASH);
-                if (!target) { UI.showToast('❌ Создайте папку сначала'); return; }
+                if (!target) { UI.showToast('Создайте папку сначала'); return; }
                 target.tasks.push(task);
                 State.save();
                 UI.renderAll();
@@ -2645,7 +2645,7 @@
             },
             addSubFolder(parentId) {
                 const parent = State.getFolderById(parentId) || State.findFolderById(parentId);
-                if (!parent || Utils.isSmartFolder(parentId)) { UI.showToast('❌ Нельзя'); return; }
+                if (!parent || Utils.isSmartFolder(parentId)) { UI.showToast('Нельзя'); return; }
                 
                 const overlay = getEl('actionOverlay');
                 const panel = getEl('actionPanel');
@@ -2708,7 +2708,7 @@
             },
             editFolder(fid) {
                 const f = fid ? State.getFolderById(fid) : State.getFolderById(State.getCurrentFolderId());
-                if (!f || Utils.isSmartFolder(f.id)) { UI.showToast('❌ Нельзя'); return; }
+                if (!f || Utils.isSmartFolder(f.id)) { UI.showToast('Нельзя'); return; }
                 
                 const overlay = getEl('actionOverlay');
                 const panel = getEl('actionPanel');
@@ -2956,7 +2956,7 @@
                 const ni = getEl('clientName'), pi = getEl('clientPhone'), di = getEl('clientDate');
                 if (!ni || !pi || !di) return;
                 const name = ni.value.trim(), phone = pi.value.trim(), date = di.value;
-                if (!name || !date) { UI.showToast('❌ Введите имя и дату'); return; }
+                if (!name || !date) { UI.showToast('Введите имя и дату'); return; }
                 State.addClient({ id: Utils.generateId(), name, phone, date });
                 ni.value = ''; pi.value = ''; di.value = '';
                 State.save(); UI.renderAll(); UI.showToast('Добавлен');
@@ -3048,7 +3048,7 @@
                         '\nВозраст: ' + a + ' ' + Utils.getAgeWord(a) + '\nТелефон: ' + (c.phone || '—')
                     );
                     window.open('mailto:fry1997@mail.ru?subject=' + subj + '&body=' + body);
-                } catch (e) { UI.showToast('❌ Ошибка'); }
+                } catch (e) { UI.showToast('Ошибка'); }
             },
             addNote() {
                 const nt = getEl('noteText');
@@ -3197,7 +3197,7 @@
                         URL.revokeObjectURL(url);
                         UI.showToast('Экспортировано');
                     }
-                } catch (e) { UI.showToast('❌ Ошибка'); }
+                } catch (e) { UI.showToast('Ошибка'); }
             },
             importData() {
                 const inp = document.createElement('input');
@@ -3223,21 +3223,21 @@
                                 localStorage.setItem(STORAGE_KEY, backup);
                                 State.load(); throw inner;
                             }
-                        } catch (err) { UI.showToast('❌ Ошибка: ' + err.message); }
+                        } catch (err) { UI.showToast('Ошибка: ' + err.message); }
                         document.body.removeChild(inp);
                     };
-                    reader.onerror = () => { UI.showToast('❌ Не удалось прочитать'); document.body.removeChild(inp); };
+                    reader.onerror = () => { UI.showToast('Не удалось прочитать'); document.body.removeChild(inp); };
                     reader.readAsText(file);
                 });
                 inp.click();
             },
             requestNotification() {
-                if (!('Notification' in window)) { UI.showToast('❌ Не поддерживаются'); return; }
+                if (!('Notification' in window)) { UI.showToast('Не поддерживаются'); return; }
                 if (Notification.permission === 'granted') { Actions.checkAndNotify(); }
                 else if (Notification.permission !== 'denied') {
                     Notification.requestPermission().then(p => {
                         if (p === 'granted') Actions.checkAndNotify();
-                        else UI.showToast('❌ Разрешите в настройках');
+                        else UI.showToast('Разрешите в настройках');
                     });
                 }
             },
@@ -3335,7 +3335,7 @@
                     State.save();
                     UI.renderAll();
                     UI.showToast('Перемещена');
-                } catch (err) { UI.showToast('❌ Ошибка'); }
+                } catch (err) { UI.showToast('Ошибка'); }
             },
             openDateView: function(ds) { Actions.openDateView(ds); },
             goToFolder: function(folderName) {
@@ -4043,7 +4043,7 @@
                 inp.onchange = function(e) {
                     const file = e.target.files[0];
                     if (!file) return;
-                    if (file.size > 500000) { UI.showToast('❌ Фото слишком большое (макс 500 КБ)'); return; }
+                    if (file.size > 500000) { UI.showToast('Фото слишком большое (макс 500 КБ)'); return; }
                     const reader = new FileReader();
                     reader.onload = function(ev) {
                         const bgLayer = document.getElementById('bgLayer');
@@ -4127,7 +4127,7 @@
                 e.preventDefault();
                 try { handleAction(action, t.dataset); } catch (err) {
                     console.error('Action error:', action, err);
-                    UI.showToast('❌ Ошибка');
+                    UI.showToast('Ошибка');
                 }
             });
 
