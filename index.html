@@ -2286,8 +2286,10 @@
                     '</select>' +
                     '<input type="number" id="popupTaskRepeatDays" placeholder="Дней" min="1" max="365" style="display:none;width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSavePopupTask">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnSavePopupTask">Сохранить</button>' +
+                    '<button id="btnCancelPopupTask">Отмена</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -2327,6 +2329,7 @@
                     App._closePanel();
                     UI.showToast('Задача добавлена!');
                 };
+                document.getElementById('btnCancelPopupTask').onclick = () => App._closePanel();
             },
             editTask(tid) {
                 const found = Utils.findTaskById(tid);
@@ -2369,8 +2372,10 @@
                     '</div>' +
                     '<button class="action-panel-btn" onclick="App._closePanel();App.showMovePanel(\'' + task.id + '\')" style="margin-bottom:2px;">Переместить</button>' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveTask">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnSaveTask">Сохранить</button>' +
+                    '<button id="btnCancelTask">Отмена</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -2411,6 +2416,7 @@
                     App._closePanel();
                     UI.showToast('Задача обновлена');
                 };
+                document.getElementById('btnCancelTask').onclick = () => App._closePanel();
             },
             deleteTask(tid) {
                 const found = Utils.findTaskById(tid);
@@ -2492,8 +2498,10 @@
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время (необязательно)</label>' +
                     '<input type="time" id="subtaskTime" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveSubtask">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnSaveSubtask">Сохранить</button>' +
+                    '<button id="btnCancelSubtask">Отмена</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -2521,6 +2529,7 @@
                     App._closePanel();
                     UI.showToast('Подзадача добавлена');
                 };
+                document.getElementById('btnCancelSubtask').onclick = () => App._closePanel();
             },
             toggleSubtask(tid, sid) {
                 const found = Utils.findTaskById(tid);
@@ -2553,8 +2562,10 @@
                     '<button type="button" onclick="document.getElementById(\'subtaskTime\').value=\'\'" style="padding:12px 14px;border-radius:14px;border:1.5px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:14px;white-space:nowrap;">✕</button>' +
                     '</div>' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveSubtask">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnSaveSubtask">Сохранить</button>' +
+                    '<button id="btnCancelSubtaskEdit">Отмена</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -2582,6 +2593,7 @@
                     App._closePanel();
                     UI.showToast('Обновлено');
                 };
+                document.getElementById('btnCancelSubtaskEdit').onclick = () => App._closePanel();
             },
             deleteSubtask(tid, sid) {
                 App.showConfirm('Удалить подзадачу?', () => {
@@ -2962,13 +2974,15 @@
                     
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Телефон</label>' +
                     '<input type="tel" id="editClientPhone" value="' + Utils.escapeHtml(c.phone || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Телефон">' +
-                    
+            
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дата рождения</label>' +
                     '<input type="date" id="editClientDate" value="' + (c.date || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveClient">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnSaveClient">Сохранить</button>' +
+                    '<button id="btnCancelClient">Отмена</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -3005,6 +3019,7 @@
                     App._closePanel();
                     UI.showToast('Обновлено');
                 };
+                document.getElementById('btnCancelClient').onclick = () => App._closePanel();
             },
             deleteClient(cid) {
                 App.showConfirm('Удалить клиента?', () => {
