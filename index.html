@@ -2911,44 +2911,161 @@
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
                 
-                title.textContent = 'Оформление';
-                title.style.display = 'block';
-                
                 const savedPreset = localStorage.getItem('theme_preset') || '';
+                const savedBg = localStorage.getItem('bg_image') || '';
                 
-                buttons.innerHTML =
-                    '<div style="padding:4px 0 12px;text-align:center;font-size:15px;font-weight:600;color:var(--text);">Тема</div>' +
-                    '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">' +
-                    '<button onclick="event.stopPropagation();App._applyPreset(\'basic\')" style="width:70px;padding:10px 8px;border-radius:12px;border:2px solid ' + (savedPreset === 'basic' ? 'var(--accent)' : 'var(--border)') + ';background:transparent;cursor:pointer;font-size:12px;color:var(--text);">Basic</button>' +
-                    '<button onclick="event.stopPropagation();App._applyPreset(\'forest\')" style="width:70px;padding:10px 8px;border-radius:12px;border:2px solid ' + (savedPreset === 'forest' ? 'var(--accent)' : 'var(--border)') + ';background:transparent;cursor:pointer;font-size:12px;color:var(--text);">Forest</button>' +
-                    '<button onclick="event.stopPropagation();App._applyPreset(\'sunset\')" style="width:70px;padding:10px 8px;border-radius:12px;border:2px solid ' + (savedPreset === 'sunset' ? 'var(--accent)' : 'var(--border)') + ';background:transparent;cursor:pointer;font-size:12px;color:var(--text);">Sunset</button>' +
-                    '<button onclick="event.stopPropagation();App._applyPreset(\'ocean\')" style="width:70px;padding:10px 8px;border-radius:12px;border:2px solid ' + (savedPreset === 'ocean' ? 'var(--accent)' : 'var(--border)') + ';background:transparent;cursor:pointer;font-size:12px;color:var(--text);">Ocean</button>' +
-                    '</div>' +
+                const showMain = () => {
+                    title.textContent = 'Оформление';
+                    title.style.display = 'block';
                     
-                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    const presetColors = {
+                        basic: '#232220',
+                        forest: '#252825',
+                        sunset: '#2d2624',
+                        ocean: '#242a2d'
+                    };
+                    const currentBg = presetColors[savedPreset] || presetColors['basic'];
                     
-                    '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Своя тема</label>' +
-                    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">' +
-                    '<input type="color" id="customColorInput" value="' + (localStorage.getItem('custom_theme') || '#6b4c3b') + '" style="width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;padding:0;overflow:hidden;background:transparent;-webkit-appearance:none;flex-shrink:0;" onchange="App._applyCustomColor(this.value)">' +
-                    '<span id="customColorLabel" style="font-size:14px;color:var(--text);">Выбрать свой цвет</span>' +
-                    '</div>' +
+                    buttons.innerHTML =
+                        '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Тема</div>' +
+                        '<div class="icon-preview">' +
+                        '<div class="icon-preview-circle" id="themePreviewCircle" style="background:' + currentBg + ';cursor:pointer;">' +
+                        '</div>' +
+                        '<button class="btn-choose-icon" id="btnOpenThemeGrid">Выбрать тему</button>' +
+                        '</div>' +
+                        
+                        '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Своя тема</div>' +
+                        '<div class="icon-preview">' +
+                        '<div class="icon-preview-circle" id="customColorCircle" style="' + (localStorage.getItem('custom_theme') ? 'background:' + localStorage.getItem('custom_theme') + ';' : 'background:' + currentBg + ';') + ';cursor:pointer;">' +
+                        '</div>' +
+                        '<button class="btn-choose-icon" id="btnPickCustomColor">Выбрать свой цвет</button>' +
+                        '<input type="color" id="customColorInput" value="' + (localStorage.getItem('custom_theme') || presetColors['basic']) + '" style="position:absolute;opacity:0;width:0;height:0;">' +
+                        '</div>' +
+                        
+                        '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Фото фона</div>' +
+                        '<div class="icon-preview">' +
+                        '<div class="icon-preview-circle" id="bgPhotoCircle" style="' + (savedBg ? 'background-image:url(' + savedBg + ');background-size:cover;background-position:center;' : '') + ';cursor:pointer;">' +
+                        '</div>' +
+                        '<button class="btn-choose-icon" id="btnPickBgPhoto">Выбрать фото для фона</button>' +
+                        '</div>' +
+                        
+                        (savedBg ? '<button class="action-panel-btn delete" id="btnClearBgPhoto" style="margin-top:4px;">✕ Убрать фон</button>' : '') +
+                        
+                        '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                        
+                        '<div class="action-buttons-row">' +
+                        '<button id="btnCloseTheme">Закрыть</button>' +
+                        '</div>';
                     
-                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    panel.className = 'action-panel centered';
+                    overlay.style.display = 'block';
+                    panel.style.display = 'block';
                     
-                    '<button class="action-panel-btn" onclick="App._pickPhoto()" style="margin-bottom:8px;">Выбрать фото для фона</button>' +
+                    document.getElementById('btnCloseTheme').onclick = () => App._closePanel();
                     
-                    '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                    // Выбор темы — открыть сетку
+                    document.getElementById('btnOpenThemeGrid').onclick = (e) => { e.stopPropagation(); showThemeGrid(); };
+                    document.getElementById('themePreviewCircle').onclick = () => {
+                        document.getElementById('btnOpenThemeGrid').click();
+                    };
                     
-                    '<div class="action-buttons-row">' +
-                    '<button id="btnCloseTheme">Закрыть</button>' +
-                    '</div>';
+                    // Выбор своего цвета
+                    document.getElementById('customColorCircle').onclick = () => {
+                        document.getElementById('customColorInput').click();
+                    };
+                    document.getElementById('btnPickCustomColor').onclick = () => {
+                        document.getElementById('customColorInput').click();
+                    };
+                    
+                    const cp = document.getElementById('customColorInput');
+                    if (cp) cp.oninput = () => {
+                        document.getElementById('customColorCircle').style.background = cp.value;
+                        App._applyCustomColor(cp.value);
+                    };
+                    
+                    // Выбор фото фона
+                    document.getElementById('bgPhotoCircle').onclick = () => {
+                        document.getElementById('btnPickBgPhoto').click();
+                    };
+                    document.getElementById('btnPickBgPhoto').onclick = (e) => {
+                        e.stopPropagation();
+                        const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+                        inp.onchange = (ev) => {
+                            const file = ev.target.files[0]; if (!file) return;
+                            if (file.size > 500000) { UI.showToast('Фото слишком большое (макс 500 КБ)'); return; }
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                                const bgLayer = document.getElementById('bgLayer');
+                                if (bgLayer) {
+                                    bgLayer.style.backgroundImage = 'url(' + event.target.result + ')';
+                                    bgLayer.style.display = 'block';
+                                }
+                                document.body.classList.add('bg-image');
+                                localStorage.setItem('bg_image', event.target.result);
+                                document.getElementById('bgPhotoCircle').style.backgroundImage = 'url(' + event.target.result + ')';
+                                document.getElementById('bgPhotoCircle').style.backgroundSize = 'cover';
+                                document.getElementById('bgPhotoCircle').style.backgroundPosition = 'center';
+                                UI.showToast('Фон обновлён');
+                            };
+                            reader.readAsDataURL(file);
+                        };
+                        inp.click();
+                    };
+                    
+                    // Убрать фон
+                    const btnClearBg = document.getElementById('btnClearBgPhoto');
+                    if (btnClearBg) btnClearBg.onclick = (e) => {
+                        e.stopPropagation();
+                        localStorage.removeItem('bg_image');
+                        document.body.classList.remove('bg-image');
+                        const bgLayer = document.getElementById('bgLayer');
+                        if (bgLayer) { bgLayer.style.backgroundImage = ''; bgLayer.style.display = 'none'; }
+                        document.getElementById('bgPhotoCircle').style.backgroundImage = '';
+                        UI.showToast('Фон убран');
+                    };
+                };
                 
-                panel.className = 'action-panel centered';
+                const showThemeGrid = () => {
+                    title.textContent = 'Выберите тему';
+                    
+                    const themes = ['basic', 'forest', 'sunset', 'ocean'];
+                    const themeNames = { basic: 'Basic', forest: 'Forest', sunset: 'Sunset', ocean: 'Ocean' };
+                    const themeColors = { basic: '#232220', forest: '#252825', sunset: '#2d2624', ocean: '#242a2d' };
+                    
+                    let gridHTML = '<div class="icon-grid" style="grid-template-columns: repeat(4, 1fr);">';
+                    themes.forEach(theme => {
+                        gridHTML += '<div class="icon-grid-item' + (savedPreset === theme ? ' selected' : '') + '" data-theme="' + theme + '" style="position:relative;">' +
+                            '<div style="width:36px;height:36px;border-radius:50%;background:' + themeColors[theme] + ';"></div>' +
+                            '</div>';
+                    });
+                    gridHTML += '</div>';
+                    gridHTML += '<div style="text-align:center;margin-top:4px;font-size:11px;color:var(--text-secondary);">' +
+                        themes.map(t => '<span style="margin:0 8px;">' + themeNames[t] + '</span>').join('') + '</div>';
+                    
+                    buttons.innerHTML = gridHTML +
+                        '<div class="settings-divider" style="margin:8px 0;"></div>' +
+                        '<div class="action-buttons-row">' +
+                        '<button id="btnBackFromThemeGrid">Назад</button>' +
+                        '</div>';
+                    
+                    document.querySelectorAll('.icon-grid-item').forEach(item => {
+                        item.onclick = () => {
+                            document.querySelectorAll('.icon-grid-item').forEach(el => el.classList.remove('selected'));
+                            item.classList.add('selected');
+                            const theme = item.dataset.theme;
+                            App._applyPreset(theme);
+                            localStorage.setItem('theme_preset', theme);
+                            localStorage.removeItem('custom_theme');
+                            document.getElementById('themePreviewCircle').style.background = themeColors[theme];
+                            document.getElementById('customColorCircle').style.background = themeColors[theme];
+                            document.getElementById('customColorInput').value = themeColors[theme];
+                        };
+                    });
+                    
+                    document.getElementById('btnBackFromThemeGrid').onclick = () => showMain();
+                };
                 
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
-                
-            document.getElementById('btnCloseTheme').onclick = () => App._closePanel();
+                showMain();  
                 
             },
             setTaskFilter(filter) { State.setCurrentTaskFilter(filter); State.save(); UI.renderTasks(); },
