@@ -858,6 +858,13 @@
         .action-buttons-row button.delete:hover {
             background: var(--danger-light);
         }
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+            text-align: center;
+        }
         
     </style>
     <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22%D0%9C%D0%BE%D0%B8%20%D0%BF%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22short_name%22%3A%22%D0%9F%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23232220%22%2C%22theme_color%22%3A%22%236b4c3b%22%7D">
@@ -986,7 +993,7 @@
             <div class="card">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                     <button class="btn-sm" id="btnPrevMonth" style="background:var(--accent-light);color:var(--accent);">←</button>
-                    <h3 id="calendarTitle"></h3>
+                    <div class="section-title" id="calendarTitle"></div>
                     <button class="btn-sm" id="btnNextMonth" style="background:var(--accent-light);color:var(--accent);">→</button>
                 </div>
                 <div class="calendar-grid" id="calendarGrid"></div>
@@ -1008,7 +1015,7 @@
         <div class="section" id="section-ai"><div class="card"><div id="aiContent"></div></div></div>
         <div class="section" id="section-clients">
             <div class="card">
-                <h3 style="text-align:center;">Дни рождения</h3>
+                <div class="section-title">Дни рождения</div>
                 <form style="display:flex;gap:6px;flex-wrap:wrap;" onsubmit="return false;">
                     <input type="text" class="input" id="clientName" placeholder="ФИО" style="flex:2;">
                     <input type="tel" class="input" id="clientPhone" placeholder="Телефон" style="flex:1;">
@@ -2168,7 +2175,7 @@
                     c.innerHTML = '<p style="text-align:center;padding:20px;">Всё под контролем!</p>';
                     return;
                 }
-                c.innerHTML = '<strong style="display:block;margin-bottom:8px;">Ближайшие события:</strong>' +
+                c.innerHTML = '<div class="section-title">Ближайшие события</div>' +
                     upcoming.map(x => 
                         '<div class="client-card" style="margin-bottom:8px;">' +
                         '<span>' + Utils.escapeHtml(x.name) + ' — через ' + x.daysUntil + ' дн.</span>' +
