@@ -1544,7 +1544,7 @@
                         '" onclick="App.openDateView(\'' + d.dateStr + '\')">' +
                         '<div class="week-day-name">' + d.dayName + '</div>' +
                         '<div class="week-day-date">' + d.dayOfMonth + '</div>' +
-                        '<div class="week-day-count">' + (d.count ? '📋 ' + d.count : '—') + '</div></div>';
+                        '<div class="week-day-count">' + (d.count ? d.count : '—') + '</div></div>';
                 }
                 c.innerHTML = h;
             }
@@ -1593,7 +1593,7 @@
                     '" data-action="' + A.OPEN_FOLDER + '" data-folder-id="' + id + '">' +
                     '<span class="folder-icon">' + icon + '</span>' +
                     '<div class="folder-info"><div class="folder-name">' + name + '</div>' +
-                    '<div class="folder-stats"><span class="stat-active"' + style + '>📋 ' + count + ' задач</span></div></div></div>';
+                    '<div class="folder-stats"><span class="stat-active"' + style + '>' + count + ' задач</span></div></div></div>';
             }
             function buildFolderCardHTML(f) {
                 const stats = Utils.getFolderStats(f);
@@ -1869,7 +1869,7 @@
                     const di = Utils.getDaysText(dtc);
                     h += di
                         ? '<span class="days-badge ' + di.className + '">' + di.text + '</span>'
-                        : '<span>📅 ' + Utils.formatDate(task.date) + '</span>';
+                        : '<span>' + Utils.formatDate(task.date) + '</span>';
                 }
                 return h;
             }
@@ -1937,7 +1937,7 @@
                     return;
                 }
 
-                let html = '<strong>📅 ' + Utils.formatDate(selectedDate) + '</strong><br>';
+                let html = '<strong>' + Utils.formatDate(selectedDate) + '</strong><br>';
                 tasks.forEach(t => {
                     if (t.type === TASK_TYPES.BIRTHDAY) {
                         html += '<div class="task-item">🎂 ' + Utils.escapeHtml(t.text) + '</div>';
@@ -1969,7 +1969,7 @@
                 const sorted = Services.getClientsSorted();
                 c.innerHTML = sorted.map(x => {
                     const ds = x.birthday.getDate() + ' ' + x.birthday.toLocaleDateString('ru-RU', { month: 'long' }) + ' ' + x.birthday.getFullYear();
-                    const st = x.daysUntil === 0 ? 'Сегодня!' : x.daysUntil === 1 ? 'Завтра!' : '📅 ' + ds + ' (через ' + x.daysUntil + ' дн.)';
+                    const st = x.daysUntil === 0 ? 'Сегодня!' : x.daysUntil === 1 ? 'Завтра!' : ds + ' (через ' + x.daysUntil + ' дн.)';
                     return '<div class="client-card" onclick="App.showClientPanel(event, \'' + x.id + '\', \'' + Utils.escapeHtml(x.name).replace(/'/g, "\\'") + '\')">' +
                         '<span><strong>' + Utils.escapeHtml(x.name) + '</strong> — ' + Utils.formatDate(x.date) + ' (' + x.age + ' ' + Utils.getAgeWord(x.age) + ')</span>' +
                         (x.phone ? '<span>📱 ' + Utils.escapeHtml(x.phone) + '</span>' : '') +
@@ -3577,20 +3577,20 @@
                 const s = App._settings;
                 
                 buttons.innerHTML =
-                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">✏️ Название приложения</label>' +
+                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Название приложения</label>' +
                     '<input type="text" id="settingsAppName" value="' + Utils.escapeHtml(s.appName || 'День за днём') + '" onchange="App._updateSetting(\'appName\', this.value)" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);font-size:15px;font-family:var(--font);background:rgba(46,44,41,0.9);color:var(--text);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">📅 Календарь</span><button class="settings-toggle' + (s.showCalendar !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showCalendar\', this)"></button></div>' +
-                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">📊 Статистика</span><button class="settings-toggle' + (s.showStats !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showStats\', this)"></button></div>' +
-                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">🧠 ИИ</span><button class="settings-toggle' + (s.showAI !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showAI\', this)"></button></div>' +
-                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">👥 Дни рождения</span><button class="settings-toggle' + (s.showClients !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showClients\', this)"></button></div>' +
-                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">💡 Идеи</span><button class="settings-toggle' + (s.showIdeas !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showIdeas\', this)"></button></div>' +
+                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">Календарь</span><button class="settings-toggle' + (s.showCalendar !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showCalendar\', this)"></button></div>' +
+                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">Статистика</span><button class="settings-toggle' + (s.showStats !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showStats\', this)"></button></div>' +
+                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">ИИ</span><button class="settings-toggle' + (s.showAI !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showAI\', this)"></button></div>' +
+                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">Дни рождения</span><button class="settings-toggle' + (s.showClients !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showClients\', this)"></button></div>' +
+                    '<div class="settings-row" style="margin-bottom:4px;"><span style="font-size:14px;">Идеи</span><button class="settings-toggle' + (s.showIdeas !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showIdeas\', this)"></button></div>' +
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
-                    '<div class="settings-row" style="margin-bottom:8px;"><span style="font-size:14px;">📅 Обзор недели</span><button class="settings-toggle' + (s.showWeekOverview !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showWeekOverview\', this)"></button></div>' +
+                    '<div class="settings-row" style="margin-bottom:8px;"><span style="font-size:14px;">Обзор недели</span><button class="settings-toggle' + (s.showWeekOverview !== false ? ' on' : '') + '" onclick="App._toggleSetting(\'showWeekOverview\', this)"></button></div>' +
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
