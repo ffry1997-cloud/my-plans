@@ -3220,7 +3220,7 @@
                 
                 allFolders.forEach(f => {
                     const stats = Utils.getFolderStats(f);
-                    html += '<button class="action-panel-btn" onclick="App.moveFolderTo(\'' + folderId + '\',\'' + f.id + '\')">' + (f.icon || '📁') + ' ' + Utils.escapeHtml(f.name) + ' <span style="font-size:11px;opacity:0.6;">(' + stats.total + ')</span></button>';
+                    html += '<button class="action-panel-btn" onclick="App.moveFolderTo(\'' + folderId + '\',\'' + f.id + '\')"><svg style="width:20px;height:20px;fill:var(--text);flex-shrink:0;margin-right:8px;"><use href="#icon-' + (f.icon || 'folder') + '"></use></svg>' + Utils.escapeHtml(f.name) + ' <span style="font-size:11px;opacity:0.6;">(' + stats.total + ')</span></button>';
                 });
                 
                 buttons.innerHTML = html + 
