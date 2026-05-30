@@ -1886,8 +1886,9 @@
                 if (tasks.length) {
                     tl.innerHTML = tasks.map(t => {
                         if (t.type && t.type === TASK_TYPES.BIRTHDAY) {
-                            return '<div class="task-item" style="opacity:0.9"><div style="flex:1"><span class="task-text">🎂 ' +
-                                Utils.escapeHtml(t.text) + '</span><br><small style="color:var(--accent)">Сегодня праздник!</small></div>' +
+                            return '<div class="task-item" style="opacity:0.9">' +
+                                '<div style="flex:1;min-width:100px;"><span class="task-text">' + Utils.escapeHtml(t.text) + '</span>' +
+                                '<br><small style="color:var(--accent)">Сегодня праздник!</small></div>' +
                                 '<span class="days-badge today">Сегодня</span></div>';
                         }
                         return buildTaskHTML(t, t.folderId || fid, true);
