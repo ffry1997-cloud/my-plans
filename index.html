@@ -3554,6 +3554,9 @@
                 panel.style.display = 'none';
                 panel.className = 'action-panel';
                 getEl('actionOverlay').style.display = 'none';
+                const title = getEl('actionPanelTitle');
+                title.style.display = 'none';
+                title.textContent = '';
             },
         
             showActionPanel: function(e, taskId, folderId, taskText, isTrash) {
