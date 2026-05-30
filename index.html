@@ -2604,8 +2604,10 @@
                 buttons.innerHTML = 
                     '<input type="text" id="newFolderName" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название папки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveNewFolder">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnSaveNewFolder">Сохранить</button>' +
+                    '<button id="btnCancelNewFolder">Отмена</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -2626,6 +2628,8 @@
                     App._closePanel();
                     UI.showToast('Создана');
                 };
+                
+                document.getElementById('btnCancelNewFolder').onclick = () => App._closePanel();
             },
             addSubFolder(parentId) {
                 const parent = State.getFolderById(parentId) || State.findFolderById(parentId);
@@ -2642,8 +2646,10 @@
                 buttons.innerHTML = 
                     '<input type="text" id="newSubFolderName" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название подпапки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveNewSubFolder">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnSaveNewSubFolder">Сохранить</button>' +
+                    '<button id="btnCancelNewSubFolder">Отмена</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 overlay.style.display = 'block';
@@ -2672,6 +2678,7 @@
                     App._closePanel();
                     UI.showToast('Подпапка создана');
                 };
+                document.getElementById('btnCancelNewSubFolder').onclick = () => App._closePanel();
             },
             deleteSubFolder(parentId, subFolderId) {
                 const sub = State.findFolderById(subFolderId);
@@ -2702,8 +2709,10 @@
                 buttons.innerHTML = 
                     '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(f.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название папки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                    '<button class="action-panel-btn" id="btnSaveFolderName">Сохранить</button>' +
-                    '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                    '<div class="action-buttons-row">' +
+                    '<button id="btnSaveFolderName">Сохранить</button>' +
+                    '<button id="btnCancelFolderName">Отмена</button>' +
+                    '</div>';
                 
                 panel.className = 'action-panel centered';
                 
@@ -2725,6 +2734,7 @@
                     App._closePanel();
                     UI.showToast('Папка переименована');
                 };
+                document.getElementById('btnCancelFolderName').onclick = () => App._closePanel();
             },
             changeFolderIcon(fid) {
                 const f = State.getFolderById(fid);
@@ -3628,8 +3638,10 @@
                         buttons.innerHTML = 
                             '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(sub.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название подпапки">' +
                             '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                            '<button class="action-panel-btn" id="btnSaveSubFolderName">Сохранить</button>' +
-                            '<button class="settings-close" onclick="App._closePanel()">Отмена</button>';
+                            '<div class="action-buttons-row">' +
+                            '<button id="btnSaveSubFolderName">Сохранить</button>' +
+                            '<button id="btnCancelSubFolderName">Отмена</button>' +
+                            '</div>';
                         
                         panel.className = 'action-panel centered';
                         overlay.style.display = 'block';
@@ -3649,6 +3661,7 @@
                             App._closePanel();
                             UI.showToast('Подпапка переименована');
                         };
+                        document.getElementById('btnCancelSubFolderName').onclick = () => App._closePanel();
                     }
                 } else if (action === 'icon') {
                     if (sub && !Utils.isSmartFolder(folderId)) {
