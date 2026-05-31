@@ -1960,6 +1960,14 @@
                         e.stopPropagation();
                         State.setCurrentTaskFilter(FILTERS.COMPLETED); State.save(); UI.renderTasks();
                     });
+                    // Если экран узкий или название длинное — сокращаем кнопку
+                    if (window.innerWidth <= 400 || folderDisplayName.length > 20) {
+                        const btn = document.getElementById('btnAddTaskTop');
+                        if (btn) {
+                            btn.textContent = '+';
+                            btn.style.padding = '8px 12px';
+                        }
+                    }
                 }, 50);
 
                 const tl = getEl('taskList');
