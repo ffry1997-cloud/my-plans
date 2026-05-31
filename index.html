@@ -918,9 +918,6 @@
         <div class="menu-dropdown" id="menuDropdown">
             <button class="menu-item" id="btnSearchMenu">Поиск</button>
             <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0;"></div>
-            <button class="menu-item" id="btnNewFolderMenu">Новая папка</button>
-            <button class="menu-item" id="btnNewNoteMenu">Новая заметка</button>
-            <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0;"></div>
             <button class="menu-item" id="btnNotifyMenu">Уведомления</button>
             <button class="menu-item" id="btnSettingsMenu">Настройки</button>
             <button class="menu-item" id="btnAppearanceMenu">Внешний вид <span style="margin-left:auto;font-size:12px;">▼</span></button>
@@ -4361,15 +4358,6 @@
                 Actions.requestNotification();
             });
             getEl('btnBackToFolders').addEventListener('click', Actions.goBackToFolders);
-            getEl('btnNewFolderMenu').addEventListener('click', Actions.addFolder);
-            getEl('btnNewNoteMenu').addEventListener('click', function() {
-                document.querySelectorAll('#mainTabs .tab').forEach(t => t.classList.remove('active'));
-                document.querySelector('#mainTabs .tab[data-tab="ideas"]').classList.add('active');
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                getEl('section-ideas').classList.add('active');
-                UI.renderAll();
-                setTimeout(() => getEl('noteText').focus(), 200);
-            });
             getEl('btnThemeCustom').addEventListener('click', function() {
                 getEl('menuDropdown').classList.remove('show');
                 getEl('appearanceSubmenu').style.display = 'none';
