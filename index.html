@@ -7,9 +7,9 @@
             var preset = localStorage.getItem('theme_preset');
             var color = localStorage.getItem('custom_theme');
             var root = document.documentElement;
-            if (preset === 'forest') { root.style.cssText = '--bg:#252825;--card:#30332e;--text:#e0e4dd;--accent:#7aaa7a;--accent-light:rgba(122,170,122,0.2);'; }
-            else if (preset === 'sunset') { root.style.cssText = '--bg:#2d2624;--card:#38322e;--text:#e8ddd9;--accent:#c97d6b;--accent-light:rgba(201,125,107,0.2);'; }
-            else if (preset === 'ocean') { root.style.cssText = '--bg:#242a2d;--card:#2e3438;--text:#dde4e8;--accent:#6b8a9e;--accent-light:rgba(107,138,158,0.2);'; }
+            if (preset === 'forest') { root.style.setProperty('--bg','#252825'); root.style.setProperty('--card','#30332e'); root.style.setProperty('--text','#e0e4dd'); root.style.setProperty('--accent','#7aaa7a'); root.style.setProperty('--accent-light','rgba(122,170,122,0.2)'); }
+            else if (preset === 'sunset') { root.style.setProperty('--bg','#2d2624'); root.style.setProperty('--card','#38322e'); root.style.setProperty('--text','#e8ddd9'); root.style.setProperty('--accent','#c97d6b'); root.style.setProperty('--accent-light','rgba(201,125,107,0.2)'); }
+            else if (preset === 'ocean') { root.style.setProperty('--bg','#242a2d'); root.style.setProperty('--card','#2e3438'); root.style.setProperty('--text','#dde4e8'); root.style.setProperty('--accent','#6b8a9e'); root.style.setProperty('--accent-light','rgba(107,138,158,0.2)'); }
             if (color) { root.style.setProperty('--accent', color); root.style.setProperty('--accent-light', color + '33'); }
             var bg = localStorage.getItem('bg_image');
             if (bg) {
