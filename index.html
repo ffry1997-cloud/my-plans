@@ -1934,10 +1934,10 @@
                 const currentFilter = State.getCurrentTaskFilter();
                 const isActive = currentFilter === FILTERS.ACTIVE;
                 getEl('currentFolderName').innerHTML = 
-                    '<div id="folderHeaderRow" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;width:100%;">' +
-                    '<button class="btn-sm btn-add" id="btnAddTaskTop" style="padding:8px 14px;border-radius:22px;font-size:13px;white-space:nowrap;flex-shrink:0;">+ Задача</button>' +
-                    '<span style="font-weight:700;font-size:16px;text-align:center;word-break:break-word;min-width:0;flex:1 1 auto;">' + folderDisplayName + '</span>' +
-                    '<button id="statFilterBtn" style="display:flex;align-items:center;gap:0;cursor:pointer;background:transparent;border:1.5px solid var(--border);border-radius:22px;padding:0;overflow:hidden;flex-shrink:0;">' +
+                    '<div style="display:flex;align-items:center;justify-content:center;width:100%;position:relative;">' +
+                    '<button class="btn-sm btn-add" id="btnAddTaskTop" style="padding:8px 14px;border-radius:22px;font-size:13px;white-space:nowrap;position:absolute;left:0;">+ Задача</button>' +
+                    '<span style="font-weight:700;font-size:16px;text-align:center;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + folderDisplayName + '</span>' +
+                    '<button id="statFilterBtn" style="display:flex;align-items:center;gap:0;cursor:pointer;background:transparent;border:1.5px solid var(--border);border-radius:22px;padding:0;overflow:hidden;position:absolute;right:0;">' +
                     '<span id="statActivePart" style="padding:8px 12px;font-size:13px;font-weight:600;color:' + (isActive ? 'var(--accent)' : 'var(--text-secondary)') + ';background:transparent;border-radius:22px 0 0 22px;">' + stats.active + '</span>' +
                     '<span style="color:var(--border);font-weight:300;padding:8px 0;font-size:13px;">/</span>' +
                     '<span id="statCompletedPart" style="padding:8px 12px;font-size:13px;font-weight:600;color:' + (!isActive ? 'var(--accent)' : 'var(--text-secondary)') + ';background:transparent;border-radius:0 22px 22px 0;">' + stats.completed + '</span>' +
@@ -1960,14 +1960,6 @@
                         e.stopPropagation();
                         State.setCurrentTaskFilter(FILTERS.COMPLETED); State.save(); UI.renderTasks();
                     });
-
-                    // Проверка на переполнение
-                    const row = document.getElementById('folderHeaderRow');
-                    const btn = document.getElementById('btnAddTaskTop');
-                    if (row && btn && row.scrollWidth > row.clientWidth) {
-                        btn.textContent = '+';
-                        btn.style.padding = '8px 12px';
-                    }
                 }, 50);
 
                 const tl = getEl('taskList');
