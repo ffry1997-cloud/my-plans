@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -70,6 +68,9 @@
             --space-sm: 8px;
             --space-md: 12px;
             --space-lg: 16px;
+            /* НОВЫЕ ПЕРЕМЕННЫЕ ДЛЯ УНИФИКАЦИИ */
+            --modal-bg: rgba(35, 34, 32, 0.95);
+            --modal-backdrop-filter: blur(10px);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
@@ -307,7 +308,6 @@
             border-left: 4px solid var(--danger) !important;
             background: rgba(212, 148, 154, 0.12) !important;
         }
-        /* Анимация для подпапок внутри папки */
         .card .folder-card { animation-duration: 0.2s; }
         .card .folder-card:nth-child(1) { animation-delay: 0.03s; }
         .card .folder-card:nth-child(2) { animation-delay: 0.06s; }
@@ -500,6 +500,24 @@
         .btn-xs:hover { background: var(--border); }
 
         /* ========================================
+           ЕДИНЫЙ КЛАСС ДЛЯ ПОЛЕЙ ВВОДА В МОДАЛЬНЫХ ОКНАХ
+           ======================================== */
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1.5px solid var(--border);
+            background: rgba(46, 44, 41, 0.9);
+            color: var(--text);
+            font-size: var(--fs-md);
+            font-family: var(--font);
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: var(--space-md);
+        }
+        .form-input:focus { border-color: var(--accent); }
+
+        /* ========================================
            КАЛЕНДАРЬ
            ======================================== */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
@@ -538,12 +556,24 @@
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         .scroll-top-btn.visible { opacity: 1; pointer-events: auto; }
+        
+        /* ========================================
+           УНИФИЦИРОВАННЫЕ СТИЛИ МОДАЛЬНЫХ ОКОН
+           ======================================== */
+        .action-panel,
+        .settings-panel,
+        .menu-dropdown {
+            background: var(--modal-bg);
+            backdrop-filter: var(--modal-backdrop-filter);
+            -webkit-backdrop-filter: var(--modal-backdrop-filter);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        
         .menu-dropdown {
             position: absolute; top: 50px; right: 0;
-            background: rgba(35, 34, 32, 0.95);
-            border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             z-index: 100; min-width: 190px; padding: var(--space-sm); display: none;
-            border: 1px solid var(--border);
             max-height: 70vh;
             overflow-y: auto;
         }
@@ -573,21 +603,30 @@
         .week-day-count { font-size: 10px; color: var(--accent); font-weight: 600; }
 
         /* ========================================
-           ПАНЕЛЬ ДЕЙСТВИЙ (ВСПЛЫВАЮЩЕЕ МЕНЮ)
+           ПАНЕЛЬ ДЕЙСТВИЙ (ВСПЛЫВАЮЩЕЕ МЕНЮ) — С АНИМАЦИЕЙ
            ======================================== */
         .action-panel {
-            position: fixed; background: rgba(35, 34, 32, 0.95);
-            border-radius: var(--radius); padding: 10px; z-index: 1000;
+            position: fixed;
+            padding: 10px;
+            z-index: 1000;
             box-shadow: 0 8px 28px rgba(0,0,0,0.4);
-            min-width: 200px; border: 1px solid var(--border);
-            opacity: 0; transform: scale(0.95);
+            min-width: 200px;
+            opacity: 0;
+            transform: scale(0.95);
             transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
         }
-        .action-panel.centered,
-        .action-panel[style*="display: block"] { opacity: 1; transform: scale(1); }
+        .action-panel.visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
         .action-panel.centered {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
             max-width: 360px; width: 90%; max-height: 80vh; overflow-y: auto;
+        }
+        .action-panel.visible.centered {
+            transform: translate(-50%, -50%) scale(1);
         }
         .action-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 998;
@@ -614,7 +653,7 @@
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: var(--card); border-radius: var(--radius); padding: var(--space-lg);
             z-index: 1000; min-width: 280px; max-width: 360px; width: 90%;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4); border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
         .settings-panel input[type="text"] {
             width: 100%; padding: var(--space-md) var(--space-lg); border-radius: var(--radius-lg);
@@ -646,6 +685,35 @@
             width: 100%; margin-top: var(--space-md); padding: 10px; border-radius: var(--radius-sm);
             border: 1px solid var(--border); background: transparent;
             font-size: 14px; cursor: pointer; color: var(--text); font-family: var(--font);
+        }
+
+        /* ========================================
+           ОВЕРЛЕЙ ДЛЯ БУРГЕР-МЕНЮ
+           ======================================== */
+        .menu-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 140;
+            animation: fadeInOverlay 0.2s ease;
+        }
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ========================================
+           СТИЛИ ФОКУСА ДЛЯ ДОСТУПНОСТИ
+           ======================================== */
+        .tab:focus-visible,
+        .task-filter-btn:focus-visible,
+        .action-panel-btn:focus-visible,
+        .menu-item:focus-visible,
+        .btn-sm:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 4px;
         }
 
         /* ========================================
@@ -702,31 +770,19 @@
         /* ========================================
            ИСПРАВЛЕНИЯ ДИЗАЙНА
            ======================================== */
-
         @supports (-webkit-touch-callout: none) {
             input, textarea, select { font-size: var(--fs-md) !important; }
         }
-
         .input, .search-input, .input-time { line-height: 1.5; }
-
         .app-container { padding: var(--space-sm) var(--space-md); }
-
         .task-item { padding: var(--space-md) var(--space-lg); margin-bottom: var(--space-sm); }
-
         .folder-card { padding: var(--space-md) var(--space-lg); }
-
         .action-panel { padding: var(--space-md); max-height: 80vh; overflow-y: auto; }
-
         .task-checkbox { width: 32px; height: 32px; }
-
         .stat-item { padding: var(--space-sm) var(--space-md); }
-
         .subtask-list { padding-left: 24px; }
-
         .subtask-item { padding: var(--space-xs) 0; }
-
         .days-badge, .repeat-badge { padding: var(--space-xs) var(--space-sm); }
-
         .subtask-item + .subtask-item { margin-top: 2px; }
         
         /* ========================================
@@ -764,8 +820,8 @@
             margin-top: 4px;
         }
         /* ========================================
-                   СЕТКА ВЫБОРА ИКОНОК
-         ======================================== */
+           СЕТКА ВЫБОРА ИКОНОК
+        ======================================== */
         .icon-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -838,7 +894,7 @@
         }
         .action-buttons-row button {
             flex: 1;
-            padding: 10px;
+            padding: var(--space-md) var(--space-lg);
             border-radius: var(--radius-lg);
             border: 1.5px solid var(--border);
             background: rgba(46,44,41,var(--opacity-btn));
@@ -867,6 +923,47 @@
             text-align: center;
         }
         
+        /* ========================================
+           АДАПТИВНОСТЬ ДЛЯ ПЛАНШЕТОВ
+           ======================================== */
+        @media (min-width: 768px) {
+            .folder-grid {
+                grid-template-columns: repeat(3, 150px);
+                gap: 16px;
+            }
+            .app-container {
+                padding: var(--space-lg) var(--space-xl);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .folder-grid {
+                grid-template-columns: repeat(4, 150px);
+                gap: 20px;
+            }
+            .app-container {
+                padding: var(--space-lg) 40px;
+            }
+        }
+
+        /* ========================================
+           АДАПТИВНОСТЬ ДЛЯ МАЛЕНЬКИХ ЭКРАНОВ
+           ======================================== */
+        @media (max-width: 360px) {
+            .days-badge,
+            .repeat-badge {
+                font-size: 10px;
+                padding: 2px 6px;
+            }
+            .task-item {
+                padding: var(--space-sm) var(--space-md);
+                gap: 6px;
+            }
+            .tab {
+                padding: var(--space-sm) 6px;
+                font-size: 11px;
+            }
+        }
     </style>
     <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22%D0%9C%D0%BE%D0%B8%20%D0%BF%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22short_name%22%3A%22%D0%9F%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23232220%22%2C%22theme_color%22%3A%22%236b4c3b%22%7D">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
@@ -1188,7 +1285,6 @@
                             });
                         });
                     }
-                    // Обходим подпапки
                     if (Array.isArray(folder.subfolders)) {
                         folder.subfolders.forEach(sub => collectFromFolder(sub));
                     }
@@ -1245,13 +1341,11 @@
                         const parsed = JSON.parse(saved);
                         if (parsed && typeof parsed === 'object') data = parsed;
                     }
-                } catch (e) { /* данные повреждены, используем значения по умолчанию */ }
+                } catch (e) {}
 
                 data.folders = Array.isArray(data.folders) ? data.folders : [];
-                // Миграция: добавляем subfolders старым папкам и подпапкам
                 data.folders.forEach(f => {
                     if (!Array.isArray(f.subfolders)) f.subfolders = [];
-                    // Рекурсивно проверяем подпапки
                     if (Array.isArray(f.subfolders)) {
                         f.subfolders.forEach(sub => {
                             if (!Array.isArray(sub.subfolders)) sub.subfolders = [];
@@ -1264,23 +1358,22 @@
                 data.currentTaskFilter = data.currentTaskFilter === FILTERS.COMPLETED ? FILTERS.COMPLETED : FILTERS.ACTIVE;
                 data.folderViewMode = data.folderViewMode || 'list';
 
-            function migrateFolder(folder) {
-                if (!folder.icon) folder.icon = DEFAULT_FOLDER_ICON;
-                if (folder.icon && folder.icon.length <= 4 && !folder.icon.startsWith('icon-')) {
-                    folder.icon = 'folder';
+                function migrateFolder(folder) {
+                    if (!folder.icon) folder.icon = DEFAULT_FOLDER_ICON;
+                    if (folder.icon && folder.icon.length <= 4 && !folder.icon.startsWith('icon-')) {
+                        folder.icon = 'folder';
+                    }
+                    folder.tasks = Utils.getValidTasksArray(folder.tasks);
+                    folder.tasks.forEach(t => {
+                        if (!Array.isArray(t.subtasks)) t.subtasks = [];
+                        if (t.priority === undefined || t.priority === null) t.priority = 0;
+                    });
+                    if (Array.isArray(folder.subfolders)) {
+                        folder.subfolders.forEach(sub => migrateFolder(sub));
+                    }
                 }
-                folder.tasks = Utils.getValidTasksArray(folder.tasks);
-                folder.tasks.forEach(t => {
-                    if (!Array.isArray(t.subtasks)) t.subtasks = [];
-                    if (t.priority === undefined || t.priority === null) t.priority = 0;
-                });
-                // Мигрируем подпапки
-                if (Array.isArray(folder.subfolders)) {
-                    folder.subfolders.forEach(sub => migrateFolder(sub));
-                }
-            }
-            
-            data.folders.forEach(f => migrateFolder(f));
+                
+                data.folders.forEach(f => migrateFolder(f));
             }
             function save() {
                 try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); updateTitle(); } catch (e) {}
@@ -1314,7 +1407,6 @@
                     data.folders.push(f); 
                 },
                 removeFolder: (id) => {
-                    // Проверяем, не является ли id подпапкой
                     for (const f of data.folders) {
                         if (Array.isArray(f.subfolders)) {
                             const idx = f.subfolders.findIndex(s => s.id === id);
@@ -1324,7 +1416,6 @@
                             }
                         }
                     }
-                    // Если не подпапка — удаляем корневую
                     data.folders = data.folders.filter(f => f.id !== id); 
                 },
                 getClientById: (id) => data.clients.find(c => c.id === id),
@@ -1333,9 +1424,7 @@
                 addNote: (n) => { data.notes.unshift(n); },
                 removeNote: (id) => { data.notes = data.notes.filter(n => n.id !== id); },
                 getNoteById: (id) => data.notes.find(n => n.id === id),
-                // Новые методы для подпапок
                 findFolderById: (id) => {
-                    // Ищет папку или подпапку по id во всей структуре
                     for (const f of data.folders) {
                         if (f.id === id) return f;
                         if (Array.isArray(f.subfolders)) {
@@ -1346,7 +1435,6 @@
                     return null;
                 },
                 getParentFolderId: (id) => {
-                    // Находит id родительской папки для подпапки
                     for (const f of data.folders) {
                         if (Array.isArray(f.subfolders)) {
                             if (f.subfolders.some(s => s.id === id)) return f.id;
@@ -1499,7 +1587,6 @@
                         } catch (e) {}
                     });
 
-                    // Обходим подпапки
                     if (Array.isArray(f.subfolders)) {
                         f.subfolders.forEach(sub => processFolder(sub));
                     }
@@ -1911,10 +1998,8 @@
                 if (!f) { tc.style.display = 'none'; fl.style.display = 'block'; return; }
 
                 tc.style.display = 'flex'; fl.style.display = 'none';
-                // Статистика папки
                 const stats = Utils.getFolderStats(f);
                 
-                // Формируем название папки
                 let folderDisplayName = f.name;
                 const parentId = State.getParentFolderId(fid);
                 if (parentId) {
@@ -1924,7 +2009,6 @@
                     }
                 }
                 
-                // Верхняя строка: все элементы с равными отступами
                 const currentFilter = State.getCurrentTaskFilter();
                 const isActive = currentFilter === FILTERS.ACTIVE;
                 getEl('currentFolderName').innerHTML = 
@@ -1938,7 +2022,6 @@
                     '</button>' +
                     '</div>';
                 
-                // Вешаем обработчики
                 setTimeout(() => {
                     const addBtn = document.getElementById('btnAddTaskTop');
                     if (addBtn) addBtn.addEventListener('click', function() { Actions.addTaskPopup(); });
@@ -1959,7 +2042,6 @@
                 const tl = getEl('taskList');
                 if (!tl) return;
                 let subfoldersHTML = '';
-                // --- НОВЫЙ БЛОК: подпапки в ряд ---
                 if (Array.isArray(f.subfolders) && f.subfolders.length > 0) {
                     subfoldersHTML += '<div style="margin-bottom:12px;">';
                     subfoldersHTML += '<div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">';
@@ -1986,7 +2068,6 @@
                         });
                     }
                     
-                    // Кнопка + и переключатель в том же ряду
                     if (!parentId) {
                         subfoldersHTML += '<button class="btn-sm btn-add" id="btnAddSubFolder" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="width:36px;height:36px;border-radius:50%;font-size:18px;padding:0;flex-shrink:0;opacity:0.4;transition:opacity 0.2s;" onmouseenter="this.style.opacity=\'1\'" onmouseleave="this.style.opacity=\'0.4\'">+</button>';
                     }
@@ -1994,7 +2075,6 @@
                     
                     subfoldersHTML += '</div></div>';
                 } else {
-                    // Нет подпапок — кнопка только для главной папки
                     if (!parentId) {
                         subfoldersHTML += '<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;">';
                         subfoldersHTML += '<button class="btn-sm btn-add" data-action="' + A.ADD_SUBFOLDER + '" data-folder-id="' + f.id + '" style="border-radius:50%;width:36px;height:36px;font-size:18px;padding:0;opacity:0.4;transition:opacity 0.2s;" onmouseenter="this.style.opacity=\'1\'" onmouseleave="this.style.opacity=\'0.4\'">+</button>';
@@ -2002,7 +2082,6 @@
                         subfoldersHTML += '</div>';
                     }
                 }
-                // --- КОНЕЦ БЛОКА ПОДПАПОК ---
 
                 const tasks = Utils.getValidTasksArray(f.tasks);
                 if (!tasks.length) {
@@ -2237,6 +2316,16 @@
         })();
 
         // ========================================
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ МОДАЛЬНЫХ ОКОН
+        // ========================================
+        function showPanel(panel, overlay) {
+            overlay.style.display = 'block';
+            requestAnimationFrame(() => {
+                panel.classList.add('visible');
+            });
+        }
+
+        // ========================================
         // ДЕЙСТВИЯ (ACTIONS)
         // ========================================
         const Actions = {
@@ -2312,13 +2401,13 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<textarea id="popupTaskText" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Текст задачи..."></textarea>' +
+                    '<textarea id="popupTaskText" class="form-input" style="min-height:60px;resize:vertical;" placeholder="Текст задачи..."></textarea>' +
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дата</label>' +
-                    '<input type="date" id="popupTaskDate" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<input type="date" id="popupTaskDate" class="form-input">' +
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время</label>' +
-                    '<input type="time" id="popupTaskTime" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<input type="time" id="popupTaskTime" class="form-input">' +
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Повтор</label>' +
-                    '<select id="popupTaskRepeat" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<select id="popupTaskRepeat" class="form-input">' +
                     '<option value="">Без повтора</option>' +
                     '<option value="daily">Ежедневно</option>' +
                     '<option value="weekly">Еженедельно</option>' +
@@ -2326,7 +2415,7 @@
                     '<option value="yearly">Ежегодно</option>' +
                     '<option value="custom">Свой период</option>' +
                     '</select>' +
-                    '<input type="number" id="popupTaskRepeatDays" placeholder="Дней" min="1" max="365" style="display:none;width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<input type="number" id="popupTaskRepeatDays" class="form-input" placeholder="Дней" min="1" max="365" style="display:none;">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<div class="action-buttons-row">' +
                     '<button id="btnSavePopupTask">Сохранить</button>' +
@@ -2334,8 +2423,8 @@
                     '</div>';
                 
                 panel.className = 'action-panel centered';
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                
+                showPanel(panel, overlay);
                 
                 document.getElementById('popupTaskRepeat').onchange = function() {
                     document.getElementById('popupTaskRepeatDays').style.display = this.value === 'custom' ? 'block' : 'none';
@@ -2388,18 +2477,18 @@
                 
                 buttons.innerHTML = 
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Текст задачи</label>' +
-                    '<textarea id="editTaskText" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;">' + Utils.escapeHtml(task.text) + '</textarea>' +
+                    '<textarea id="editTaskText" class="form-input" style="min-height:60px;resize:vertical;">' + Utils.escapeHtml(task.text) + '</textarea>' +
                     
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дата</label>' +
-                    '<input type="date" id="editTaskDate" value="' + (task.date || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<input type="date" id="editTaskDate" value="' + (task.date || '') + '" class="form-input">' +
                     
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время</label>' +
                     '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">' +
-                    '<input type="time" id="editTaskTime" value="' + (task.time || '') + '" style="flex:1;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;">' +
+                    '<input type="time" id="editTaskTime" value="' + (task.time || '') + '" class="form-input" style="margin-bottom:0;">' +
                     '<button type="button" onclick="document.getElementById(\'editTaskTime\').value=\'\'" style="padding:12px 14px;border-radius:14px;border:1.5px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:14px;white-space:nowrap;">✕</button>' +
                     '</div>' +              
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Повтор</label>' +
-                    '<select id="editTaskRepeat" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<select id="editTaskRepeat" class="form-input">' +
                     '<option value=""' + (!task.repeat ? ' selected' : '') + '>Без повтора</option>' +
                     '<option value="daily"' + (task.repeat === 'daily' ? ' selected' : '') + '>Ежедневно</option>' +
                     '<option value="weekly"' + (task.repeat === 'weekly' ? ' selected' : '') + '>Еженедельно</option>' +
@@ -2410,7 +2499,7 @@
                     
                     '<div id="editRepeatDaysRow" style="display:' + (task.repeat === 'custom' ? 'block' : 'none') + ';margin-bottom:12px;">' +
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дней</label>' +
-                    '<input type="number" id="editTaskRepeatDays" value="' + (task.repeatDays || '7') + '" min="1" max="365" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;">' +
+                    '<input type="number" id="editTaskRepeatDays" value="' + (task.repeatDays || '7') + '" min="1" max="365" class="form-input">' +
                     '</div>' +
                     '<button class="action-panel-btn" onclick="App._closePanel();App.showMovePanel(\'' + task.id + '\')" style="margin-bottom:2px;">Переместить</button>' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
@@ -2421,8 +2510,7 @@
                 
                 panel.className = 'action-panel centered';
                 
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                showPanel(panel, overlay);
                 
                 setTimeout(() => {
                     const inp = document.getElementById('editTaskText');
@@ -2433,7 +2521,6 @@
                     }
                 }, 100);
                 
-                // Показать/скрыть поле дней
                 document.getElementById('editTaskRepeat').onchange = function() {
                     document.getElementById('editRepeatDaysRow').style.display = this.value === 'custom' ? 'block' : 'none';
                 };
@@ -2536,9 +2623,9 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<textarea id="subtaskInput" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Текст подзадачи..."></textarea>' +
+                    '<textarea id="subtaskInput" class="form-input" style="min-height:60px;resize:vertical;" placeholder="Текст подзадачи..."></textarea>' +
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время (необязательно)</label>' +
-                    '<input type="time" id="subtaskTime" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<input type="time" id="subtaskTime" value="" class="form-input">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<div class="action-buttons-row">' +
                     '<button id="btnSaveSubtask">Сохранить</button>' +
@@ -2547,8 +2634,7 @@
                 
                 panel.className = 'action-panel centered';
                 
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                showPanel(panel, overlay);
                 
                 setTimeout(() => {
                     const inp = document.getElementById('subtaskInput');
@@ -2596,10 +2682,10 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<textarea id="subtaskInput" style="width:100%;min-height:60px;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);resize:vertical;outline:none;box-sizing:border-box;margin-bottom:12px;">' + Utils.escapeHtml(st.text) + '</textarea>' +
+                    '<textarea id="subtaskInput" class="form-input" style="min-height:60px;resize:vertical;">' + Utils.escapeHtml(st.text) + '</textarea>' +
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Время</label>' +
                     '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">' +
-                    '<input type="time" id="subtaskTime" value="' + (st.time || '') + '" style="flex:1;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;">' +
+                    '<input type="time" id="subtaskTime" value="' + (st.time || '') + '" class="form-input" style="margin-bottom:0;">' +
                     '<button type="button" onclick="document.getElementById(\'subtaskTime\').value=\'\'" style="padding:12px 14px;border-radius:14px;border:1.5px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:14px;white-space:nowrap;">✕</button>' +
                     '</div>' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
@@ -2610,8 +2696,7 @@
                 
                 panel.className = 'action-panel centered';
                 
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                showPanel(panel, overlay);
                 
                 setTimeout(() => {
                     const inp = document.getElementById('subtaskInput');
@@ -2655,7 +2740,7 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<input type="text" id="newFolderName" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название папки">' +
+                    '<input type="text" id="newFolderName" value="" class="form-input" placeholder="Название папки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<div class="action-buttons-row">' +
                     '<button id="btnSaveNewFolder">Сохранить</button>' +
@@ -2663,8 +2748,8 @@
                     '</div>';
                 
                 panel.className = 'action-panel centered';
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                
+                showPanel(panel, overlay);
                 
                 setTimeout(() => {
                     const inp = document.getElementById('newFolderName');
@@ -2697,7 +2782,7 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<input type="text" id="newSubFolderName" value="" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название подпапки">' +
+                    '<input type="text" id="newSubFolderName" value="" class="form-input" placeholder="Название подпапки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<div class="action-buttons-row">' +
                     '<button id="btnSaveNewSubFolder">Сохранить</button>' +
@@ -2705,8 +2790,8 @@
                     '</div>';
                 
                 panel.className = 'action-panel centered';
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                
+                showPanel(panel, overlay);
                 
                 setTimeout(() => {
                     const inp = document.getElementById('newSubFolderName');
@@ -2759,7 +2844,7 @@
                 title.style.display = 'block';
                 
                 buttons.innerHTML = 
-                    '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(f.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название папки">' +
+                    '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(f.name) + '" class="form-input" placeholder="Название папки">' +
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<div class="action-buttons-row">' +
                     '<button id="btnSaveFolderName">Сохранить</button>' +
@@ -2768,8 +2853,7 @@
                 
                 panel.className = 'action-panel centered';
                 
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                showPanel(panel, overlay);
                 
                 setTimeout(() => {
                     const inp = document.getElementById('folderNameInput');
@@ -2792,7 +2876,6 @@
                 const f = State.getFolderById(fid);
                 if (!f || Utils.isSmartFolder(fid)) { UI.showToast('Нельзя'); return; }
                 
-                // Иконки
                 const icons = ['folder','star','heart','globe','bell-ringing','book','buildings','camera','caret-down','chat','clock','home','cart','currency-dollar','music-notes','briefcase','first-aid','users','barbell','flower'];
                 
                 let currentIcon = f.icon || 'folder';
@@ -2834,10 +2917,9 @@
                         '</div>';
                     
                     panel.className = 'action-panel centered';
-                    overlay.style.display = 'block';
-                    panel.style.display = 'block';
                     
-                    // Сохранить
+                    showPanel(panel, overlay);
+                    
                     document.getElementById('btnSaveFolderAppearance').onclick = () => {
                         const color = document.getElementById('folderColorInput').value;
                         if (color && color !== '#6b4c3b') f.color = color; else f.color = '';
@@ -2846,14 +2928,11 @@
                         State.save(); UI.renderAll(); App._closePanel(); UI.showToast('Оформление обновлено');
                     };
                     
-                    // Отмена
                     document.getElementById('btnCancelFolderAppearance').onclick = () => App._closePanel();
                     
-                    // Открыть сетку иконок
                     document.getElementById('btnOpenIconGrid').onclick = (e) => { e.stopPropagation(); showIconGrid(); };
                     
                     
-                    // Выбор цвета
                     document.getElementById('colorPreviewCircle').onclick = () => {
                         document.getElementById('folderColorInput').click();
                     };
@@ -2866,7 +2945,6 @@
                         document.getElementById('colorPreviewCircle').style.background = cp.value;
                     };
                     
-                    // Фото
                     document.getElementById('photoPreviewCircle').onclick = () => {
                         document.getElementById('btnPickFolderPhoto').click();
                     };
@@ -2928,7 +3006,6 @@
                         '<button id="btnBackFromGrid">Назад</button>' +
                         '</div>';
                     
-                    // Выбор иконки
                     document.querySelectorAll('.icon-grid-item').forEach(item => {
                         item.onclick = () => {
                             document.querySelectorAll('.icon-grid-item').forEach(el => el.classList.remove('selected'));
@@ -2936,7 +3013,6 @@
                             const newIcon = item.dataset.icon;
                             f.icon = newIcon;
                             currentIcon = newIcon;
-                            // Обновить превью в кружке на основном экране
                             const previewCircle = document.getElementById('iconPreviewCircle');
                             if (previewCircle) {
                                 previewCircle.innerHTML = '<svg><use href="#icon-' + newIcon + '"></use></svg>';
@@ -2944,7 +3020,6 @@
                         };
                     });
                     
-                    // Назад
                     document.getElementById('btnBackFromGrid').onclick = () => showMain();
                 };
                 
@@ -3007,18 +3082,16 @@
                         '</div>';
                     
                     panel.className = 'action-panel centered';
-                    overlay.style.display = 'block';
-                    panel.style.display = 'block';
+                    
+                    showPanel(panel, overlay);
                     
                     document.getElementById('btnCloseTheme').onclick = () => App._closePanel();
                     
-                    // Выбор темы — открыть сетку
                     document.getElementById('btnOpenThemeGrid').onclick = (e) => { e.stopPropagation(); showThemeGrid(); };
                     document.getElementById('themePreviewCircle').onclick = () => {
                         document.getElementById('btnOpenThemeGrid').click();
                     };
                     
-                    // Выбор своего цвета
                     document.getElementById('customColorCircle').onclick = () => {
                         document.getElementById('customColorInput').click();
                     };
@@ -3032,7 +3105,6 @@
                         App._applyCustomColor(cp.value);
                     };
                     
-                    // Выбор фото фона
                     document.getElementById('bgPhotoCircle').onclick = () => {
                         document.getElementById('btnPickBgPhoto').click();
                     };
@@ -3073,7 +3145,6 @@
                         inp.click();
                     };
                     
-                    // Убрать фон
                     const btnClearBg = document.getElementById('btnClearBgPhoto');
                     if (btnClearBg) btnClearBg.onclick = (e) => {
                         e.stopPropagation();
@@ -3153,13 +3224,13 @@
                 
                 buttons.innerHTML = 
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">ФИО</label>' +
-                    '<input type="text" id="editClientName" value="' + Utils.escapeHtml(c.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="ФИО">' +
+                    '<input type="text" id="editClientName" value="' + Utils.escapeHtml(c.name) + '" class="form-input" placeholder="ФИО">' +
                     
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Телефон</label>' +
-                    '<input type="tel" id="editClientPhone" value="' + Utils.escapeHtml(c.phone || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Телефон">' +
+                    '<input type="tel" id="editClientPhone" value="' + Utils.escapeHtml(c.phone || '') + '" class="form-input" placeholder="Телефон">' +
             
                     '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Дата рождения</label>' +
-                    '<input type="date" id="editClientDate" value="' + (c.date || '') + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<input type="date" id="editClientDate" value="' + (c.date || '') + '" class="form-input">' +
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     '<div class="action-buttons-row">' +
@@ -3168,8 +3239,8 @@
                     '</div>';
                 
                 panel.className = 'action-panel centered';
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                
+                showPanel(panel, overlay);
                 
                 setTimeout(() => {
                     document.getElementById('editClientName').focus();
@@ -3260,7 +3331,6 @@
                 
                 const parentId = State.getParentFolderId(folderId);
                 
-                // Показываем окно выбора папки
                 const overlay = getEl('actionOverlay');
                 const panel = getEl('actionPanel');
                 const title = getEl('actionPanelTitle');
@@ -3274,7 +3344,6 @@
                     f.id !== SMART_FOLDERS.TRASH && f.id !== folderId
                 );
                 
-                // Кнопка "В корень"
                 if (parentId) {
                     html += '<div class="action-buttons-row"><button id="btnMoveToRoot">Сделать основной</button></div>';
                 }
@@ -3291,8 +3360,8 @@
                     '</div>';
                 
                 panel.className = 'action-panel centered';
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                
+                showPanel(panel, overlay);
                 
                 setTimeout(() => {
                     const btnRoot = document.getElementById('btnMoveToRoot');
@@ -3332,11 +3401,9 @@
                 const parentId = State.getParentFolderId(cid);
                 
                 if (parentId) {
-                    // Мы в подпапке — возвращаемся в родительскую папку
                     State.setCurrentFolderId(parentId);
                     State.setCurrentTaskFilter(FILTERS.ACTIVE);
                 } else {
-                    // Мы в обычной папке — возвращаемся к списку папок
                     State.setCurrentFolderId(null);
                 }
                 
@@ -3455,7 +3522,7 @@
                 if (!container) {
                     container = document.createElement('div');
                     container.id = 'weekViewTaskList';
-                    container.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);padding:20px;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.4);z-index:999;max-width:90%;max-height:80%;overflow-y:auto;color:var(--text);font-family:var(--font);';
+                    container.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--modal-bg);padding:20px;border-radius:var(--radius);box-shadow:0 4px 24px rgba(0,0,0,0.4);z-index:999;max-width:90%;max-height:80%;overflow-y:auto;color:var(--text);font-family:var(--font);backdrop-filter:var(--modal-backdrop-filter);-webkit-backdrop-filter:var(--modal-backdrop-filter);';
                     document.body.appendChild(container);
                 }
                 container.innerHTML = list;
@@ -3464,10 +3531,10 @@
         };
 
         function autoResizeTextarea(el) {
-                if (!el) return;
-                el.style.height = 'auto';
-                el.style.height = el.scrollHeight + 'px';
-            }
+            if (!el) return;
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
 
         function getEl(id) { return document.getElementById(id); }
 
@@ -3560,6 +3627,7 @@
                 const overlay = getEl('actionOverlay');
                 
                 title.style.display = 'block';
+                title.textContent = msg;
                 
                 buttons.innerHTML = 
                     '<div class="action-buttons-row">' +
@@ -3568,8 +3636,8 @@
                     '</div>';
                 
                 panel.className = 'action-panel centered';
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                
+                showPanel(panel, overlay);
                 
                 document.getElementById('btnConfirmYes').onclick = function() {
                     App._closePanel();
@@ -3583,9 +3651,12 @@
         
             _closePanel: function() {
                 const panel = getEl('actionPanel');
-                panel.style.display = 'none';
-                panel.className = 'action-panel';
-                getEl('actionOverlay').style.display = 'none';
+                const overlay = getEl('actionOverlay');
+                panel.classList.remove('visible');
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    panel.className = 'action-panel';
+                }, 200);
                 const title = getEl('actionPanelTitle');
                 title.style.display = 'none';
                 title.textContent = '';
@@ -3603,7 +3674,6 @@
                 const buttons = getEl('actionPanelButtons');
                 const overlay = getEl('actionOverlay');
         
-
                 const found = Utils.findTaskById(taskId);
                 const keepSubtasks = found?.task.keepSubtasksDone || false;
 
@@ -3637,12 +3707,10 @@
         
                 panel.className = 'action-panel centered';
         
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                showPanel(panel, overlay);
             },
             showMovePanel: function(taskId) {
-                getEl('actionPanel').style.display = 'none';
-                getEl('actionOverlay').style.display = 'none';
+                App._closePanel();
                 
                 setTimeout(() => {
                     const found = Utils.findTaskById(taskId);
@@ -3679,10 +3747,11 @@
                         '</div>';
                     
                     panel.className = 'action-panel centered';
-                    overlay.style.display = 'block';
-                    panel.style.display = 'block';
-                }, 50);
-                document.getElementById('btnCancelMoveTask').onclick = () => App._closePanel();
+                    
+                    showPanel(panel, overlay);
+                    
+                    document.getElementById('btnCancelMoveTask').onclick = () => App._closePanel();
+                }, 250);
             },
             
             moveTaskTo: function(taskId, toFolderId) {
@@ -3710,14 +3779,12 @@
                 
                 const parentId = State.getParentFolderId(folderId);
                 
-                // Удаляем из текущего места
                 if (parentId) {
                     State.removeSubFolder(parentId, folderId);
                 } else {
                     State.removeFolder(folderId);
                 }
                 
-                // Добавляем как подпапку в новую папку
                 if (!Array.isArray(toFolder.subfolders)) toFolder.subfolders = [];
                 toFolder.subfolders.push(folder);
                 
@@ -3736,10 +3803,7 @@
                 const parentId = State.getParentFolderId(folderId);
                 if (!folder || !parentId) { App._closePanel(); return; }
                 
-                // Удаляем из подпапок родителя
                 State.removeSubFolder(parentId, folderId);
-                
-                // Добавляем в корень
                 State.addFolder(folder);
                 
                 State.save();
@@ -3749,10 +3813,11 @@
             },
         
             doAction: function(action, taskId) {
-                getEl('actionPanel').style.display = 'none';
-                getEl('actionOverlay').style.display = 'none';
-                handleAction(action, { taskId: taskId });
-                UI.renderAll();
+                App._closePanel();
+                setTimeout(() => {
+                    handleAction(action, { taskId: taskId });
+                    UI.renderAll();
+                }, 250);
             },
             
             folderTouchStart: function(e, folderId, folderName, active, completed) {
@@ -3773,6 +3838,7 @@
                 const buttons = getEl('actionPanelButtons');
                 const overlay = getEl('actionOverlay');
     
+                title.textContent = folderName;
         
                 buttons.innerHTML =
                     '<div class="action-section-title">' + Utils.escapeHtml(folderName) + '</div>' +
@@ -3790,8 +3856,7 @@
         
                 panel.className = 'action-panel centered';
         
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                showPanel(panel, overlay);
             },
 
             showSubFolderPanel: function(e, folderId, folderName, active, completed) {
@@ -3803,6 +3868,7 @@
                 const buttons = getEl('actionPanelButtons');
                 const overlay = getEl('actionOverlay');
                 
+                title.textContent = folderName;
                 
                 buttons.innerHTML =
                     '<div class="action-section-title">' + Utils.escapeHtml(folderName) + '</div>' +
@@ -3819,220 +3885,69 @@
                     '</div>';
                 
                 panel.className = 'action-panel centered';
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                
+                showPanel(panel, overlay);
             },
             
             doSubFolderAction: function(action, folderId) {
-                getEl('actionPanel').style.display = 'none';
-                getEl('actionOverlay').style.display = 'none';
+                App._closePanel();
                 
-                const sub = State.findFolderById(folderId);
-                const parentId = State.getParentFolderId(folderId);
-                
-                if (action === 'rename') {
-                    if (sub && !Utils.isSmartFolder(folderId)) {
-                        const overlay = getEl('actionOverlay');
-                        const panel = getEl('actionPanel');
-                        const title = getEl('actionPanelTitle');
-                        const buttons = getEl('actionPanelButtons');
-                        
-                        title.style.display = 'block';
-                        
-                        buttons.innerHTML = 
-                            '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(sub.name) + '" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:rgba(46,44,41,0.9);color:var(--text);font-size:15px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;" placeholder="Название подпапки">' +
-                            '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                            '<div class="action-buttons-row">' +
-                            '<button id="btnSaveSubFolderName">Сохранить</button>' +
-                            '<button id="btnCancelSubFolderName">Отмена</button>' +
-                            '</div>';
-                        
-                        panel.className = 'action-panel centered';
-                        overlay.style.display = 'block';
-                        panel.style.display = 'block';
-                        
-                        setTimeout(() => {
-                            const inp = document.getElementById('folderNameInput');
-                            if (inp) { inp.focus(); inp.select(); }
-                        }, 100);
-                        
-                        document.getElementById('btnSaveSubFolderName').onclick = function() {
-                            const name = document.getElementById('folderNameInput').value.trim();
-                            if (!name) return;
-                            sub.name = name;
-                            State.save();
-                            UI.renderAll();
-                            App._closePanel();
-                            UI.showToast('Подпапка переименована');
-                        };
-                        document.getElementById('btnCancelSubFolderName').onclick = () => App._closePanel();
-                    }
-                } else if (action === 'icon') {
-                    if (sub && !Utils.isSmartFolder(folderId)) {
-                        // Используем ту же логику что и для папок, но с sub
-                        const icons = ['folder','star','heart','globe','bell-ringing','book','buildings','camera','caret-down','chat','clock','home','cart','currency-dollar','music-notes','briefcase','first-aid','users','barbell','flower'];
-                        
-                        let currentIcon = sub.icon || 'folder';
-                        const currentColor = sub.iconColor || '';
-                        
-                        const overlay = getEl('actionOverlay');
-                        const panel = getEl('actionPanel');
-                        const title = getEl('actionPanelTitle');
-                        const buttons = getEl('actionPanelButtons');
-                        
-                        const showMain = () => {
-                            title.textContent = 'Оформление подпапки';
+                setTimeout(() => {
+                    const sub = State.findFolderById(folderId);
+                    const parentId = State.getParentFolderId(folderId);
+                    
+                    if (action === 'rename') {
+                        if (sub && !Utils.isSmartFolder(folderId)) {
+                            const overlay = getEl('actionOverlay');
+                            const panel = getEl('actionPanel');
+                            const title = getEl('actionPanelTitle');
+                            const buttons = getEl('actionPanelButtons');
+                            
                             title.style.display = 'block';
+                            title.textContent = 'Переименовать подпапку';
                             
                             buttons.innerHTML = 
-                                '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Иконка</div>' +
-                                '<div class="icon-preview">' +
-                                '<div class="icon-preview-circle" id="iconPreviewCircle">' +
-                                '<svg><use href="#icon-' + currentIcon + '"></use></svg>' +
-                                '</div>' +
-                                '<button class="btn-choose-icon" id="btnOpenIconGrid">Выбрать иконку</button>' +
-                                '</div>' +
-                                '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Цвет фона</div>' +
-                                '<div class="icon-preview">' +
-                                '<div class="icon-preview-circle" id="colorPreviewCircle" style="' + (sub.color ? 'background:' + sub.color + ';' : '') + ';cursor:pointer;">' +
-                                '</div>' +
-                                '<button class="btn-choose-icon" id="btnPickColor">Выбрать цвет</button>' +
-                                '<input type="color" id="folderColorInput" value="' + (sub.color || '#6b4c3b') + '" style="position:absolute;opacity:0;width:0;height:0;">' +
-                                '</div>' +
-                                
-                                '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Фото фона</div>' +
-                                '<div class="icon-preview">' +
-                                '<div class="icon-preview-circle" id="photoPreviewCircle" style="' + (sub.customImage ? 'background-image:url(' + sub.customImage + ');background-size:cover;background-position:center;' : (sub.color ? 'background:' + sub.color + ';' : '')) + ';cursor:pointer;">' +
-                                '</div>' +
-                                '<button class="btn-choose-icon" id="btnPickFolderPhoto">Выбрать фото для фона</button>' +
-                                '</div>' +
-
-                                ((sub.customImage || sub.color) ? '<div class="action-buttons-row"><button id="btnClearSubFolderBg" class="delete">Убрать фон</button></div>' : '') +
+                                '<input type="text" id="folderNameInput" value="' + Utils.escapeHtml(sub.name) + '" class="form-input" placeholder="Название подпапки">' +
                                 '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                                
                                 '<div class="action-buttons-row">' +
-                                '<button id="btnSaveSubFolderAppearance">Сохранить</button>' +
-                                '<button id="btnCancelSubFolderAppearance">Отмена</button>' +
+                                '<button id="btnSaveSubFolderName">Сохранить</button>' +
+                                '<button id="btnCancelSubFolderName">Отмена</button>' +
                                 '</div>';
                             
                             panel.className = 'action-panel centered';
-                            overlay.style.display = 'block';
-                            panel.style.display = 'block';
                             
-                            document.getElementById('btnSaveSubFolderAppearance').onclick = () => {
-                                const color = document.getElementById('folderColorInput').value;
-                                if (color && color !== '#6b4c3b') sub.color = color; else sub.color = '';
-                                sub.icon = currentIcon;
-                                if (currentColor) sub.iconColor = currentColor; else delete sub.iconColor;
-                                State.save(); UI.renderAll(); App._closePanel(); UI.showToast('Оформление обновлено');
+                            showPanel(panel, overlay);
+                            
+                            setTimeout(() => {
+                                const inp = document.getElementById('folderNameInput');
+                                if (inp) { inp.focus(); inp.select(); }
+                            }, 100);
+                            
+                            document.getElementById('btnSaveSubFolderName').onclick = function() {
+                                const name = document.getElementById('folderNameInput').value.trim();
+                                if (!name) return;
+                                sub.name = name;
+                                State.save();
+                                UI.renderAll();
+                                App._closePanel();
+                                UI.showToast('Подпапка переименована');
                             };
-                            
-                            document.getElementById('btnCancelSubFolderAppearance').onclick = () => App._closePanel();
-                            
-                            document.getElementById('btnOpenIconGrid').onclick = (e) => { e.stopPropagation(); showIconGrid(); };
-                            
-                            document.getElementById('colorPreviewCircle').onclick = () => {
-                                document.getElementById('folderColorInput').click();
-                            };
-                            document.getElementById('btnPickColor').onclick = () => {
-                                document.getElementById('folderColorInput').click();
-                            };
-                            
-                            const cp = document.getElementById('folderColorInput');
-                            if (cp) cp.oninput = () => {
-                                document.getElementById('colorPreviewCircle').style.background = cp.value;
-                            };
-                            
-                            document.getElementById('photoPreviewCircle').onclick = () => {
-                                document.getElementById('btnPickFolderPhoto').click();
-                            };
-                            document.getElementById('btnPickFolderPhoto').onclick = (e) => {
-                                e.stopPropagation();
-                                const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
-                                inp.onchange = (ev) => {
-                                    const file = ev.target.files[0]; if (!file) return;
-                                    const reader = new FileReader();
-                                    reader.onload = (event) => {
-                                        var img = new Image();
-                                        img.onload = function() {
-                                            var canvas = document.createElement('canvas');
-                                            var maxSize = 500;
-                                            var ratio = Math.min(maxSize / img.width, maxSize / img.height);
-                                            canvas.width = img.width * ratio;
-                                            canvas.height = img.height * ratio;
-                                            var ctx = canvas.getContext('2d');
-                                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                                            sub.customImage = canvas.toDataURL('image/jpeg', 0.8);
-                                            sub.color = '';
-                                            document.getElementById('photoPreviewCircle').style.backgroundImage = 'url(' + sub.customImage + ')';
-                                            document.getElementById('photoPreviewCircle').style.backgroundSize = 'cover';
-                                            document.getElementById('photoPreviewCircle').style.backgroundPosition = 'center';
-                                            UI.showToast('Фото выбрано');
-                                        };
-                                        img.src = event.target.result;
-                                    };
-                                    reader.readAsDataURL(file);
-                                };
-                                inp.click();
-                            };
-                            
-                            const btnClear = document.getElementById('btnClearSubFolderBg');
-                            if (btnClear) btnClear.onclick = (e) => { 
-                                e.stopPropagation(); 
-                                sub.customImage = ''; 
-                                sub.color = ''; 
-                                document.getElementById('photoPreviewCircle').style.backgroundImage = '';
-                                document.getElementById('colorPreviewCircle').style.background = '';
-                                document.getElementById('folderColorInput').value = '#6b4c3b';
-                                UI.showToast('Фон убран'); 
-                            };
-                        };
-                        
-                        const showIconGrid = () => {
-                            title.textContent = 'Выберите иконку';
-                            
-                            let gridHTML = '<div class="icon-grid">';
-                            icons.forEach(icon => {
-                                gridHTML += '<div class="icon-grid-item' + (icon === currentIcon ? ' selected' : '') + '" data-icon="' + icon + '">' +
-                                    '<svg><use href="#icon-' + icon + '"></use></svg></div>';
-                            });
-                            gridHTML += '</div>';
-                            
-                            buttons.innerHTML = gridHTML + 
-                                '<div class="settings-divider" style="margin:8px 0;"></div>' +
-                                '<div class="action-buttons-row">' +
-                                '<button id="btnBackFromGrid">Назад</button>' +
-                                '</div>';
-                            
-                            document.querySelectorAll('.icon-grid-item').forEach(item => {
-                                item.onclick = () => {
-                                    document.querySelectorAll('.icon-grid-item').forEach(el => el.classList.remove('selected'));
-                                    item.classList.add('selected');
-                                    const newIcon = item.dataset.icon;
-                                    sub.icon = newIcon;
-                                    currentIcon = newIcon;
-                                    // Обновить превью в кружке на основном экране
-                                    const previewCircle = document.getElementById('iconPreviewCircle');
-                                    if (previewCircle) {
-                                        previewCircle.innerHTML = '<svg><use href="#icon-' + newIcon + '"></use></svg>';
-                                    }
-                                };
-                            });
-                            
-                            document.getElementById('btnBackFromGrid').onclick = () => showMain();
-                        };
-                        
-                        showMain();
+                            document.getElementById('btnCancelSubFolderName').onclick = () => App._closePanel();
+                        }
+                    } else if (action === 'icon') {
+                        if (sub && !Utils.isSmartFolder(folderId)) {
+                            Actions.changeFolderIcon(folderId);
+                        }
+                    } else if (action === 'move') {
+                        if (sub) {
+                            Actions.moveFolder(folderId);
+                        }
+                    } else if (action === 'delete') {
+                        if (sub && parentId) {
+                            Actions.deleteSubFolder(parentId, folderId);
+                        }
                     }
-                } else if (action === 'move') {
-                    if (sub) {
-                        Actions.moveFolder(folderId);
-                    }
-                } else if (action === 'delete') {
-                    if (sub && parentId) {
-                        Actions.deleteSubFolder(parentId, folderId);
-                    }
-                }
+                }, 250);
             },
             
             subFolderTouchStart: function(e, folderId, folderName, active, completed) {
@@ -4044,20 +3959,23 @@
             subFolderTouchEnd: function(e) {
                 clearTimeout(this._subFolderTouchTimer);
             },
+            
             doFolderAction: function(action, folderId) {
-                getEl('actionPanel').style.display = 'none';
-                getEl('actionOverlay').style.display = 'none';
+                App._closePanel();
                 
-                if (action === 'rename') {
-                    Actions.editFolder(folderId);
-                } else if (action === 'icon') {
-                    Actions.changeFolderIcon(folderId);
-                } else if (action === 'move') {
-                    Actions.moveFolder(folderId);
-                } else if (action === 'delete') {
-                    Actions.deleteFolder(folderId);
-                }
+                setTimeout(() => {
+                    if (action === 'rename') {
+                        Actions.editFolder(folderId);
+                    } else if (action === 'icon') {
+                        Actions.changeFolderIcon(folderId);
+                    } else if (action === 'move') {
+                        Actions.moveFolder(folderId);
+                    } else if (action === 'delete') {
+                        Actions.deleteFolder(folderId);
+                    }
+                }, 250);
             },
+            
             showClientPanel: function(e, clientId, clientName) {
                 e.stopPropagation();
                 e.preventDefault();
@@ -4067,6 +3985,7 @@
                 const buttons = getEl('actionPanelButtons');
                 const overlay = getEl('actionOverlay');
         
+                title.textContent = clientName;
         
                 buttons.innerHTML =
                     '<div class="action-section-title">' + Utils.escapeHtml(clientName) + '</div>' +
@@ -4080,21 +3999,23 @@
         
                 panel.className = 'action-panel centered';
         
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                showPanel(panel, overlay);
             },
+            
             doClientAction: function(action, clientId) {
-                getEl('actionPanel').style.display = 'none';
-                getEl('actionOverlay').style.display = 'none';
+                App._closePanel();
                 
-                if (action === 'edit') {
-                    Actions.editClient(clientId);
-                } else if (action === 'email') {
-                    Actions.emailClient(clientId);
-                } else if (action === 'delete') {
-                    Actions.deleteClient(clientId);
-                }
+                setTimeout(() => {
+                    if (action === 'edit') {
+                        Actions.editClient(clientId);
+                    } else if (action === 'email') {
+                        Actions.emailClient(clientId);
+                    } else if (action === 'delete') {
+                        Actions.deleteClient(clientId);
+                    }
+                }, 250);
             },
+            
             showSubtaskPanel: function(e, taskId, subtaskId) {
                 e.stopPropagation();
                 e.preventDefault();
@@ -4117,19 +4038,21 @@
                 
                 panel.className = 'action-panel centered';
                 
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                showPanel(panel, overlay);
             },
+            
             doSubtaskAction: function(action, taskId, subtaskId) {
-                getEl('actionPanel').style.display = 'none';
-                getEl('actionOverlay').style.display = 'none';
+                App._closePanel();
                 
-                if (action === 'edit') {
-                    Actions.editSubtask(taskId, subtaskId);
-                } else if (action === 'delete') {
-                    Actions.deleteSubtask(taskId, subtaskId);
-                }
+                setTimeout(() => {
+                    if (action === 'edit') {
+                        Actions.editSubtask(taskId, subtaskId);
+                    } else if (action === 'delete') {
+                        Actions.deleteSubtask(taskId, subtaskId);
+                    }
+                }, 250);
             },
+            
             showSettingsPanel: function() {
                 const overlay = getEl('actionOverlay');
                 const panel = getEl('actionPanel');
@@ -4137,6 +4060,8 @@
                 const buttons = getEl('actionPanelButtons');
                 
                 getEl('menuDropdown').classList.remove('show');
+                const menuOverlay = document.querySelector('.menu-overlay');
+                if (menuOverlay) menuOverlay.remove();
                 
                 title.textContent = 'Настройки';
                 title.style.display = 'block';
@@ -4145,7 +4070,7 @@
                 
                 buttons.innerHTML =
                      '<label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Название приложения</label>' +
-                    '<input type="text" id="settingsAppName" value="' + Utils.escapeHtml(s.appName || 'День за днём') + '" onchange="App._updateSetting(\'appName\', this.value)" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);font-size:15px;font-family:var(--font);background:rgba(46,44,41,0.9);color:var(--text);outline:none;box-sizing:border-box;margin-bottom:12px;">' +
+                    '<input type="text" id="settingsAppName" value="' + Utils.escapeHtml(s.appName || 'День за днём') + '" onchange="App._updateSetting(\'appName\', this.value)" class="form-input">' +
                     
                     '<div class="settings-divider" style="margin:8px 0;"></div>' +
                     
@@ -4167,8 +4092,7 @@
                 
                 panel.className = 'action-panel centered';
                 
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
+                showPanel(panel, overlay);
                 document.getElementById('btnCloseSettings').onclick = () => App._closePanel();
             },
             
@@ -4179,16 +4103,6 @@
                 localStorage.setItem('theme_preset', name);
                 localStorage.removeItem('custom_theme');
                 UI.showToast('Тема: ' + name);
-                const buttons = getEl('actionPanelButtons');
-                if (buttons && buttons.style.display !== 'none') {
-                    const btns = buttons.querySelectorAll('button[onclick*="_applyPreset"]');
-                    btns.forEach(btn => {
-                        const presetName = btn.textContent.toLowerCase();
-                        btn.style.border = '2px solid ' + (presetName === name ? 'var(--accent)' : 'rgba(255,255,255,0.5)');
-                    });
-                }
-                const label = document.getElementById('customColorLabel');
-                if (label) label.style.fontWeight = '400';
             },
             
             _applyCustomColor: function(color) {
@@ -4208,41 +4122,6 @@
                 
                 localStorage.setItem('custom_theme', color);
                 UI.showToast('Своя тема: ' + color);
-                const picker = document.getElementById('customColorInput');
-                if (picker) picker.value = color;
-                const label = document.getElementById('customColorLabel');
-                if (label) label.style.fontWeight = '700';
-                const buttons = getEl('actionPanelButtons');
-                if (buttons && buttons.style.display !== 'none') {
-                    const btns = buttons.querySelectorAll('button[onclick*="_applyPreset"]');
-                    btns.forEach(btn => {
-                        btn.style.border = '2px solid rgba(255,255,255,0.5)';
-                    });
-                }
-            },
-            
-            _pickPhoto: function() {
-                const inp = document.createElement('input');
-                inp.type = 'file';
-                inp.accept = 'image/*';
-                inp.onchange = function(e) {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    if (file.size > 500000) { UI.showToast('Фото слишком большое (макс 500 КБ)'); return; }
-                    const reader = new FileReader();
-                    reader.onload = function(ev) {
-                        const bgLayer = document.getElementById('bgLayer');
-                        if (bgLayer) {
-                            bgLayer.style.backgroundImage = 'url(' + ev.target.result + ')';
-                            bgLayer.style.display = 'block';
-                        }
-                        document.body.classList.add('bg-image');
-                        localStorage.setItem('bg_image', ev.target.result);
-                        UI.showToast('Фон обновлён');
-                    };
-                    reader.readAsDataURL(file);
-                };
-                inp.click();
             },
 
             _updateOpacity: function(val) {
@@ -4300,7 +4179,6 @@
             }
          };
        
-
         // ========================================
         // НАСТРОЙКА ОБРАБОТЧИКОВ СОБЫТИЙ
         // ========================================
@@ -4335,33 +4213,32 @@
                 }
             });
             
-            const viewDropdown = getEl('viewDropdown');
-            if (viewDropdown) {
-                viewDropdown.addEventListener('click', function(e) {
-                    const btn = e.target.closest('button');
-                    if (!btn) return;
-                    const newMode = btn.dataset.view;
-                    State.setFolderViewMode(newMode);
-                    State.save();
-                    UI.renderFolderList();
-                    this.style.display = 'none';
-                    UI.showToast(newMode === 'list' ? 'Список' : 'Сетка');
-                });
-            }
             getEl('btnBackToFoldersTop').addEventListener('click', Actions.goBackToFolders);
             getEl('btnAddClient').addEventListener('click', Actions.addClient);
             getEl('btnAddNote').addEventListener('click', Actions.addNote);
             getEl('btnSearchMenu').addEventListener('click', function() {
                 getEl('menuDropdown').classList.remove('show');
+                const overlay = document.querySelector('.menu-overlay');
+                if (overlay) overlay.remove();
                 Actions.toggleSearch();
             });
             getEl('btnNotifyMenu').addEventListener('click', function() {
                 getEl('menuDropdown').classList.remove('show');
+                const overlay = document.querySelector('.menu-overlay');
+                if (overlay) overlay.remove();
                 Actions.requestNotification();
             });
             getEl('btnBackToFolders').addEventListener('click', Actions.goBackToFolders);
-            getEl('btnNewFolderMenu').addEventListener('click', Actions.addFolder);
+            getEl('btnNewFolderMenu').addEventListener('click', function() {
+                getEl('menuDropdown').classList.remove('show');
+                const overlay = document.querySelector('.menu-overlay');
+                if (overlay) overlay.remove();
+                Actions.addFolder();
+            });
             getEl('btnNewNoteMenu').addEventListener('click', function() {
+                getEl('menuDropdown').classList.remove('show');
+                const overlay = document.querySelector('.menu-overlay');
+                if (overlay) overlay.remove();
                 document.querySelectorAll('#mainTabs .tab').forEach(t => t.classList.remove('active'));
                 document.querySelector('#mainTabs .tab[data-tab="ideas"]').classList.add('active');
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -4372,18 +4249,32 @@
             getEl('btnThemeCustom').addEventListener('click', function() {
                 getEl('menuDropdown').classList.remove('show');
                 getEl('appearanceSubmenu').style.display = 'none';
+                const overlay = document.querySelector('.menu-overlay');
+                if (overlay) overlay.remove();
                 Actions.changeTheme();
             });
-            getEl('btnExportMenu').addEventListener('click', Actions.exportData);
-            getEl('btnImportMenu').addEventListener('click', Actions.importData);
+            getEl('btnExportMenu').addEventListener('click', function() {
+                getEl('menuDropdown').classList.remove('show');
+                const overlay = document.querySelector('.menu-overlay');
+                if (overlay) overlay.remove();
+                Actions.exportData();
+            });
+            getEl('btnImportMenu').addEventListener('click', function() {
+                getEl('menuDropdown').classList.remove('show');
+                const overlay = document.querySelector('.menu-overlay');
+                if (overlay) overlay.remove();
+                Actions.importData();
+            });
             getEl('btnOpacityMenu').addEventListener('click', function() {
                 getEl('menuDropdown').classList.remove('show');
                 getEl('appearanceSubmenu').style.display = 'none';
+                const overlay = document.querySelector('.menu-overlay');
+                if (overlay) overlay.remove();
                 
-                const overlay = getEl('actionOverlay');
                 const panel = getEl('actionPanel');
                 const title = getEl('actionPanelTitle');
                 const buttons = getEl('actionPanelButtons');
+                const actionOverlay = getEl('actionOverlay');
                 
                 const currentOpacity = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--opacity-card').trim()) || 0.75;
                 
@@ -4400,23 +4291,11 @@
                     '<button id="btnCloseOpacity">Закрыть</button>' +
                     '</div>';
 
-                
                 panel.className = 'action-panel centered';
                 
-                overlay.style.display = 'block';
-                panel.style.display = 'block';
-
+                showPanel(panel, actionOverlay);
                 document.getElementById('btnCloseOpacity').onclick = () => App._closePanel();
             });
-
-            const btnTodaySort = getEl('btnTodaySort');
-            if (btnTodaySort) {
-                btnTodaySort.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const dd = getEl('sortDropdown');
-                    if (dd) dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-                });
-            }
 
             document.addEventListener('click', function(e) {
                 const btn = e.target.closest('#btnToggleSubView');
@@ -4431,24 +4310,12 @@
                 UI.renderAll();
             });
             
-            const sortDropdown = getEl('sortDropdown');
-            if (sortDropdown) {
-                sortDropdown.addEventListener('click', function(e) {
-                    const btn = e.target.closest('button');
-                    if (!btn) return;
-                    const mode = btn.dataset.sort;
-                    State.setTodaySortMode(mode);
-                    State.save();
-                    UI.renderAll();
-                    this.style.display = 'none';
-                    const labels = { default: 'Без сортировки', folder: 'По папкам', time: 'По времени' };
-                    UI.showToast(labels[mode]);
-                });
-            }
-            
             const btnSettingsMenu = getEl('btnSettingsMenu');
             if (btnSettingsMenu) {
                 btnSettingsMenu.addEventListener('click', function() {
+                    getEl('menuDropdown').classList.remove('show');
+                    const overlay = document.querySelector('.menu-overlay');
+                    if (overlay) overlay.remove();
                     App.showSettingsPanel();
                 });
             }
@@ -4473,11 +4340,53 @@
             if (btnMenu) {
                 btnMenu.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    getEl('menuDropdown').classList.toggle('show');
+                    const menu = getEl('menuDropdown');
+                    const isOpen = !menu.classList.contains('show');
+                    
+                    // Закрываем если открыто
+                    if (!isOpen) {
+                        menu.classList.remove('show');
+                        const oldOverlay = document.querySelector('.menu-overlay');
+                        if (oldOverlay) oldOverlay.remove();
+                        return;
+                    }
+                    
+                    // Открываем с оверлеем
+                    menu.classList.add('show');
+                    
+                    const overlay = document.createElement('div');
+                    overlay.className = 'menu-overlay';
+                    overlay.addEventListener('click', function() {
+                        menu.classList.remove('show');
+                        this.remove();
+                    });
+                    document.body.appendChild(overlay);
                 });
             }
+            
             document.addEventListener('click', function(e) {
-                if (!e.target.closest('.menu-wrapper')) getEl('menuDropdown').classList.remove('show');
+                if (!e.target.closest('.menu-wrapper')) {
+                    getEl('menuDropdown').classList.remove('show');
+                    const overlay = document.querySelector('.menu-overlay');
+                    if (overlay) overlay.remove();
+                }
+            });
+
+            // Закрытие по Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    // Закрываем панель действий
+                    if (getEl('actionPanel').classList.contains('visible')) {
+                        App._closePanel();
+                    }
+                    // Закрываем бургер-меню
+                    const menu = getEl('menuDropdown');
+                    if (menu.classList.contains('show')) {
+                        menu.classList.remove('show');
+                        const overlay = document.querySelector('.menu-overlay');
+                        if (overlay) overlay.remove();
+                    }
+                }
             });
 
             const btnPrevMonth = getEl('btnPrevMonth');
@@ -4565,7 +4474,13 @@
             const actionPanel = getEl('actionPanel');
             if (actionPanel) {
                 actionPanel.addEventListener('click', function(e) {
-                    if (e.target === this) { this.style.display = 'none'; getEl('actionOverlay').style.display = 'none'; }
+                    if (e.target === this) { 
+                        this.classList.remove('visible');
+                        setTimeout(() => {
+                            getEl('actionOverlay').style.display = 'none';
+                            this.className = 'action-panel';
+                        }, 200);
+                    }
                 });
             }
         }
@@ -4687,12 +4602,6 @@
 
                 State.load();
                 App._applySettings();
-                
-                const currentMode = State.getFolderViewMode();
-                const viewIcon = currentMode === 'list' ? '' : '';
-                const viewLabel = currentMode === 'list' ? 'Список' : 'Сетка';
-                const viewBtn = getEl('btnViewMenu');
-                if (viewBtn) viewBtn.innerHTML = '<span class="menu-icon">' + viewIcon + '</span> Вид: ' + viewLabel;
                 
                 Services.processRepeats();
                 setupEventListeners();
