@@ -8,14 +8,14 @@
             var preset = localStorage.getItem('theme_preset');
             var color = localStorage.getItem('custom_theme');
             var root = document.documentElement;
-            if (preset === 'forest') { root.style.setProperty('--bg','#252825'); root.style.setProperty('--card','#30332e'); root.style.setProperty('--text','#e0e4dd'); root.style.setProperty('--accent','#7aaa7a'); root.style.setProperty('--accent-light','rgba(122,170,122,0.2)'); }
-            else if (preset === 'sunset') { root.style.setProperty('--bg','#2d2624'); root.style.setProperty('--card','#38322e'); root.style.setProperty('--text','#e8ddd9'); root.style.setProperty('--accent','#c97d6b'); root.style.setProperty('--accent-light','rgba(201,125,107,0.2)'); }
-            else if (preset === 'ocean') { root.style.setProperty('--bg','#242a2d'); root.style.setProperty('--card','#2e3438'); root.style.setProperty('--text','#dde4e8'); root.style.setProperty('--accent','#6b8a9e'); root.style.setProperty('--accent-light','rgba(107,138,158,0.2)'); }
+            if (preset === 'forest') { root.style.cssText = '--bg:#252825;--card:#30332e;--text:#e0e4dd;--accent:#7aaa7a;--accent-light:rgba(122,170,122,0.2);'; }
+            else if (preset === 'sunset') { root.style.cssText = '--bg:#2d2624;--card:#38322e;--text:#e8ddd9;--accent:#c97d6b;--accent-light:rgba(201,125,107,0.2);'; }
+            else if (preset === 'ocean') { root.style.cssText = '--bg:#242a2d;--card:#2e3438;--text:#dde4e8;--accent:#6b8a9e;--accent-light:rgba(107,138,158,0.2);'; }
             if (color) { root.style.setProperty('--accent', color); root.style.setProperty('--accent-light', color + '33'); }
             var bg = localStorage.getItem('bg_image');
             if (bg) {
                 var s = document.createElement('style');
-                s.textContent = 'body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:url('+bg+') center/cover;z-index:-1;}body::after{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:-1;}body{background:transparent;}';
+                s.textContent = 'body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:url('+bg+') center/cover;z-index:-1;}body::after{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.3);z-index:-1;}body{background:transparent;}';
                 document.head.appendChild(s);
             }
         })();
@@ -799,7 +799,6 @@
             align-items: center;
             gap: 12px;
             margin-bottom: 12px;
-            flex-wrap: wrap;
         }
         .icon-preview-circle {
             width: 48px;
@@ -840,8 +839,6 @@
         .action-buttons-row button {
             flex: 1;
             padding: 10px;
-            min-width: 70px;
-            white-space: nowrap;
             border-radius: var(--radius-lg);
             border: 1.5px solid var(--border);
             background: rgba(46,44,41,var(--opacity-btn));
@@ -1870,12 +1867,9 @@
                 tc.style.display = 'flex'; fl.style.display = 'none';
                 const fe = getEl('currentFolderName');
                 if (fe) {
-                    let name = '';
-                    if (fid === SMART_FOLDERS.TODAY) name = 'Сегодня';
-                    else if (fid === SMART_FOLDERS.OVERDUE) name = 'Просроченные';
-                    else name = 'Корзина';
-                    fe.innerHTML = '<div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;width:100%;">' +
-                        '<span style="font-weight:700;font-size:16px;text-align:center;word-break:break-word;">' + name + '</span></div>';
+                    if (fid === SMART_FOLDERS.TODAY) fe.textContent = 'Сегодня';
+                    else if (fid === SMART_FOLDERS.OVERDUE) fe.textContent = '⚠️ Просроченные';
+                    else fe.textContent = '🗑️ Корзина';
                 }
                 const taskFilter = getEl('taskFilter');
                 if (taskFilter) taskFilter.style.display = 'none';
@@ -1930,16 +1924,13 @@
                     }
                 }
                 
-                // Верхняя строка
-                const isPhone = window.innerWidth <= 430;
-                const btnText = isPhone ? '+' : '+ Задача';
-                const btnPad = isPhone ? '8px 12px' : '8px 14px';
-                const maxW = isPhone ? '40%' : '60%';
-                
+                // Верхняя строка: все элементы с равными отступами
+                const currentFilter = State.getCurrentTaskFilter();
+                const isActive = currentFilter === FILTERS.ACTIVE;
                 getEl('currentFolderName').innerHTML = 
                     '<div style="display:flex;align-items:center;justify-content:center;width:100%;position:relative;">' +
-                    '<button class="btn-sm btn-add" id="btnAddTaskTop" style="padding:' + btnPad + ';border-radius:22px;font-size:13px;white-space:nowrap;position:absolute;left:0;">' + btnText + '</button>' +
-                    '<span style="font-weight:700;font-size:16px;text-align:center;max-width:' + maxW + ';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + folderDisplayName + '</span>' +
+                    '<button class="btn-sm btn-add" id="btnAddTaskTop" style="padding:8px 14px;border-radius:22px;font-size:13px;white-space:nowrap;position:absolute;left:0;">+ Задача</button>' +
+                    '<span style="font-weight:700;font-size:16px;text-align:center;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + folderDisplayName + '</span>' +
                     '<button id="statFilterBtn" style="display:flex;align-items:center;gap:0;cursor:pointer;background:transparent;border:1.5px solid var(--border);border-radius:22px;padding:0;overflow:hidden;position:absolute;right:0;">' +
                     '<span id="statActivePart" style="padding:8px 12px;font-size:13px;font-weight:600;color:' + (isActive ? 'var(--accent)' : 'var(--text-secondary)') + ';background:transparent;border-radius:22px 0 0 22px;">' + stats.active + '</span>' +
                     '<span style="color:var(--border);font-weight:300;padding:8px 0;font-size:13px;">/</span>' +
@@ -1947,14 +1938,21 @@
                     '</button>' +
                     '</div>';
                 
+                // Вешаем обработчики
                 setTimeout(() => {
                     const addBtn = document.getElementById('btnAddTaskTop');
                     if (addBtn) addBtn.addEventListener('click', function() { Actions.addTaskPopup(); });
-                    document.getElementById('statActivePart')?.addEventListener('click', function(e) {
-                        e.stopPropagation(); State.setCurrentTaskFilter(FILTERS.ACTIVE); State.save(); UI.renderTasks();
+                    
+                    const activePart = document.getElementById('statActivePart');
+                    if (activePart) activePart.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        State.setCurrentTaskFilter(FILTERS.ACTIVE); State.save(); UI.renderTasks();
                     });
-                    document.getElementById('statCompletedPart')?.addEventListener('click', function(e) {
-                        e.stopPropagation(); State.setCurrentTaskFilter(FILTERS.COMPLETED); State.save(); UI.renderTasks();
+                    
+                    const completedPart = document.getElementById('statCompletedPart');
+                    if (completedPart) completedPart.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        State.setCurrentTaskFilter(FILTERS.COMPLETED); State.save(); UI.renderTasks();
                     });
                 }, 50);
 
