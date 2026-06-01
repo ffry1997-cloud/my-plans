@@ -1903,7 +1903,7 @@
                 const taskFilter = getEl('taskFilter');
                 if (taskFilter) taskFilter.style.display = 'none';
                 const inputRow = document.querySelector('.input-row');
-                if (inputRow) inputRow.style.display = 'none';
+                if (inputRow) inputRow.style.display = 'flex';
 
                 const f = State.findFolderById(fid);
                 if (!f) { tc.style.display = 'none'; fl.style.display = 'block'; return; }
