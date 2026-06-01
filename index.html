@@ -954,10 +954,18 @@
             </div>
             <div class="week-overview" id="weekOverview" style="display:none;"></div>
             <div id="folderList"></div>
-            <div id="folderActions" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <div id="folderActions" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:8px;">
                 <button class="btn-sm btn-add" id="btnAddFolder">+ Новая папка</button>
-                <div style="position:relative;">
-                    <button class="btn-sm" id="btnToggleView" aria-label="Переключить вид папок" style="background:rgba(107, 76, 59, 0.15);color:var(--accent);font-size:14px;padding:6px 10px;border-radius:50%;width:36px;height:36px;min-width:36px;">⋮</button>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <button class="btn-sm" id="btnTodaySort" style="display:none;">↕ Сортировка</button>
+                    <div style="position:relative;">
+                        <button class="btn-sm" id="btnToggleView" aria-label="Переключить вид папок" style="background:rgba(107, 76, 59, 0.15);color:var(--accent);font-size:14px;padding:6px 10px;border-radius:50%;width:36px;height:36px;min-width:36px;">⋮</button>
+                        <div id="sortDropdown" style="display:none;position:absolute;top:42px;right:0;background:var(--card);border-radius:14px;box-shadow:0 4px 16px rgba(0,0,0,0.3);z-index:50;min-width:180px;padding:4px;border:1px solid var(--border);">
+                            <button data-sort="default" style="display:block;width:100%;padding:10px 14px;border:none;background:transparent;color:var(--text);font-size:14px;font-family:var(--font);cursor:pointer;text-align:left;border-radius:10px;">Без сортировки</button>
+                            <button data-sort="folder" style="display:block;width:100%;padding:10px 14px;border:none;background:transparent;color:var(--text);font-size:14px;font-family:var(--font);cursor:pointer;text-align:left;border-radius:10px;">По папкам</button>
+                            <button data-sort="time" style="display:block;width:100%;padding:10px 14px;border:none;background:transparent;color:var(--text);font-size:14px;font-family:var(--font);cursor:pointer;text-align:left;border-radius:10px;">По времени</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card" id="taskContainer" style="display:none;">
@@ -2345,32 +2353,41 @@
                     if (ta) { ta.focus(); autoResizeTextarea(ta); }
                 }, 100);
                 
-                document.getElementById('btnSavePopupTask').onclick = function() {
-                    const text = document.getElementById('popupTaskText').value.trim();
-                    if (!text) return;
-                    
-                    const f = State.findFolderById(cid);
-                    if (!f) return;
-                    
-                    const date = document.getElementById('popupTaskDate').value;
-                    const time = document.getElementById('popupTaskTime').value;
-                    const repeat = document.getElementById('popupTaskRepeat').value;
-                    const repeatDays = repeat === 'custom' ? parseInt(document.getElementById('popupTaskRepeatDays').value) || 1 : 0;
-                    
-                    f.tasks.push({
-                        id: Utils.generateId(), text, date, time: time || undefined,
-                        completed: false, subtasks: [], repeat: repeat || undefined,
-                        repeatDays: repeatDays || undefined, priority: 0,
-                        keepSubtasksDone: false
-                    });
-                    
-                    State.setCurrentTaskFilter(FILTERS.ACTIVE);
-                    State.save();
-                    UI.renderAll();
-                    App._closePanel();
-                    UI.showToast('Задача добавлена!');
+                // ✅ ИСПРАВЛЕНИЕ: Единый обработчик делегированием (убираем утечки)
+                const handlePopupClick = function(e) {
+                    if (e.target.id === 'btnSavePopupTask') {
+                        const text = document.getElementById('popupTaskText').value.trim();
+                        if (!text) return;
+                        
+                        const f = State.findFolderById(cid);
+                        if (!f) return;
+                        
+                        const date = document.getElementById('popupTaskDate').value;
+                        const time = document.getElementById('popupTaskTime').value;
+                        const repeat = document.getElementById('popupTaskRepeat').value;
+                        const repeatDays = repeat === 'custom' ? parseInt(document.getElementById('popupTaskRepeatDays').value) || 1 : 0;
+                        
+                        f.tasks.push({
+                            id: Utils.generateId(), text, date, time: time || undefined,
+                            completed: false, subtasks: [], repeat: repeat || undefined,
+                            repeatDays: repeatDays || undefined, priority: 0,
+                            keepSubtasksDone: false
+                        });
+                        
+                        State.setCurrentTaskFilter(FILTERS.ACTIVE);
+                        State.save();
+                        UI.renderAll();
+                        App._closePanel();
+                        UI.showToast('Задача добавлена!');
+                    } else if (e.target.id === 'btnCancelPopupTask') {
+                        App._closePanel();
+                    }
                 };
-                document.getElementById('btnCancelPopupTask').onclick = () => App._closePanel();
+                
+                // Удаляем старый обработчик и вешаем новый
+                panel.removeEventListener('click', panel._popupHandler);
+                panel._popupHandler = handlePopupClick;
+                panel.addEventListener('click', handlePopupClick);
             },
             editTask(tid) {
                 const found = Utils.findTaskById(tid);
@@ -4334,27 +4351,12 @@
             });
             
             document.addEventListener('click', function(e) {
-                if (!e.target.closest('#btnToggleView') && !e.target.closest('#viewDropdown') && !e.target.closest('#btnTodaySort') && !e.target.closest('#sortDropdown')) {
-                    const dd = getEl('viewDropdown');
-                    if (dd) dd.style.display = 'none';
+                if (!e.target.closest('#btnToggleView') && !e.target.closest('#btnTodaySort') && !e.target.closest('#sortDropdown')) {
                     const sd = getEl('sortDropdown');
                     if (sd) sd.style.display = 'none';
                 }
             });
             
-            const viewDropdown = getEl('viewDropdown');
-            if (viewDropdown) {
-                viewDropdown.addEventListener('click', function(e) {
-                    const btn = e.target.closest('button');
-                    if (!btn) return;
-                    const newMode = btn.dataset.view;
-                    State.setFolderViewMode(newMode);
-                    State.save();
-                    UI.renderFolderList();
-                    this.style.display = 'none';
-                    UI.showToast(newMode === 'list' ? 'Список' : 'Сетка');
-                });
-            }
             getEl('btnBackToFoldersTop').addEventListener('click', Actions.goBackToFolders);
             getEl('btnAddClient').addEventListener('click', Actions.addClient);
             getEl('btnAddNote').addEventListener('click', Actions.addNote);
@@ -4685,12 +4687,6 @@
 
                 State.load();
                 App._applySettings();
-                
-                const currentMode = State.getFolderViewMode();
-                const viewIcon = currentMode === 'list' ? '' : '';
-                const viewLabel = currentMode === 'list' ? 'Список' : 'Сетка';
-                const viewBtn = getEl('btnViewMenu');
-                if (viewBtn) viewBtn.innerHTML = '<span class="menu-icon">' + viewIcon + '</span> Вид: ' + viewLabel;
                 
                 Services.processRepeats();
                 setupEventListeners();
