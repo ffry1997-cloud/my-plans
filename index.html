@@ -2040,19 +2040,20 @@
 
             function buildTaskHTML(task, fid, showFolderName) {
                 const isTrash = fid === SMART_FOLDERS.TRASH || task.folderId === SMART_FOLDERS.TRASH;
-                const escapedText = Utils.escapeHtml(task.text).replace(/'/g, "\\'");
+                const escapedText = Utils.escapeHtml(task.text);
+                const safeText = escapedText.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
                 let h = '<div class="task-item ' + (task.completed ? 'completed' : '') +
                     '" data-task-id="' + task.id + '" data-folder-id="' + fid +
-                    '" onclick="App.showActionPanel(event,\'' + task.id + '\',\'' + fid + '\',\'' + escapedText + '\',' + isTrash + ')"' +
-                    ' ontouchend="App.handleTaskTouch(event,\'' + task.id + '\',\'' + fid + '\',\'' + escapedText + '\',' + isTrash + ')"' + '>' +
+                    '" onclick="App.showActionPanel(event,\'' + task.id + '\',\'' + fid + '\',\'' + safeText + '\',' + isTrash + ')"' +
+                    ' ontouchend="App.handleTaskTouch(event,\'' + task.id + '\',\'' + fid + '\',\'' + safeText + '\',' + isTrash + ')"' + '>' +
                     '<div class="task-checkbox" data-action="' + A.TOGGLE_TASK + '" data-task-id="' + task.id + '">' +
                     (task.completed ? '✓' : '') + '</div>' +
                     '<div style="flex:1;min-width:100px;"><span class="task-text">' + Utils.escapeHtml(task.text) + '</span>';
-
+            
                 if (showFolderName && task.folderName) {
                     h += '<div style="font-size:10px;color:var(--text-secondary);">📁 ' + Utils.escapeHtml(task.folderName) + '</div>';
                 }
-
+            
                 h += '</div>';
                 h += buildTaskBadgesHTML(task);
                 h += buildSubtasksHTML(task);
