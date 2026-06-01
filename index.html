@@ -2036,7 +2036,7 @@
                 let h = '<div class="task-item ' + (task.completed ? 'completed' : '') +
                     '" data-task-id="' + task.id + '" data-folder-id="' + fid +
                     '" onclick="App.showActionPanel(event,\'' + task.id + '\',\'' + fid + '\',\'' + escapedText + '\',' + isTrash + ')"' +
-                    ' ontouchend="if(!event.target.closest(\'.task-checkbox\') && !event.target.closest(\'.subtask-item\')){App.showActionPanel(event,\'' + task.id + '\',\'' + fid + '\',\'' + escapedText + '\',' + isTrash + ')}"' + '>' +
+                    ' ontouchend="App.handleTaskTouch(event,\'' + task.id + '\',\'' + fid + '\',\'' + escapedText + '\',' + isTrash + ')"' + '>' +
                     '<div class="task-checkbox" data-action="' + A.TOGGLE_TASK + '" data-task-id="' + task.id + '">' +
                     (task.completed ? '✓' : '') + '</div>' +
                     '<div style="flex:1;min-width:100px;"><span class="task-text">' + Utils.escapeHtml(task.text) + '</span>';
@@ -3474,6 +3474,14 @@
         // WINDOW.APP
         // ========================================
         window.App = {
+            handleTaskTouch: function(e, taskId, folderId, taskText, isTrash) {
+                if (e.target.closest('.task-checkbox') || e.target.closest('.subtask-item') || e.target.closest('[data-action]')) {
+                    return;
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                this.showActionPanel(e, taskId, folderId, taskText, isTrash);
+            },
             handleDragStart: function(e) {
                 e.target.classList.add('dragging');
                 e.dataTransfer.setData('text/plain', JSON.stringify({
