@@ -2041,7 +2041,7 @@
             function buildTaskHTML(task, fid, showFolderName) {
                 const isTrash = fid === SMART_FOLDERS.TRASH || task.folderId === SMART_FOLDERS.TRASH;
                 const escapedText = Utils.escapeHtml(task.text);
-                const safeText = escapedText.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                const safeText = escapedText.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '\\r');
                 let h = '<div class="task-item ' + (task.completed ? 'completed' : '') +
                     '" data-task-id="' + task.id + '" data-folder-id="' + fid +
                     '" onclick="App.showActionPanel(event,\'' + task.id + '\',\'' + fid + '\',\'' + safeText + '\',' + isTrash + ')"' +
