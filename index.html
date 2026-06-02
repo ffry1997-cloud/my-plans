@@ -4584,17 +4584,28 @@
                 if (!morningSent) {
                     setTimeout(() => {
                         const todayTasks = Services.getTodayTasks();
-                        if (todayTasks.length > 0) {
-                            let body = '';
-                            todayTasks.slice(0, 5).forEach(t => {
-                                body += '• ' + t.text + '\n';
+                        if (todayTasks.length > 0 && Notification.permission === 'granted') {
+                            const chunkSize = 3;
+                            const chunks = [];
+                            for (let i = 0; i < todayTasks.length; i += chunkSize) {
+                                chunks.push(todayTasks.slice(i, i + chunkSize));
+                            }
+                            
+                            chunks.forEach((chunk, index) => {
+                                setTimeout(() => {
+                                    let body = chunk.map(t => '• ' + t.text).join('\n');
+                                    const title = index === 0 
+                                        ? '📅 Задачи на сегодня (' + todayTasks.length + ')' 
+                                        : '📅 Продолжение (' + (index + 1) + '/' + chunks.length + ')';
+                                    
+                                    new Notification(title, {
+                                        body: body,
+                                        tag: 'daily-tasks-' + index,
+                                        renotify: true
+                                    });
+                                }, index * 500);
                             });
-                            if (todayTasks.length > 5) body += '...и ещё ' + (todayTasks.length - 5) + ' задач';
-                            new Notification('Задачи на сегодня (' + todayTasks.length + ')', {
-                                body: body,
-                                tag: 'daily-tasks',
-                                requireInteraction: true
-                            });
+                            
                             localStorage.setItem('morning_sent_' + Utils.getTodayISO(), 'true');
                         }
                     }, 1000);
