@@ -977,21 +977,6 @@
                     <button class="task-filter-btn active" data-filter="active">Активные <span class="count" id="activeCount">0</span></button>
                     <button class="task-filter-btn" data-filter="completed">Завершенные <span class="count" id="completedCount">0</span></button>
                 </div>
-                <form class="input-row" style="display:flex;gap:6px;flex-wrap:wrap;" onsubmit="return false;">
-                    <input type="text" class="input" id="taskInput" placeholder="Новая задача..." autocomplete="off">
-                    <input type="date" class="input-time" id="taskDate" style="max-width:120px;">
-                    <input type="time" class="input-time" id="taskTime" style="max-width:90px;">
-                    <select class="input-time" id="taskRepeat" style="max-width:100px;">
-                        <option value="">Без повтора</option>
-                        <option value="daily">День</option>
-                        <option value="weekly">Неделя</option>
-                        <option value="monthly">Месяц</option>
-                        <option value="yearly">Год</option>
-                        <option value="custom">Свой</option>
-                    </select>
-                    <input type="number" class="input-time" id="taskRepeatDays" placeholder="Дней" style="max-width:60px;display:none;" min="1" max="365">
-                    <button type="submit" class="btn-sm btn-add" id="btnAddTask">+</button>
-                </form>
                 <div id="taskList"></div>
                 <button class="btn-sm" id="btnBackToFolders" style="background:var(--accent-light);color:var(--accent);">← Назад к папкам</button>
             </div>
@@ -1881,8 +1866,6 @@
                 if (taskFilter) taskFilter.style.display = 'none';
                 const btnTodaySort = getEl('btnTodaySort');
                 if (btnTodaySort) btnTodaySort.style.display = (fid === SMART_FOLDERS.TODAY || fid === SMART_FOLDERS.OVERDUE) ? '' : 'none';
-                const inputRow = document.querySelector('.input-row');
-                if (inputRow) inputRow.style.display = 'none';
 
                 const tasks = fid === SMART_FOLDERS.TRASH
                     ? (State.findFolderById(fid)?.tasks || [])
@@ -1910,8 +1893,6 @@
                 if (btnTodaySort) btnTodaySort.style.display = 'none';
                 const taskFilter = getEl('taskFilter');
                 if (taskFilter) taskFilter.style.display = 'none';
-                const inputRow = document.querySelector('.input-row');
-                if (inputRow) inputRow.style.display = 'flex';
 
                 const f = State.findFolderById(fid);
                 if (!f) { tc.style.display = 'none'; fl.style.display = 'block'; return; }
@@ -2276,36 +2257,6 @@
                         }, 300);
                     }
                 }
-            },
-            addTask() {
-                const cid = State.getCurrentFolderId();
-                if (Utils.isSmartFolder(cid)) { UI.showToast('Нельзя создавать задачи в этой папке'); return; }
-
-                const ti = getEl('taskInput'), td = getEl('taskDate'), tt = getEl('taskTime'),
-                    tr = getEl('taskRepeat'), trd = getEl('taskRepeatDays');
-                if (!ti || !td || !tt || !tr) return;
-
-                const text = ti.value.trim();
-                if (!text) { UI.showToast('Введите текст'); return; }
-
-                const f = State.findFolderById(cid);
-                if (!f) return;
-
-                const repeat = tr.value;
-                const repeatDays = repeat === 'custom' ? parseInt(trd.value) || 1 : 0;
-
-                f.tasks.push({
-                    id: Utils.generateId(), text, date: td.value, time: tt.value || undefined,
-                    completed: false, subtasks: [], repeat: repeat || undefined,
-                    repeatDays: repeatDays || undefined, priority: 0,
-                    keepSubtasksDone: false
-                });
-
-                ti.value = ''; tr.value = ''; trd.style.display = 'none';
-                State.setCurrentTaskFilter(FILTERS.ACTIVE);
-                State.save();
-                UI.renderAll();
-                UI.showToast('Задача добавлена!');
             },
             addTaskPopup() {
                 const cid = State.getCurrentFolderId();
@@ -4521,11 +4472,6 @@
                     if (b) Actions.setTaskFilter(b.dataset.filter);
                 });
             }
-
-            const tr = getEl('taskRepeat'), trd = getEl('taskRepeatDays');
-            if (tr && trd) tr.addEventListener('change', function() {
-                trd.style.display = this.value === 'custom' ? 'inline' : 'none';
-            });
 
             const phoneInput = getEl('clientPhone');
             if (phoneInput) {
