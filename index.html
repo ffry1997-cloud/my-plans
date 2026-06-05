@@ -1846,9 +1846,11 @@
                     tc.style.display = 'none'; 
                     fl.style.display = 'block'; 
                     if (folderActions) folderActions.style.display = 'flex';
-                    // ✅ Скрываем кнопку сортировки при возврате к списку папок
+                    // ✅ Скрываем кнопки при возврате к списку папок
                     const btnTodaySort = getEl('btnTodaySort');
                     if (btnTodaySort) btnTodaySort.style.display = 'none';
+                    const btnBackToFolders = getEl('btnBackToFolders');
+                    if (btnBackToFolders) btnBackToFolders.style.display = 'none';
                     return; 
                 }
                 if (folderActions) folderActions.style.display = 'none';
