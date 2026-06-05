@@ -873,7 +873,56 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
     <script>
         if ('serviceWorker' in navigator) {
+            // Удаляем старые
             navigator.serviceWorker.getRegistrations().then(r => r.forEach(x => x.unregister()));
+            
+            // Создаём service worker через inline-блоб (единственный способ для одного HTML-файла)
+            const swJs = `
+                const CACHE_NAME = 'my-plans-v2';
+                
+                self.addEventListener('install', event => {
+                    self.skipWaiting();
+                    event.waitUntil(
+                        caches.open(CACHE_NAME).then(cache => {
+                            return cache.addAll(['/']);
+                        })
+                    );
+                });
+                
+                self.addEventListener('activate', event => {
+                    event.waitUntil(
+                        caches.keys().then(keys => {
+                            return Promise.all(
+                                keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+                            );
+                        })
+                    );
+                });
+                
+                self.addEventListener('fetch', event => {
+                    if (event.request.method !== 'GET') return;
+                    event.respondWith(
+                        caches.match(event.request).then(cached => {
+                            return cached || fetch(event.request).then(response => {
+                                if (response.ok) {
+                                    const clone = response.clone();
+                                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+                                }
+                                return response;
+                            }).catch(() => cached);
+                        })
+                    );
+                });
+            `;
+            
+            const blob = new Blob([swJs], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            
+            navigator.serviceWorker.register(swUrl, { scope: '/' }).then(() => {
+                console.log('✅ Service Worker зарегистрирован');
+            }).catch(err => {
+                console.log('⚠️ Service Worker не удался (но приложение работает):', err.message);
+            });
         }
     </script>
 </head>
