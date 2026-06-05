@@ -3736,9 +3736,12 @@
             },
             
             folderTouchStart: function(e, folderId, folderName, active, completed) {
+                this._folderTouchMoved = false;
                 this._folderTouchTimer = setTimeout(() => {
-                    this.showFolderPanel(e, folderId, folderName, active, completed);
-                }, 500);
+                    if (!this._folderTouchMoved) {
+                        this.showFolderPanel(e, folderId, folderName, active, completed);
+                    }
+                }, 800);
             },
             folderTouchEnd: function(e) {
                 clearTimeout(this._folderTouchTimer);
@@ -4016,9 +4019,12 @@
             },
             
             subFolderTouchStart: function(e, folderId, folderName, active, completed) {
+                this._subFolderTouchMoved = false;
                 this._subFolderTouchTimer = setTimeout(() => {
-                    this.showSubFolderPanel(e, folderId, folderName, active, completed);
-                }, 500);
+                    if (!this._subFolderTouchMoved) {
+                        this.showSubFolderPanel(e, folderId, folderName, active, completed);
+                    }
+                }, 800);
             },
             
             subFolderTouchEnd: function(e) {
@@ -4519,6 +4525,16 @@
                     if (e.target === this) { this.style.display = 'none'; getEl('actionOverlay').style.display = 'none'; }
                 });
             }
+
+            // ✅ Отменяем долгое нажатие при скролле (только для тач-устройств)
+            document.addEventListener('touchmove', function() {
+                if (window.App._folderTouchTimer) {
+                    window.App._folderTouchMoved = true;
+                }
+                if (window.App._subFolderTouchTimer) {
+                    window.App._subFolderTouchMoved = true;
+                }
+            }, { passive: true });
         }
 
         // ========================================
