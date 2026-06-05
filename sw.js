@@ -1,10 +1,13 @@
-const CACHE_NAME = 'my-plans-v4';
+const CACHE_NAME = 'my-plans-v5';
 
 self.addEventListener('install', event => {
     self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => {
-            return cache.addAll(['/my-plans/', '/my-plans/index.html']);
+            return cache.addAll([
+                '/my-plans/',
+                '/my-plans/index.html'
+            ]);
         })
     );
 });
@@ -20,16 +23,25 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-    if (event.request.method !== 'GET') return;
     event.respondWith(
         caches.match(event.request).then(cached => {
-            return cached || fetch(event.request).then(response => {
-                if (response.ok) {
+            if (cached) return cached;
+            
+            return fetch(event.request).then(response => {
+                if (response && response.ok) {
                     const clone = response.clone();
-                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+                    caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, clone);
+                    });
                 }
                 return response;
-            }).catch(() => cached);
+            }).catch(() => {
+                // Если нет интернета и нет в кэше — вернуть главную страницу
+                if (event.request.mode === 'navigate') {
+                    return caches.match('/my-plans/');
+                }
+                return cached;
+            });
         })
     );
 });
